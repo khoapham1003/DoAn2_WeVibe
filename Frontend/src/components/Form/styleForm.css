@@ -1,0 +1,113 @@
+.label {
+  padding: 0px;
+  margin: 0px;
+  font-size: 2vh;
+  color: #8c8c8c;
+}
+
+.no_margin {
+  margin: 0px;
+}
+.button {
+  color: white;
+  background-color: #30cf82;
+  font-weight: 400;
+  border-radius: 2px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.background {
+  height: 63vh;
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  padding-right: 15vw;
+}
+.functions {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+}
+.title_container {
+}
+.button_container {
+  padding: 1vh 0vh;
+}
+.login_input_container {
+  height: max(fit-content, 30px);
+}
+.login_functions_container {
+}
+.divide_into_2cols {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.logup_form .label {
+  padding: 0px;
+  margin: 0px;
+  font-size: 1.5vh;
+  color: #8c8c8c;
+}
+.logup_nav:hover {
+  text-decoration: underline;
+}
+.forgotpassword_nav:hover {
+  text-decoration: underline;
+}
+.login_form {
+  min-width: 22vw;
+  height: 60%;
+  background-color: rgba(255, 255, 255, 0.85);
+  box-shadow: 0px 8px 32px 0 gray;
+  border-radius: 0.5vw;
+  padding: 0px 1vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.logup_form {
+  min-width: 27vw;
+  height: 99%;
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0px 8px 32px 0 gray;
+  border-radius: 0.5vw;
+  padding: 0px 1vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.forgotpassword_form {
+  width: 22vw;
+  height: 45%;
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0px 8px 32px 0 gray;
+  border-radius: 0.5vw;
+  padding: 0 1vw 1vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.confirmcode_form {
+  width: 22vw;
+  height: 45%;
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0px 8px 32px 0 gray;
+  border-radius: 0.5vw;
+  padding: 0 1vw 1vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.changepassword_form {
+  width: 22vw;
+  height: 60%;
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0px 8px 32px 0 gray;
+  border-radius: 0.5vw;
+  padding: 0 1vw 1vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}

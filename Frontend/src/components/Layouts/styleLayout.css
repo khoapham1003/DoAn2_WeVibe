@@ -1,0 +1,134 @@
+.content {
+  margin-top: 7vh;
+  background-color: rgb(245, 245, 245);
+}
+/* Header */
+.inner {
+  align-items: center;
+  display: flex;
+  margin: 0px 0px !important;
+}
+
+.h_wrapper {
+  padding: 0px 0vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: #ffffff;
+}
+.h_inner {
+  height: 6vh;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px, 5px 0px 10px #ffffff;
+}
+.h_log_inner {
+  display: flex;
+  justify-content: space-between;
+}
+.h_logo {
+  margin-left: 3vh;
+  display: flex;
+  justify-content: center;
+}
+.h_logo_image {
+  height: 4vh;
+  cursor: pointer;
+}
+.h_search_bar {
+  margin: 0vh 2vh;
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+}
+.h_page_name {
+  font-size: 2vw;
+  font-weight: bold;
+  margin-right: 2vw;
+  vertical-align: middle;
+}
+.h_cart_button {
+  flex-grow: 1;
+  max-width: max-content;
+  margin-right: 2vw;
+}
+.h_login_button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: max-content;
+  flex-grow: 1;
+  margin-right: 2vw;
+}
+.h_user_button {
+  max-width: max-content;
+  flex-grow: 1;
+  margin-right: 2vw;
+}
+
+/* Footer */
+.f_wrapper {
+  /* position: absolute;
+  bottom: 0; */
+  /* height: 25vh; */
+}
+.f_unlog_wrapper {
+  position: absolute;
+  bottom: 0;
+}
+.f_inner {
+  box-shadow: rgba(0, 0, 0, 0.15) 0px -5px 15px, 5px 0px 10px #ffffff;
+  height: 30vh;
+  display: flex;
+  justify-content: space-between;
+}
+.f_logo {
+  display: flex;
+  justify-content: center;
+  float: left;
+  flex-grow: 1;
+}
+.f_logo_image {
+  height: 13vw;
+}
+.help {
+  display: flex;
+  justify-content: space-around;
+  float: right;
+  flex-grow: 2;
+}
+.help h2 {
+  font-size: 1.5vw;
+  margin-bottom: 10px !important;
+}
+.help a {
+  margin-bottom: 5px;
+  text-decoration: none;
+  color: #8c8c8c;
+  font-size: 0.8vw;
+}
+.help a:hover {
+  color: black;
+  text-decoration: underline;
+  transition: all 0.2s cubic-bezier(0.05, 0.05, 0.1, 0.5);
+}
+.ContactInformation a {
+  margin-bottom: 15px;
+}
+.ContactInformation {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 20vw;
+  padding-right: 20px;
+}
+.CustomerService {
+  display: flex;
+  flex-direction: column;
+  width: 20vw;
+}
+.TermsofService {
+  display: flex;
+  flex-direction: column;
+  width: 20vw;
+}
