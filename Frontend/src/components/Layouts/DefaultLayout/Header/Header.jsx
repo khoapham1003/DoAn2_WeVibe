@@ -46,11 +46,7 @@ function Header() {
             navigate("/");
           }}
         >
-          <img
-            className="h_logo_image"
-            src={images.logo}
-            alt="1015 BookStore"
-          />
+          <img className="h_logo_image" src={images.logo} alt="WeVibe" />
         </div>
         <div className={cx("h_search_bar")}>
           <SearchBar />

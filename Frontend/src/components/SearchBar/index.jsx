@@ -21,7 +21,12 @@ const SearchBar = ({ onSearchResult, ...props }) => {
   };
 
   return (
-    <div style={{ display: "flex", alignItems: "center" }}>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "space-around",
+      }}
+    >
       <Input
         onChange={(e) => setSearchValue(e.target.value)}
         onPressEnter={onSearch}
@@ -29,11 +34,7 @@ const SearchBar = ({ onSearchResult, ...props }) => {
         placeholder="Search book"
         allowClear
         size="large"
-        style={{
-          flex: "1",
-          width: "50vw",
-          height: "5vh",
-        }}
+        style={{ backgroundColor: "#d0d3cc" }}
         {...props}
       />
       <Button
@@ -41,6 +42,8 @@ const SearchBar = ({ onSearchResult, ...props }) => {
           border: "none",
           background: "#ffffff",
           boxShadow: "none",
+          marginTop: "0.25rem",
+          width: "4rem",
         }}
         onClick={onSearch}
       >

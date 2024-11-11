@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { PlusOutlined } from '@ant-design/icons';
-import { Modal, Upload } from 'antd';
+import React, { useState } from "react";
+import { PlusOutlined } from "@ant-design/icons";
+import { Modal, Upload } from "antd";
 
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -12,8 +12,8 @@ const getBase64 = (file) =>
 
 const UploadAvatar = () => {
   const [previewVisible, setPreviewVisible] = useState(false);
-  const [previewImage, setPreviewImage] = useState('');
-  const [previewTitle, setPreviewTitle] = useState('');
+  const [previewImage, setPreviewImage] = useState("");
+  const [previewTitle, setPreviewTitle] = useState("");
   const [fileList, setFileList] = useState([]);
 
   const handleCancel = () => setPreviewVisible(false);
@@ -24,7 +24,9 @@ const UploadAvatar = () => {
     }
     setPreviewImage(file.url || file.preview);
     setPreviewVisible(true);
-    setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
+    setPreviewTitle(
+      file.name || file.url.substring(file.url.lastIndexOf("/") + 1)
+    );
   };
 
   const handleChange = ({ fileList: newFileList }) => {
@@ -57,11 +59,16 @@ const UploadAvatar = () => {
       >
         {fileList.length >= 1 ? null : uploadButton}
       </Upload>
-      <Modal visible={previewVisible} title={previewTitle} footer={null} onCancel={handleCancel}>
+      <Modal
+        visible={previewVisible}
+        title={previewTitle}
+        footer={null}
+        onCancel={handleCancel}
+      >
         <img
           alt="example"
           style={{
-            width: '100%',
+            width: "100%",
           }}
           src={previewImage}
         />

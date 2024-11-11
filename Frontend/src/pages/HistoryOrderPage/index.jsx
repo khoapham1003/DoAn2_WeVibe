@@ -159,7 +159,7 @@ function HistoryOrderPage() {
                     }}
                     src={
                       item.sImage_path == null
-                        ? require(`../../assets/user-content/img_1.webp`)
+                        ? require(`../../assets/user-content/img_default.webp`)
                         : require(`../../assets/user-content/${item.sImage_path}`)
                     }
                     alt={item.sProduct_name}

@@ -12,8 +12,6 @@ function CartButton() {
         icon={<ShoppingCartOutlined />}
         style={{
           display: "inline",
-          height: "4vh",
-          width: "4vh",
           border: "none",
           boxShadow: "none",
         }}

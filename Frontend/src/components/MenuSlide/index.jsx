@@ -62,7 +62,6 @@ const MenuSlide = ({ onMenuSelect }) => {
         <Menu
           selectedKeys={[selectedKeys]}
           style={{
-            width: "10vw",
             backgroundColor: "#fff",
             borderRight: "none",
             fontSize: "10px"

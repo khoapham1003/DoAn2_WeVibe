@@ -1,12 +1,10 @@
 import { Fragment, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { publicRoutes, privateRoutes } from "../Routes/index";
+import { publicRoutes, privateRoutes } from "./index";
 import DefaultLayout from "../Layouts/DefaultLayout";
-import { message } from "antd";
 
 function AppRoutes() {
   useEffect(() => {}, []);
-
 
   const getCookie = (cookieName) => {
     const cookies = document.cookie.split("; ");
@@ -20,25 +18,25 @@ function AppRoutes() {
   };
 
   const isUserAuthenticated = () => {
-    const accessToken = getCookie('accessToken');
-    const userid = getCookie('userid');
-  
+    const accessToken = getCookie("accessToken");
+    const userid = getCookie("userid");
+
     if (accessToken && userid) {
       try {
-        const decodedToken = JSON.parse(atob(accessToken.split('.')[1]));
-  
+        const decodedToken = JSON.parse(atob(accessToken.split(".")[1]));
+
         if (decodedToken && decodedToken.exp) {
           const currentTimeInSeconds = Math.floor(Date.now() / 1000);
           return decodedToken.exp > currentTimeInSeconds;
         }
       } catch (error) {
-        console.error('Error decoding token:', error);
+        console.error("Error decoding token:", error);
       }
     }
-  
+
     return false;
   };
-  console.log('Is user authenticated:', isUserAuthenticated());
+  console.log("Is user authenticated:", isUserAuthenticated());
 
   return (
     <BrowserRouter>

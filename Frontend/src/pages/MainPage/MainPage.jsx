@@ -1,34 +1,40 @@
-import React, { useEffect, useState } from "react";
-import { Card, Col, Rate, Row } from "antd";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Button, Card, Col, Image, Rate, Row } from "antd";
 import MenuSlide from "../../components/MenuSlide";
+import { useNavigate } from "react-router-dom";
+import { fetchProductData } from "../../components/Data/api";
+import { floatButtonPrefixCls } from "antd/es/float-button/FloatButton";
+import "./../styleMainPage.css";
+import background_log from "./../../assets/images/background_log.png";
 
-const SearchPage = () => {
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(false);
+const { Meta } = Card;
+
+function MainPage() {
   const navigate = useNavigate();
-  const searchValue = localStorage.getItem("datasearch");
   const [selectedMenu, setSelectedMenu] = useState(null);
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const getCookie = (cookieName) => {
+    const cookies = document.cookie.split("; ");
+    for (const cookie of cookies) {
+      const [name, value] = cookie.split("=");
+      if (name === cookieName) {
+        return value;
+      }
+    }
+    return null;
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true);
-
-        const response = await fetch(
-          `https://localhost:7139/api/Product/public-paging-keyword?sKeyword=${searchValue}&pageindex=1&pagesize=100`
-        );
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log("API Response:", data);
-
+        const jwtToken = getCookie("accessToken");
+        const data = await fetchProductData(jwtToken);
         setItems(data);
       } catch (error) {
-        console.error("API Error:", error);
+        setError(error.message);
       } finally {
         setLoading(false);
       }
@@ -49,8 +55,18 @@ const SearchPage = () => {
 
   return (
     <div>
+      <div
+        className="content"
+        style={{
+          backgroundImage: `url(${background_log})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          height: "400px",
+        }}
+      ></div>
       <h3 class="title-comm">
-        <span class="title-holder">TÌM KIẾM SẢN PHẨM</span>
+        <span class="title-holder">DANH MỤC SẢN PHẨM</span>
       </h3>
       <Row className="title_bar">
         <Col>
@@ -70,7 +86,7 @@ const SearchPage = () => {
                 alt={item.sProduct_name}
                 src={
                   item.sImage_pathThumbnail == null
-                    ? require(`../../assets/user-content/img_1.webp`)
+                    ? require(`../../assets/user-content/img_default.webp`)
                     : require(`../../assets/user-content/${item.sImage_pathThumbnail}`)
                 }
               />
@@ -83,7 +99,8 @@ const SearchPage = () => {
                 <Rate
                   disabled
                   className="book_star"
-                  defaultValue={item.dProduct_start_count}
+                  allowHalf
+                  defaultValue={item.dProduct_start_count.toFixed(1)}
                 />
               </div>
               <span className="book_price">
@@ -105,6 +122,6 @@ const SearchPage = () => {
       </div>
     </div>
   );
-};
+}
 
-export default SearchPage;
+export default MainPage;

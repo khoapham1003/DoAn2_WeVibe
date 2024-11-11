@@ -82,7 +82,7 @@ const FilteredPage = () => {
                   alt={item.sProduct_name}
                   src={
                     item.sImage_pathThumbnail == null
-                      ? require(`../../assets/user-content/img_1.webp`)
+                      ? require(`../../assets/user-content/img_default.webp`)
                       : require(`../../assets/user-content/${item.sImage_pathThumbnail}`)
                   }
                 />

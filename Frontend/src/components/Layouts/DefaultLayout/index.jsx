@@ -1,5 +1,5 @@
 import Header from "./Header/Header";
-import Footer from "../DefaultLayout/Footer/Footer";
+import Footer from "./Footer/Footer";
 
 function DefaultLayout({ children }) {
   return (
@@ -7,7 +7,7 @@ function DefaultLayout({ children }) {
       style={{
         display: "flex",
         flexDirection: "column",
-        backgroundColor:"#f5f5f5"
+        backgroundColor: "#f5f5f5",
       }}
     >
       <Header />

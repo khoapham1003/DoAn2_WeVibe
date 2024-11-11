@@ -21,7 +21,7 @@ function Footer() {
           <img
             className="f_logo_image"
             src={images.logo1}
-            alt="1015 BookStore"
+            alt="WeVibe"
           />
         </div>
         <div className="help">
@@ -33,18 +33,24 @@ function Footer() {
               TP.HCM
             </a>
             <a href="./">
-              <FiPhone /> 0907448146
+              <FiPhone /> 09099009009
             </a>
             <a href="./">
-              <MdMailOutline /> 1015.bigcompany@gmail.com
+              <MdMailOutline /> wevibe.bigcompany@gmail.com
             </a>
-            <a href="./">
-              <FaFacebookSquare />
-              &emsp;
-              <FiInstagram />
-              &emsp;
-              <SiZalo />
-            </a>
+            <div href="./">
+              <a>
+                <FaFacebookSquare />
+                &emsp;
+              </a>
+              <a>
+                <FiInstagram />
+                &emsp;
+              </a>
+              <a>
+                <SiZalo />
+              </a>
+            </div>
           </div>
           <div className="CustomerService">
             <h2>Chăm sóc khách hàng</h2>
