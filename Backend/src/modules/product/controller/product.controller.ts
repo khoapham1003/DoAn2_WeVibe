@@ -39,16 +39,16 @@ export class ProductController {
     return product;
   }
 
-  @Get('/get-product-of-type/:mTypeName')
-  async findTypeProduct(
-    @Param('mTypeName') mTypeName: string,
-  ): Promise<Product[]> {
-    let typeName = 'Hamster';
-    if (mTypeName == 'do-choi') typeName = 'Đồ Chơi';
-    else if (mTypeName == 'long') typeName = 'Lồng';
-    else if (mTypeName == 'thuc-an') typeName = 'Thức Ăn';
-    return await this.productService.findAllType(typeName);
-  }
+  // @Get('/get-product-of-type/:mTypeName')
+  // async findTypeProduct(
+  //   @Param('mTypeName') mTypeName: string,
+  // ): Promise<Product[]> {
+  //   let typeName = 'Wevibe';
+  //   if (mTypeName == 'do-choi') typeName = 'Đồ Chơi';
+  //   else if (mTypeName == 'long') typeName = 'Lồng';
+  //   else if (mTypeName == 'thuc-an') typeName = 'Thức Ăn';
+  //   return await this.productService.findAllType(typeName);
+  // }
 
   @Patch('/update-product/:mProductId')
   async update(
