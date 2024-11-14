@@ -40,12 +40,12 @@ function CartPage() {
       }
 
       const response = await fetch(
-        `https://localhost:7139/api/Cart/get/${userId}`,
+        `http://localhost:3000/user/get-cart-user/${userId}`,
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${jwtToken}`,
+            token: `Bearer ${jwtToken}`,
           },
         }
       );
@@ -53,9 +53,9 @@ function CartPage() {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-
       const data = await response.json();
-      setItems(data);
+      setItems(data.products);
+      console.log(items);
     } catch (error) {
       console.error("Error fetching product data:", error);
       throw error; // Propagate the error to handle it in the calling code
@@ -71,12 +71,12 @@ function CartPage() {
         );
       }
       const response = await fetch(
-        `https://localhost:7139/api/Cart/delete/${cartItemId}`,
+        `http://localhost:3000/user/delete-cart-user/${userId}/${cartItemId}`,
         {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${jwtToken}`,
+            token: `Bearer ${jwtToken}`,
           },
         }
       );
@@ -97,34 +97,39 @@ function CartPage() {
 
   const handleCheckout = async () => {
     try {
-      const selectedIds = items
-        .filter((item) => selectedItems.includes(item.iCart_id))
-        .map((item) => item.iCart_id);
-      console.log("selectedids:", selectedIds);
+      const selectedItemsData = items
+        .filter((item) => selectedItems.includes(item.id))
+        .map((item) => ({
+          _id: item.id,
+          amount: item.amount,
+        }));
+
       const requestData = {
-        lCart_ids: selectedIds,
-        gUser_id: userId,
+        selectedItems: selectedItemsData,
       };
 
       console.log("Request Data:", requestData);
 
-      const response = await fetch("https://localhost:7139/api/Order", {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${jwtToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestData),
-      });
-
-      console.log("Response:", response);
+      const response = await fetch(
+        `http://localhost:3000/order/check-out/${userId}`,
+        {
+          method: "POST",
+          headers: {
+            token: `Bearer ${jwtToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestData),
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
       const orderResponse = await response.json();
-      const orderId = orderResponse.iOrder_id;
+      console.log("Response:", orderResponse);
+
+      const orderId = orderResponse._id;
       localStorage.setItem("orderId", orderId);
       navigate(`/checkout`);
       console.log("Order placed successfully!");
@@ -149,25 +154,35 @@ function CartPage() {
     setSelectedItems((prevSelectedItems) => {
       return prevSelectedItems.length === items.length
         ? []
-        : items.map((item) => item.iCart_id);
+        : items.map((item) => item.id);
     });
   };
 
   const handleCardClick = (item) => {
     console.log("Card clicked:", item);
-    navigate(`/product-detail/${item.iCart_id}`, { state: { item } });
+    navigate(`/product-detail/${item.id}`, { state: { item } });
   };
 
   const handleQuantityChange = async (itemId, value) => {
     try {
+      if (selectedItems.includes(itemId)) {
+        // If yes, update selectedItems by removing cartItemId
+        setSelectedItems((prevSelectedItems) =>
+          prevSelectedItems.filter((id) => id !== itemId)
+        );
+      }
+      const data = {
+        amount: value,
+      };
       const response = await fetch(
-        `https://localhost:7139/api/Cart/updateamount/${itemId}?amountadd=${value}`,
+        `http://localhost:3000/user/update-cart-user/${userId}/${itemId}`,
         {
-          method: "PATCH",
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${jwtToken}`,
+            token: `Bearer ${jwtToken}`,
           },
+          body: JSON.stringify(data),
         }
       );
 
@@ -188,17 +203,15 @@ function CartPage() {
 
   const totalAmount = items.reduce(
     (total, item) =>
-      selectedItems.includes(item.iCart_id)
-        ? total + item.vProduct_price * item.iProduct_amount
+      selectedItems.includes(item.id)
+        ? total + item.price * item.amount
         : total,
     0
   );
 
   const totalQuantity = items.reduce(
     (total, item) =>
-      selectedItems.includes(item.iCart_id)
-        ? total + item.iProduct_amount
-        : total,
+      selectedItems.includes(item.id) ? total + item.amount : total,
     0
   );
 
@@ -232,12 +245,12 @@ function CartPage() {
       </div>
       <div className="cartlist_item">
         {items.map((item) => (
-          <Card className="item_cart" key={item.iCart_id}>
+          <Card className="item_cart" key={item.id}>
             <Row align="middle">
               <Col md={1}>
                 <Checkbox
-                  checked={selectedItems.includes(item.iCart_id)}
-                  onChange={(e) => handleCheckboxChange(e, item.iCart_id)}
+                  checked={selectedItems.includes(item.id)}
+                  onChange={(e) => handleCheckboxChange(e, item.id)}
                 />
               </Col>
               <Col md={2}>
@@ -246,37 +259,35 @@ function CartPage() {
                     height: 80,
                     width: 80,
                   }}
-                  src={
-                    item.sImage_path == null
-                      ? require(`../../assets/user-content/img_default.webp`)
-                      : require(`../../assets/user-content/${item.sImage_path}`)
-                  }
-                  alt={item.sProduct_name}
+                  alt={item.name}
+                  src={item.image}
                 />
               </Col>
               <Col md={8}>
-                <span>{item.sProduct_name} </span>
+                <span>{item.name} </span>
               </Col>
               <Col md={3} offset={1}>
-                <span> {item.vProduct_price}đ</span>
+                <span> {item.price}đ</span>
               </Col>
               <Col md={3}>
                 <div className="amount_part">
                   <Button
                     className="amount_change_button"
-                    onClick={() => handleQuantityChange(item.iCart_id, +1)}
+                    onClick={() =>
+                      handleQuantityChange(item.id, item.amount + 1)
+                    }
                   >
                     +
                   </Button>
 
-                  <span style={{ margin: "0px 10px" }}>
-                    {item.iProduct_amount}
-                  </span>
+                  <span style={{ margin: "0px 10px" }}>{item.amount}</span>
 
                   <Button
                     className="amount_change_button"
-                    onClick={() => handleQuantityChange(item.iCart_id, -1)}
-                    disabled={item.iProduct_amount === 1}
+                    onClick={() =>
+                      handleQuantityChange(item.id, item.amount - 1)
+                    }
+                    disabled={item.amount === 1}
                   >
                     -
                   </Button>
@@ -284,13 +295,13 @@ function CartPage() {
               </Col>
               <Col md={3}>
                 <span className="cp_item_price">
-                  {item.vProduct_price * item.iProduct_amount}đ
+                  {item.price * item.amount}đ
                 </span>
               </Col>
               <Col md={1}>
                 <Button
                   className="cp_delete_button"
-                  onClick={() => handleRemoveItem(item.iCart_id)}
+                  onClick={() => handleRemoveItem(item.id)}
                 >
                   Xóa
                 </Button>

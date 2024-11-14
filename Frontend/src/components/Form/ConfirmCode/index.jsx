@@ -46,7 +46,7 @@ function ConfirmCodeForm() {
   const handleConfirmClick = async () => {
     try {
       const apiUrl =
-        "https://localhost:7139/api/User/confirmCodeforgotpassword";
+        "https://localhost:3000/api/User/confirmCodeforgotpassword";
       const jwtToken = getCookie("forgotToken");
 
       const data = {

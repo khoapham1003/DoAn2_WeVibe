@@ -48,7 +48,7 @@ function ChangePassword() {
 
   const handleChange = async () => {
     try {
-      const apiUrl = `https://localhost:7139/api/User/ChangePasswordForgotPassword`;
+      const apiUrl = `https://localhost:3000/api/User/ChangePasswordForgotPassword`;
       const jwtToken = getCookie("forgotToken");
 
       const data = {

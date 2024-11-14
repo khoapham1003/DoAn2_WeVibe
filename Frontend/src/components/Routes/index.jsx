@@ -17,19 +17,34 @@ import CheckoutPage from "../../pages/CheckoutPage";
 import FilteredPage from "../../pages/Category";
 import SearchPage from "../../pages/SearchPage";
 import HistoryOrderPage from "../../pages/HistoryOrderPage";
+import AdminPage from "../../pages/AdminPage";
 
 function DefineLayout() {
   const isUserAuthenticated = () => {
     const accessToken = getCookie("accessToken");
-    const userid = getCookie("userid");
+    const refreshToken = getCookie("refreshToken");
 
-    if (accessToken && userid) {
+    // const userid = getCookie("userid");
+
+    if (accessToken) {
       try {
         const decodedToken = JSON.parse(atob(accessToken.split(".")[1]));
-
+        console.log("decodedToken", decodedToken);
+        document.cookie = `userid=${decodedToken.id}; path=/`;
         if (decodedToken && decodedToken.exp) {
           const currentTimeInSeconds = Math.floor(Date.now() / 1000);
-          return decodedToken.exp > currentTimeInSeconds;
+          if (decodedToken.exp < currentTimeInSeconds) {
+            if (refreshToken) {
+              const decodedToken = JSON.parse(atob(accessToken.split(".")[1]));
+              if (decodedToken && decodedToken.exp) {
+                const currentTimeInSeconds = Math.floor(Date.now() / 1000);
+                return decodedToken.exp < currentTimeInSeconds;
+              }
+            }
+            return false; // Token đã hết hạn và không có refreshToken
+          }
+          return true;
+          // return decodedToken.exp > currentTimeInSeconds;
         }
       } catch (error) {
         console.error("Error decoding token:", error);
@@ -87,6 +102,7 @@ const privateRoutes = [
   { path: "/checkout", component: CheckoutPage, layout: DefineLayout() },
   { path: "/cart", component: CartPage },
   { path: "/history", component: HistoryOrderPage, layout: DefineLayout() },
+  { path: "/admin", component: AdminPage, layout: DefineLayout() },
 ];
 
 export { publicRoutes, privateRoutes };

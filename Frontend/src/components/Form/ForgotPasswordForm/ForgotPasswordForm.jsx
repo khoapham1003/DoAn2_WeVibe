@@ -33,7 +33,7 @@ function ForgotPassword() {
   };
   const handleSendCodeClick = async () => {
     try {
-      const apiUrl = `https://localhost:7139/api/User/forgotpassword`;
+      const apiUrl = `https://localhost:3000/api/User/forgotpassword`;
       const requestBody = email;
       const response = await fetch(apiUrl, {
         method: "POST",

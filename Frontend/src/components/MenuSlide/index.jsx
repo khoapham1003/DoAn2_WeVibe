@@ -13,18 +13,21 @@ const MenuSlide = ({ onMenuSelect }) => {
 
   const fetchMenuData = async () => {
     try {
-      const response = await fetch("https://localhost:7139/api/Category", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        "https://localhost:3000/product/get-all-type",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const data = await response.json();
-      setMenuData(data);
-      console.log("menuslide:", data);
+      setMenuData(data.data);
+      // console.log("menuslide:", data);
     } catch (error) {
       console.error("Error fetching menu data:", error);
     }
@@ -39,18 +42,17 @@ const MenuSlide = ({ onMenuSelect }) => {
     setSelectedKeys(pathName);
   }, [location.pathname]);
 
+  console.log("menuslide:", menuData);
+  const handleMenuClick = (itemName) => {
+    console.log("Selected item:", itemName);
+    onMenuSelect(itemName);
+  };
   const renderMenuItems = (menuItems) => {
-    return menuItems.map((item) => {
-      if (item.lCate_childs && item.lCate_childs.length > 0) {
-        return (
-          <SubMenu key={item.iCate_id} title={item.sCate_name}>
-            {renderMenuItems(item.lCate_childs)}
-          </SubMenu>
-        );
-      } else {
-        return <Menu.Item key={item.iCate_id}>{item.sCate_name}</Menu.Item>;
-      }
-    });
+    return menuItems.map((itemName) => (
+      <Menu.Item key={itemName} onClick={() => handleMenuClick(itemName)}>
+        {itemName}
+      </Menu.Item>
+    ));
   };
 
   return (
@@ -63,10 +65,11 @@ const MenuSlide = ({ onMenuSelect }) => {
           selectedKeys={[selectedKeys]}
           style={{
             backgroundColor: "#fff",
+            width: "10vw",
             borderRight: "none",
-            fontSize: "10px"
+            fontSize: "10px",
           }}
-          onClick={({ key }) => onMenuSelect(key)}
+          // onClick={({ key }) => onMenuSelect(key)}
         >
           {renderMenuItems(menuData)}
         </Menu>
