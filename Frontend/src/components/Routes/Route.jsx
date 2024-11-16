@@ -2,6 +2,7 @@ import { Fragment, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { publicRoutes, privateRoutes } from "./index";
 import DefaultLayout from "../Layouts/DefaultLayout";
+import { message } from "antd";
 
 function AppRoutes() {
   useEffect(() => {}, []);
@@ -19,21 +20,46 @@ function AppRoutes() {
 
   const isUserAuthenticated = () => {
     const accessToken = getCookie("accessToken");
-    const userid = getCookie("userid");
-
-    if (accessToken && userid) {
+    const refreshToken = getCookie("refreshToken");
+    if (accessToken && refreshToken) {
       try {
-        const decodedToken = JSON.parse(atob(accessToken.split(".")[1]));
+        const tokenParts = accessToken.split(".");
+        if (tokenParts.length !== 3) {
+          throw new Error("Invalid token format");
+        }
+        const decodedToken = JSON.parse(atob(tokenParts[1]));
 
         if (decodedToken && decodedToken.exp) {
           const currentTimeInSeconds = Math.floor(Date.now() / 1000);
-          return decodedToken.exp > currentTimeInSeconds;
+          if (decodedToken.exp < currentTimeInSeconds) {
+            if (refreshToken) {
+              const decodedToken = JSON.parse(atob(accessToken.split(".")[1]));
+              if (decodedToken && decodedToken.exp) {
+                const currentTimeInSeconds = Math.floor(Date.now() / 1000);
+                return decodedToken.exp < currentTimeInSeconds;
+              }
+            }
+            return false;
+          }
+          return true;
         }
       } catch (error) {
         console.error("Error decoding token:", error);
       }
     }
 
+    return false;
+  };
+  const isAdmin = () => {
+    const accessToken = getCookie("accessToken");
+    if (accessToken) {
+      const tokenParts = accessToken.split(".");
+      if (tokenParts.length !== 3) {
+        throw new Error("Invalid token format");
+      }
+      const decodedToken = JSON.parse(atob(tokenParts[1]));
+      return decodedToken && decodedToken.isAdmin === true;
+    }
     return false;
   };
   console.log("Is user authenticated:", isUserAuthenticated());
@@ -80,13 +106,15 @@ function AppRoutes() {
               path={route.path}
               element={
                 isUserAuthenticated() ? (
-                  <Layout>
-                    <Page />
-                  </Layout>
+                  route.path === "/admin" && !isAdmin() ? (
+                    <Navigate to="/" />
+                  ) : (
+                    <Layout>
+                      <Page />
+                    </Layout>
+                  )
                 ) : (
-                  <>
-                    <Navigate to="/sign_in" />
-                  </>
+                  <Navigate to="/sign_in" />
                 )
               }
             />

@@ -9,7 +9,12 @@ function CheckoutPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const [items, setItems] = useState([]);
-  const [order, setOrder] = useState([]);
+  const [order, setOrder] = useState({
+    fullName: "",
+    address: "",
+    city: "",
+    phone: "",
+  });
   const [promotionalCode, setPromotionalCode] = useState("");
   const [voucherDiscount, setVoucherDiscount] = useState(0);
   const [shippingFee, setShippingFee] = useState(30000);
@@ -36,12 +41,12 @@ function CheckoutPage() {
     const fetchCheckOutData = async () => {
       try {
         const response = await fetch(
-          `https://localhost:7139/api/Order/${orderId}`,
+          `http://localhost:3000/order/get-details-order/${orderId}`,
           {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${jwtToken}`,
+              token: `Bearer ${jwtToken}`,
             },
           }
         );
@@ -52,8 +57,7 @@ function CheckoutPage() {
 
         const data = await response.json();
         console.log(data);
-        setItems(data.lOrder_items);
-        setOrder(data);
+        setItems(data.data.orderItems);
         return data;
       } catch (error) {
         console.error("Error fetching product data:", error);
@@ -62,55 +66,8 @@ function CheckoutPage() {
     fetchCheckOutData();
   }, []);
 
-  const handleCheckVoucher = async () => {
-    try {
-      const apiUrl = `https://localhost:7139/api/PromotionalCode/checkcode?sPromotionalCode_code=${promotionalCode}&gUser_id=${userId}`;
-      const response = await fetch(apiUrl, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${jwtToken}`,
-        },
-      });
-
-      if (!response.ok) {
-        try {
-          const responseBody = await response.clone().text();
-          const errorResponse = JSON.parse(responseBody);
-          if (
-            response.status === 400 &&
-            errorResponse.errors &&
-            errorResponse.errors.sPromotionalCode_code
-          ) {
-            message.error("Hãy nhập vào mã giảm giá");
-          } else {
-            const error = await response.text();
-            message.error(`Xác thực mã không thành công: ${error}`);
-          }
-        } catch (parseError) {
-          const error = await response.text();
-          message.error(`${error}`);
-        }
-        setVoucherDiscount(0);
-      } else {
-        const data = await response.json();
-        console.log(data);
-        setVoucherDiscount(data.iPromotionalCode_discount_rate);
-        message.success("Áp dụng mã giảm giá thành công!");
-        console.log(voucherDiscount);
-        setisCheck(true);
-      }
-    } catch (error) {
-      message.error("Mã giảm giá không tồn tại!");
-      console.error("Cannot check voucher:", error);
-    }
-  };
-
   const calculateTotalPrice = () => {
-    return items.reduce(
-      (total, item) => total + item.vProduct_price * item.iProduct_amount,
-      0
-    );
+    return items.reduce((total, item) => total + item.price * item.amount, 0);
   };
 
   let totalPrice = calculateTotalPrice();
@@ -124,21 +81,25 @@ function CheckoutPage() {
   const handleConfirmPayment = async () => {
     try {
       const data = {
-        iOrder_id: orderId,
-        sOrder_name_receiver: order.sOrder_name_receiver,
-        sOrder_phone_receiver: order.sOrder_phone_receiver,
-        sOrder_address_receiver: order.sOrder_address_receiver,
-        sPromotionalCode_code: promotionalCode,
+        shippingAddress: {
+          fullName: order.name,
+          address: order.address,
+          city: "Anytown",
+          phone: order.phone,
+        },
       };
       console.log(data);
-      const response = await fetch("https://localhost:7139/api/Order/buy", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${jwtToken}`,
-        },
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        `http://localhost:3000/order/order-payment/${orderId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            token: `Bearer ${jwtToken}`,
+          },
+          body: JSON.stringify(data),
+        }
+      );
 
       console.log("Response:", response);
 
@@ -193,8 +154,8 @@ function CheckoutPage() {
               <div>
                 Tên người dùng:
                 <Input
-                  name="sOrder_name_receiver"
-                  value={order.sOrder_name_receiver}
+                  name="name"
+                  value={order.name}
                   onChange={handleInputChange}
                 />
               </div>
@@ -203,8 +164,8 @@ function CheckoutPage() {
               <div>
                 Phone:{" "}
                 <Input
-                  name="sOrder_phone_receiver"
-                  value={order.sOrder_phone_receiver}
+                  name="phone"
+                  value={order.phone}
                   onChange={handleInputChange}
                 />
               </div>
@@ -213,8 +174,8 @@ function CheckoutPage() {
               <div>
                 Địa chỉ:{" "}
                 <Input
-                  name="sOrder_address_receiver"
-                  value={order.sOrder_address_receiver}
+                  name="address"
+                  value={order.address}
                   onChange={handleInputChange}
                 />
               </div>
@@ -238,7 +199,7 @@ function CheckoutPage() {
         </div>
         <div className="cop_cartlist_item">
           {items.map((item) => (
-            <Card className="cop_item_cart" key={item.iCart_id}>
+            <Card className="cop_item_cart" key={item._id}>
               <Row align="middle">
                 <Col md={2} offset={1}>
                   <Image
@@ -246,68 +207,27 @@ function CheckoutPage() {
                       height: 80,
                       width: 80,
                     }}
-                    src={
-                      item.sImage_path == null
-                        ? require(`../../assets/user-content/img_default.webp`)
-                        : require(`../../assets/user-content/${item.sImage_path}`)
-                    }
-                    alt={item.sProduct_name}
+                    alt={item.name}
+                    src={item.image}
                   />
                 </Col>
                 <Col md={8}>
-                  <span>{item.sProduct_name}</span>
+                  <span>{item.name}</span>
                 </Col>
                 <Col md={3} offset={1}>
-                  <span>{item.vProduct_price}đ</span>
+                  <span>{item.price}đ</span>
                 </Col>
                 <Col md={3} offset={1}>
-                  <span>{item.iProduct_amount}</span>
+                  <span>{item.amount}</span>
                 </Col>
                 <Col md={3} offset={1}>
                   <span className="cop_item_price">
-                    {item.vProduct_price * item.iProduct_amount}đ
+                    {item.price * item.amount}đ
                   </span>
                 </Col>
               </Row>
             </Card>
           ))}
-        </div>
-        <div className="cop_voucher">
-          <List>
-            <List.Item>
-              <h2>Voucher</h2>
-            </List.Item>
-            <List.Item>
-              <Input
-                value={promotionalCode}
-                onChange={(e) => {
-                  setPromotionalCode(e.target.value);
-                  setisCheck(false);
-                }}
-                disabled={isApply}
-              />
-            </List.Item>
-            <List.Item
-              style={{ display: "flex", justifyContent: "flex-start" }}
-            >
-              <Button
-                className="cop_button1"
-                onClick={handleCheckVoucher}
-                disabled={isApply}
-                style={{ width: "120px" }}
-              >
-                Check Code
-              </Button>
-              <Button
-                className="cop_button2"
-                onClick={handleApplyVoucher}
-                disabled={isApply}
-                style={{ width: "120px" }}
-              >
-                Áp dụng
-              </Button>
-            </List.Item>
-          </List>
         </div>
         <div className="cop_checkout_info">
           <List>
@@ -330,15 +250,8 @@ function CheckoutPage() {
                 className="cop_button1"
                 style={{ width: "150px" }}
                 onClick={() => {
-                  if (
-                    order.sOrder_name_receiver &&
-                    order.sOrder_phone_receiver &&
-                    order.sOrder_address_receiver
-                  ) {
-                    if (
-                      order.sOrder_phone_receiver.length !== 10 ||
-                      order.sOrder_phone_receiver[0] !== "0"
-                    ) {
+                  if (order.name && order.phone && order.address) {
+                    if (order.phone.length !== 10 || order.phone[0] !== "0") {
                       message.error(
                         "Số điện thoại phải gồm 10 chữ số và bắt đầu bằng số 0"
                       );

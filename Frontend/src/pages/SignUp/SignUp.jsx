@@ -1,11 +1,11 @@
-import React from 'react'
-import Logup from '../../components/Form/LogupForm/LogupForm'
+import React from "react";
+import Logup from "../../components/Form/LogupForm/LogupForm";
 function SignUp() {
   return (
     <div>
-      <Logup/>
+      <Logup />
     </div>
-  )
+  );
 }
 
-export default SignUp
+export default SignUp;

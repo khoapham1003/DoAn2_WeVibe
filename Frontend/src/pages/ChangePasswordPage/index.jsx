@@ -1,11 +1,11 @@
-import React from 'react'
-import ChangePassword from '../../components/Form/ChangePasswordForm/ChangePasswordForm'
+import React from "react";
+import ChangePassword from "../../components/Form/ChangePasswordForm/ChangePasswordForm";
 function ChangePasswordPage() {
   return (
     <div>
-      <ChangePassword/>
+      <ChangePassword />
     </div>
-  )
+  );
 }
 
-export default ChangePasswordPage
+export default ChangePasswordPage;

@@ -34,27 +34,25 @@ function ProfilePage() {
   const userId = getCookie("userid");
   const [userData, setUserData] = useState(null);
   const [editedData, setEditedData] = useState({
-    phonenumber: null,
-    dob: null,
-    sex: null,
+    sUser_phonenumber: null,
+    bUser_sex: null,
   });
   const [changePasswordData, setChangePasswordData] = useState({
     oldPassword: "",
     newPassword: "",
-    confirmNewPassword: "",
   });
   const [isChangePasswordModalVisible, setChangePasswordModalVisible] =
     useState(false);
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const apiUrl = `https://localhost:7139/api/User/${userId}`;
+        const apiUrl = `http://localhost:3000/user/get-details/${userId}`;
 
         const response = await fetch(apiUrl, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${jwtToken}`,
+            token: `Bearer ${jwtToken}`,
           },
         });
 
@@ -63,11 +61,12 @@ function ProfilePage() {
         }
 
         const data = await response.json();
-        setUserData(data);
+        setUserData(data.data);
+        console.log(data.data);
+
         setEditedData({
-          sUser_phonenumber: data.sUser_phonenumber,
-          dtUser_dob: data.dtUser_dob,
-          bUser_sex: data.bUser_sex,
+          phonenumber: data.data.phone,
+          bUser_sex: data.data.gender,
         });
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -84,21 +83,17 @@ function ProfilePage() {
   const handleSaveClick = async () => {
     try {
       const data = {
-        gUser_id: userId,
-        sUser_firstname: userData.sUser_firstname,
-        sUser_lastname: userData.sUser_lastname,
-        dtUser_dob: editedData.dtUser_dob,
-        bUser_sex: Boolean(editedData.bUser_sex),
-        sUser_phonenumber: editedData.sUser_phonenumber,
+        gender: editedData.bUser_sex.toString(),
+        phone: editedData.sUser_phonenumber,
       };
       console.log(data);
       const response = await fetch(
-        `https://localhost:7139/api/User/updateinfor`,
+        `http://localhost:3000/user/update-user/${userId}`,
         {
-          method: "POST",
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${jwtToken}`,
+            token: `Bearer ${jwtToken}`,
           },
           body: JSON.stringify(data),
         }
@@ -115,13 +110,12 @@ function ProfilePage() {
       setUserData({
         ...userData,
         sUser_phonenumber: editedData.sUser_phonenumber,
-        dtUser_dob: editedData.dtUser_dob,
         bUser_sex: editedData.bUser_sex,
       });
       message.success(`Đổi thông tin thành công!`);
 
       setIsEditing(false);
-      window.location.reload();
+      // window.location.reload();
     } catch (error) {
       console.error("Error saving user data:", error);
     }
@@ -130,7 +124,6 @@ function ProfilePage() {
   const handleCancelClick = () => {
     setEditedData({
       sUser_phonenumber: userData?.sUser_phonenumber,
-      dtUser_dob: userData?.dtUser_dob,
       bUser_sex: userData?.bUser_sex,
     });
     setIsEditing(false);
@@ -165,43 +158,35 @@ function ProfilePage() {
     });
   };
 
-  const handleConfirmNewPasswordChange = (e) => {
-    setChangePasswordData({
-      ...changePasswordData,
-      confirmNewPassword: e.target.value,
-    });
-  };
-
   const handleModalCancel = () => {
     // Reset the change password form state and hide the modal
     setChangePasswordData({
       oldPassword: "",
       newPassword: "",
-      confirmNewPassword: "",
     });
     setChangePasswordModalVisible(false);
   };
 
   const handleChangePasswordSave = async () => {
     try {
-      const apiUrl = "https://localhost:7139/api/User/ChangePassword";
-
       const data = {
-        gUser_id: userId,
-        sUser_oldPassword: changePasswordData.oldPassword,
-        sUser_newPassword: changePasswordData.newPassword,
-        sUser_confirmnewPassword: changePasswordData.confirmNewPassword,
+        currentPassword: changePasswordData.oldPassword,
+        newPassword: changePasswordData.newPassword,
       };
       console.log(data);
 
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${jwtToken}`,
-        },
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        `http://localhost:3000/user/change-password/${userId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            token: `Bearer ${jwtToken}`,
+          },
+          body: JSON.stringify(data),
+        }
+      );
+      console.log(response);
 
       if (!response.ok) {
         try {
@@ -220,7 +205,6 @@ function ProfilePage() {
         setChangePasswordData({
           oldPassword: "",
           newPassword: "",
-          confirmNewPassword: "",
         });
         setChangePasswordModalVisible(false);
       }
@@ -232,16 +216,14 @@ function ProfilePage() {
 
   useEffect(() => {
     const fetchHistoryOrder = async () => {
+      const apiUrl = `http://localhost:3000/order/get-all-order/${userId}`;
       try {
-        const response = await fetch(
-          `https://localhost:7139/api/Order/history?gUser_id=${userId}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${jwtToken}`,
-            },
-          }
-        );
+        const response = await fetch(apiUrl, {
+          method: "GET",
+          headers: {
+            token: `Bearer ${jwtToken}`,
+          },
+        });
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -249,7 +231,7 @@ function ProfilePage() {
 
         const data = await response.json();
         console.log(data);
-        setItems(data);
+        setItems(data.data);
         return data;
       } catch (error) {
         console.error("Error fetching product data:", error);
@@ -260,7 +242,7 @@ function ProfilePage() {
 
   const handleCardClick = (item) => {
     console.log("Card clicked:", item);
-    localStorage.setItem("orderhistoryId", item.iOrder_id);
+    localStorage.setItem("orderhistoryId", item._id);
     navigate(`/history`);
   };
 
@@ -276,24 +258,8 @@ function ProfilePage() {
         <Col className="profilepage_container">
           {userData && (
             <Descriptions className="description" column={1}>
-              <Descriptions.Item label="Họ">
-                {userData.sUser_firstname}
-              </Descriptions.Item>
-              <Descriptions.Item label="Tên">
-                {userData.sUser_lastname}
-              </Descriptions.Item>
-              <Descriptions.Item label="Ngày sinh">
-                {isEditing ? (
-                  <Input
-                    placeholder="yyyy-mm-dd"
-                    value={editedData.dtUser_dob}
-                    onChange={(e) =>
-                      handleInputChange("dtUser_dob", e.target.value)
-                    }
-                  />
-                ) : (
-                  userData.dtUser_dob || "N/A"
-                )}
+              <Descriptions.Item label="Họ và Tên">
+                {userData.name}
               </Descriptions.Item>
               <Descriptions.Item label="Giới tính">
                 {isEditing ? (
@@ -304,7 +270,7 @@ function ProfilePage() {
                     <Radio value="true">Nam</Radio>
                     <Radio value="false">Nữ</Radio>
                   </Radio.Group>
-                ) : userData.bUser_sex ? (
+                ) : userData.gender ? (
                   "Nam"
                 ) : (
                   "Nữ"
@@ -313,17 +279,17 @@ function ProfilePage() {
               <Descriptions.Item label="Số điện thoại">
                 {isEditing ? (
                   <Input
-                    value={editedData.sUser_phonenumber}
+                    value={editedData.phone}
                     onChange={(e) =>
                       handleInputChange("sUser_phonenumber", e.target.value)
                     }
                   />
                 ) : (
-                  userData.sUser_phonenumber || "N/A"
+                  userData.phone || "N/A"
                 )}
               </Descriptions.Item>
               <Descriptions.Item label="Email">
-                {userData.sUser_email}
+                {userData.email}
               </Descriptions.Item>
             </Descriptions>
           )}
@@ -404,36 +370,6 @@ function ProfilePage() {
                   required: true,
                   message: "Xin vui lòng nhập Mật khẩu!",
                 },
-                {
-                  validator: (_, value) => {
-                    if (value.length < 8) {
-                      return Promise.reject(
-                        "Mật khẩu phải chứa ít nhất 8 kí tự!"
-                      );
-                    }
-                    if (!/[A-Z]/.test(value)) {
-                      return Promise.reject(
-                        "Mật khẩu phải chứa tối thiểu 1 ký tự in hoa!"
-                      );
-                    }
-                    if (!/[a-z]/.test(value)) {
-                      return Promise.reject(
-                        "Mật khẩu phải chứa tối thiểu 1 ký tự thường!"
-                      );
-                    }
-                    if (!/\d/.test(value)) {
-                      return Promise.reject(
-                        "Mật khẩu phải chứa tối thiểu 1 ký tự số!"
-                      );
-                    }
-                    if (!/[!@#$%^&*(),.?":{}|<>]/.test(value)) {
-                      return Promise.reject(
-                        "Mật khẩu phải chứa tối thiểu 1 ký tự đặc biệt!"
-                      );
-                    }
-                    return Promise.resolve();
-                  },
-                },
               ]}
             >
               <Input.Password
@@ -441,35 +377,6 @@ function ProfilePage() {
                 placeholder="Mật khẩu mới"
                 name="newpassword"
                 onChange={handleNewPasswordChange}
-              />
-            </Form.Item>
-
-            <Form.Item
-              className="no_margin"
-              label={<p className="label">Xác nhận mật khẩu mới</p>}
-              name="confirmpassword"
-              dependencies={["newpassword"]}
-              hasFeedback
-              rules={[
-                {
-                  required: true,
-                  message: "Xin vui lòng xác nhận mật khẩu mới!",
-                },
-                ({ getFieldValue }) => ({
-                  validator(_, value) {
-                    if (!value || getFieldValue("newpassword") === value) {
-                      return Promise.resolve();
-                    }
-                    return Promise.reject(new Error("Mật khẩu không khớp!"));
-                  },
-                }),
-              ]}
-            >
-              <Input.Password
-                value={changePasswordData.confirmNewPassword}
-                placeholder="xác nhận mật khẩu mới"
-                name="confirmnewpassword"
-                onChange={handleConfirmNewPasswordChange}
               />
             </Form.Item>
           </Form>
@@ -488,19 +395,19 @@ function ProfilePage() {
             >
               <Descriptions column={1} size="small">
                 <Descriptions.Item label="Tên người nhận">
-                  {item.sOrder_name_receiver}
+                  {item.shippingAddress.fullName}
                 </Descriptions.Item>
                 <Descriptions.Item label="SĐT">
-                  {item.sOrder_phone_receiver}
+                  {item.shippingAddress.phone}
                 </Descriptions.Item>
                 <Descriptions.Item label="Địa chỉ nhận hàng">
-                  {item.sOrder_address_receiver}
+                  {item.shippingAddress.address}
                 </Descriptions.Item>
                 <Descriptions.Item label="Ngày mua">
-                  {item.dtOrrder_dateorder}
+                  {item.createdAt}
                 </Descriptions.Item>
-                 <Descriptions.Item label="Tổng đơn hàng">
-                  {item.vOrder_total}
+                <Descriptions.Item label="Tổng đơn hàng">
+                  {item.totalPrice}
                 </Descriptions.Item>
               </Descriptions>
             </Card>

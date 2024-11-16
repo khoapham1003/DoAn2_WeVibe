@@ -1,11 +1,11 @@
-import React from 'react'
-import ConfirmCodeForm from '../../components/Form/ConfirmCode'
+import React from "react";
+import ConfirmCodeForm from "../../components/Form/ConfirmCode";
 function ConfirmCode() {
   return (
     <div>
-     <ConfirmCodeForm/>
+      <ConfirmCodeForm />
     </div>
-  )
+  );
 }
 
-export default ConfirmCode
+export default ConfirmCode;

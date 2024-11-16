@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { fetchProductData } from "../../components/Data/api";
 import { floatButtonPrefixCls } from "antd/es/float-button/FloatButton";
 import "./../styleMainPage.css";
-import background_log from "./../../assets/images/background_log.png";
+import background_log from "../../assets/images/background_log.png";
 
 const { Meta } = Card;
 
@@ -30,9 +30,9 @@ function MainPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const jwtToken = getCookie("accessToken");
-        const data = await fetchProductData(jwtToken);
-        setItems(data);
+        const data = await fetchProductData();
+        setItems(data.data);
+        console.log("Data:", items);
       } catch (error) {
         setError(error.message);
       } finally {
@@ -77,17 +77,17 @@ function MainPage() {
         {items.map((item) => (
           <Card
             className="card_item"
-            key={item.sProduct_name}
+            key={item.name}
             hoverable
             bodyStyle={{ padding: "10px 24px" }}
             cover={
               <img
                 className="mp_book_item_image"
-                alt={item.sProduct_name}
+                alt={item.name}
                 src={
-                  item.sImage_pathThumbnail == null
+                  item.image == null
                     ? require(`../../assets/user-content/img_default.webp`)
-                    : require(`../../assets/user-content/${item.sImage_pathThumbnail}`)
+                    : require(`../../assets/user-content/${item.image}`)
                 }
               />
             }
@@ -95,16 +95,11 @@ function MainPage() {
           >
             <div className="flex_column">
               <div className="title_start_container">
-                <span className="book_title">{item.sProduct_name}</span>
-                <Rate
-                  disabled
-                  className="book_star"
-                  allowHalf
-                  defaultValue={item.dProduct_start_count.toFixed(1)}
-                />
+                <span className="book_title">{item.name}</span>
+                <Rate disabled className="book_star" allowHalf />
               </div>
               <span className="book_price">
-                {item.vProduct_price}
+                {item.price}
                 <span
                   style={{
                     verticalAlign: "super",

@@ -7,13 +7,14 @@ const { Title } = Typography;
 
 function Logup() {
   const navigate = useNavigate();
-  const [lastname, setLastname] = useState("");
-  const [firstname, setFirstname] = useState("");
-  const [username, setUsername] = useState("");
+  const [address, setAddress] = useState("");
+  const [phone, setPhone] = useState("");
+  const [name, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmpassword, setConfirmpassword] = useState("");
   const [email, setEmail] = useState("");
   const [isSuccess, setSuccess] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {}, []);
 
@@ -33,11 +34,11 @@ function Logup() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    if (name === "lastname") {
-      setLastname(value);
-    } else if (name === "firstname") {
-      setFirstname(value);
-    } else if (name === "username") {
+    if (name === "address") {
+      setAddress(value);
+    } else if (name === "phone") {
+      setPhone(value);
+    } else if (name === "name") {
       setUsername(value);
     } else if (name === "password") {
       setPassword(value);
@@ -51,15 +52,15 @@ function Logup() {
   const handleLogUp = async () => {
     try {
       const requestBody = {
-        sUser_firstname: firstname,
-        sUser_lastname: lastname,
-        sUser_email: email,
-        sUser_username: username,
-        sUser_password: password,
-        sUser_confirmpassword: confirmpassword,
+        phone: phone,
+        address: address,
+        email: email,
+        name: name,
+        password: password,
+        confirmPassword: confirmpassword,
       };
 
-      const response = await fetch("https://localhost:7139/api/User/register", {
+      const response = await fetch("http://localhost:3000/user/sign-up", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -74,14 +75,22 @@ function Logup() {
         const errorResponse = await response.json();
 
         if (errorResponse.errors) {
-          const usernameError = errorResponse.errors.sUser_username[0];
+          const usernameError = errorResponse.errors.name[0];
           message.error(`Đăng ký tài khoản thất bại: ${usernameError}`);
         } else {
           message.error("Đăng ký tài khoản thất bại. Hãy thử lại sau!");
         }
       } else {
-        message.success(`Đăng ký tài khoản thành công!`);
-        navigate(`/sign_in`);
+        const responseData = await response.json();
+        console.log(responseData);
+        if (responseData.status == "ERR") {
+          message.error("Đăng ký thất bại! Lỗi: " + responseData.message);
+          setError("Logup failed. Please try again.");
+          console.error("Logup failed", error);
+        } else {
+          message.success(`Đăng ký tài khoản thành công!`);
+          navigate(`/sign_in`);
+        }
       }
     } catch (error) {
       console.error("Error sign up:", error);
@@ -116,20 +125,15 @@ function Logup() {
             label={
               <span className="label">
                 {" "}
-                <span style={{ color: "red" }}>* </span>Họ
+                <span style={{ color: "red" }}>* </span>Địa chỉ
               </span>
             }
-            name="lastname"
+            name="address"
             rules={[
               {
                 validator: (_, value) => {
                   if (!value) {
-                    return Promise.reject("Xin vui lòng nhập Họ!");
-                  }
-                  if (/^[^0-9]+$/i.test(value)) {
-                    return Promise.resolve();
-                  } else {
-                    return Promise.reject("Họ không thể chứa các ký tự số!");
+                    return Promise.reject("Xin vui lòng nhập địa chỉ!");
                   }
                 },
               },
@@ -137,9 +141,9 @@ function Logup() {
           >
             <Input
               style={{ height: "3.6vh", fontSize: "1.8vh" }}
-              placeholder="Họ"
-              name="lastname"
-              value={lastname}
+              placeholder="Address"
+              name="address"
+              value={address}
               onChange={handleInputChange}
             />
           </Form.Item>
@@ -148,20 +152,22 @@ function Logup() {
             label={
               <span className="label">
                 {" "}
-                <span style={{ color: "red" }}>* </span>Tên
+                <span style={{ color: "red" }}>* </span>Số diện thoại:
               </span>
             }
-            name="firstname"
+            name="phone"
             rules={[
               {
                 validator: (_, value) => {
                   if (!value) {
-                    return Promise.reject("Xin vui lòng nhập Tên!");
+                    return Promise.reject("Xin vui lòng nhập số điện thoại!");
                   }
-                  if (/^[^0-9]+$/i.test(value)) {
+                  if (/[0-9]+$/i.test(value)) {
                     return Promise.resolve();
                   } else {
-                    return Promise.reject("Tên không thể chứa các ký tự số!");
+                    return Promise.reject(
+                      "Số điện thoại không thể chứa các ký tự chữ !"
+                    );
                   }
                 },
               },
@@ -169,9 +175,9 @@ function Logup() {
           >
             <Input
               style={{ height: "3.6vh", fontSize: "1.8vh" }}
-              placeholder="Tên"
-              name="firstname"
-              value={firstname}
+              placeholder="Số điện thoại"
+              name="phone"
+              value={phone}
               onChange={handleInputChange}
             />
           </Form.Item>
@@ -181,21 +187,17 @@ function Logup() {
           label={
             <span className="label">
               {" "}
-              <span style={{ color: "red" }}>* </span>Tên đăng nhập
+              <span style={{ color: "red" }}>* </span>Tên
             </span>
           }
-          name="username"
+          name="name"
           rules={[
             {
               validator: (_, value) => {
                 if (!value) {
-                  return Promise.reject("Xin vui lòng nhập Tên đăng nhập!");
+                  return Promise.reject("Xin vui lòng nhập Tên!");
                 }
-                if (value.length < 6) {
-                  return Promise.reject(
-                    "Tên đăng nhập phải chứa ít nhất 6 kí tự!"
-                  );
-                } else if (/^[^0-9][a-zA-Z0-9]+$/.test(value)) {
+                if (/^[^0-9][a-zA-Z0-9]+$/.test(value)) {
                   return Promise.resolve();
                 } else {
                   return Promise.reject("Kí tự đầu không được là chữ số!");
@@ -206,9 +208,9 @@ function Logup() {
         >
           <Input
             style={{ height: "3.6vh", fontSize: "1.8vh" }}
-            placeholder="Tên đăng nhập"
-            name="username"
-            value={username}
+            placeholder="Tên"
+            name="name"
+            value={name}
             onChange={handleInputChange}
           />
         </Form.Item>

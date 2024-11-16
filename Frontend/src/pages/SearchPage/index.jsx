@@ -16,7 +16,7 @@ const SearchPage = () => {
         setLoading(true);
 
         const response = await fetch(
-          `https://localhost:7139/api/Product/public-paging-keyword?sKeyword=${searchValue}&pageindex=1&pagesize=100`
+          `http://localhost:3000/product/get-all?page=0&limit=4&filter=name&filter=${searchValue}`
         );
 
         if (!response.ok) {
@@ -26,7 +26,7 @@ const SearchPage = () => {
         const data = await response.json();
         console.log("API Response:", data);
 
-        setItems(data);
+        setItems(data.data);
       } catch (error) {
         console.error("API Error:", error);
       } finally {
@@ -61,33 +61,29 @@ const SearchPage = () => {
         {items.map((item) => (
           <Card
             className="card_item"
-            key={item.sProduct_name}
+            key={item.name}
             hoverable
             bodyStyle={{ padding: "10px 24px" }}
             cover={
               <img
                 className="mp_book_item_image"
-                alt={item.sProduct_name}
-                src={
-                  item.sImage_pathThumbnail == null
-                    ? require(`../../assets/user-content/img_default.webp`)
-                    : require(`../../assets/user-content/${item.sImage_pathThumbnail}`)
-                }
+                alt={item.name}
+                src={item.image}
               />
             }
             onClick={() => handleCardClick(item)}
           >
             <div className="flex_column">
               <div className="title_start_container">
-                <span className="book_title">{item.sProduct_name}</span>
-                <Rate
+                <span className="book_title">{item.name}</span>
+                {/* <Rate
                   disabled
                   className="book_star"
                   defaultValue={item.dProduct_start_count}
-                />
+                /> */}
               </div>
               <span className="book_price">
-                {item.vProduct_price}
+                {item.price}
                 <span
                   style={{
                     verticalAlign: "super",
