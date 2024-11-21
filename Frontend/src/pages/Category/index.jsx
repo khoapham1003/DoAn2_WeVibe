@@ -27,7 +27,7 @@ const FilteredPage = () => {
         setLoading(true);
 
         const response = await fetch(
-          `http://localhost:3000/product/type/${selectedMenu}`
+          `http://localhost:3000/product/category/${selectedMenu}`
         );
 
         if (!response.ok) {
@@ -53,7 +53,7 @@ const FilteredPage = () => {
   };
 
   const handleProductClick = (item) => {
-    navigate(`/product-detail/${item._id}`, { state: { item } });
+    navigate(`/product-detail/${item.id}`, { state: { item } });
   };
 
   return (
@@ -73,21 +73,23 @@ const FilteredPage = () => {
           items.map((item) => (
             <Card
               className="card_item"
-              key={item._id}
+              key={item.id}
               hoverable
               bodyStyle={{ padding: "10px 24px" }}
               cover={
                 <img
                   className="mp_book_item_image"
-                  alt={item.name}
-                  src={item.image}
+                  alt={item.title}
+                  src={
+                    item.picture
+                  }
                 />
               }
               onClick={() => handleProductClick(item)}
             >
               <div className="flex_column">
                 <div className="title_start_container">
-                  <span className="book_title">{item.name}</span>
+                  <span className="book_title">{item.title}</span>
                   {/* <Rate
                     disabled
                     className="book_star"

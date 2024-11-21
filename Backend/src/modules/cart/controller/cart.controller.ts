@@ -6,13 +6,12 @@ import {
   Patch,
   Param,
   Delete,
-  HttpException,
-  HttpStatus,
+  NotFoundException,
 } from '@nestjs/common';
 import { CartService } from '../service/cart.service';
 import { CreateCartDto } from '../dto/create-cart.dto';
 import { UpdateCartDto } from '../dto/update-cart.dto';
-import { Cart } from '../entities/cart.entity';
+import { Cart } from '../entities/cart.entity'; // Import entity nếu cần thiết
 
 @Controller('cart')
 export class CartController {
@@ -20,33 +19,40 @@ export class CartController {
 
   @Post('/create-cart')
   async create(@Body() createCartDto: CreateCartDto): Promise<Cart> {
-    return await this.cartService.create(createCartDto);
+    return this.cartService.create(createCartDto);
   }
 
-  @Get('/get-all-cart')
+  @Get('/get-all-carts')
   async findAll(): Promise<Cart[]> {
-    return await this.cartService.findAll();
+    return this.cartService.findAll();
   }
 
-  @Get('/find-cart/:mCartId')
-  async findOne(@Param('mCartId') mCartId: number): Promise<Cart | null> {
-    const cart = this.cartService.findOne(Number(mCartId));
+  @Get('/find-cart/:id')
+  async findOne(@Param('id') id: string): Promise<Cart> {
+    const cart = await this.cartService.findOne(+id);
     if (!cart) {
-      throw new HttpException('Cart not found', HttpStatus.NOT_FOUND);
+      throw new NotFoundException(`Cart with ID ${id} not found`);
     }
     return cart;
   }
-
-  @Patch('/update-cart/:mCartId')
+  @Get('/find-cart-by-userid/:id')
+  async findbyUserId(@Param('id') id: string): Promise<Cart> {
+    const cart = await this.cartService.findbyUserId(+id);
+    if (!cart) {
+      throw new NotFoundException(`Cart with ID ${id} not found`);
+    }
+    return cart;
+  }
+  @Patch('/update-cart/:id')
   async update(
-    @Param('mCartId') mCartId: number,
+    @Param('id') id: string,
     @Body() updateCartDto: UpdateCartDto,
-  ): Promise<void> {
-    return await this.cartService.update(Number(mCartId), updateCartDto);
+  ): Promise<Cart> {
+    const updatedCart = await this.cartService.update(+id, updateCartDto);
+    if (!updatedCart) {
+      throw new NotFoundException(`Cart with ID ${id} not found`);
+    }
+    return updatedCart;
   }
 
-  @Delete('/delete-cart/:mCartId')
-  async remove(@Param('mCartId') mCartId: number): Promise<void> {
-    return await this.cartService.remove(mCartId);
-  }
 }

@@ -1,20 +1,30 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+
+//Module
 import { UserModule } from './modules/user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { TypeModule } from './modules/type/type.module';
-import { AdminModule } from './modules/admin/admin.module';
-import { ProductModule } from './modules/product/product.module';
-import { CartModule } from './modules/cart/cart.module';
-import { CartItemModule } from './modules/cart-item/cart-item.module';
-import { ItemLogModule } from './modules/item-log/item-log.module';
-import { OrderModule } from './modules/order/order.module';
-import { OrderDetailModule } from './modules/order_detail/order_detail.module';
-import { OrderStatusLogModule } from './modules/order_status_log/order_status_log.module';
 import { TypeOrmConfigService } from './config/database.config';
-import { AuthModule } from './modules/auth/auth.module';
+import { ColorModule } from './modules/color/color.module';
+import { CurrencyModule } from './modules/currency/currency.module';
+import { ProductModule } from './modules/product/product.module';
+import { CategoryModule } from './modules/category/category.module';
+import { CategoryproductModule } from './modules/categoryproduct/categoryproduct.module';
+import { UserbehaviorModule } from './modules/userbehavior/userbehavior.module';
+import { SizeModule } from './modules/size/size.module';
+import { ProductvariantModule } from './modules/productvariant/productvariant.module';
+import { RecommendationModule } from './modules/recommendation/recommendation.module';
+import { WalletModule } from './modules/wallet/wallet.module';
+import { OrderModule } from './modules/order/order.module';
+import { CartModule } from './modules/cart/cart.module';
+import { TransactionModule } from './modules/transaction/transaction.module';
+import { WallettransactionModule } from './modules/wallettransaction/wallettransaction.module';
+import { OrderitemModule } from './modules/orderitem/orderitem.module';
+import { CartitemModule } from './modules/cartitem/cartitem.module';
+ import { AuthModule } from './modules/auth/auth.module';
+import { AuthMiddleware } from './Common/middlewares/auth.middleware';
 
 @Module({
   imports: [
@@ -27,18 +37,29 @@ import { AuthModule } from './modules/auth/auth.module';
       useClass: TypeOrmConfigService,
     }),
  UserModule,
- TypeModule,
-    AdminModule,
+  UserbehaviorModule,
+  ColorModule,
+  CurrencyModule,
  ProductModule,
+  ProductvariantModule,
+ CategoryModule,
+  CategoryproductModule,
+  SizeModule,
+ // RecommendationModule,
+  WalletModule,
+  OrderModule,
  CartModule,
- CartItemModule,
- ItemLogModule,
- OrderModule,
- OrderDetailModule,
- OrderStatusLogModule,
+ // TransactionModule,
+ // WallettransactionModule,
+ OrderitemModule,
+ CartitemModule,
  AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { configure(consumer: MiddlewareConsumer) {
+  consumer
+    .apply(AuthMiddleware)
+    .forRoutes('orders', 'cart', 'cartitem', 'order-item', 'user'); 
+}}

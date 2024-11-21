@@ -7,13 +7,13 @@ import { LocalStrategy } from './strategies/local.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { jwtConstants } from 'src/shared/constants/constants';
-import { AdminModule } from '../admin/admin.module';
+import { CartModule } from '../cart/cart.module';
 
 @Module({
   imports: [
     UserModule,
     PassportModule,
-    AdminModule,
+    CartModule,
     JwtModule.register({
       secret: jwtConstants.secret,
       global: true,

@@ -31,6 +31,7 @@ function CartPage() {
   };
   const userId = getCookie("userid");
   const jwtToken = getCookie("accessToken");
+  const cartId = getCookie("CartId");
 
   const fetchCartData = async () => {
     try {
@@ -40,12 +41,12 @@ function CartPage() {
       }
 
       const response = await fetch(
-        `http://localhost:3000/user/get-cart-user/${userId}`,
+        `http://localhost:3000/cartitem/get-cart-data/${cartId}`,
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            token: `Bearer ${jwtToken}`,
+            Authorization: `Bearer ${jwtToken}`,
           },
         }
       );
@@ -53,9 +54,10 @@ function CartPage() {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
+
       const data = await response.json();
-      setItems(data.products);
-      console.log(items);
+      setItems(data);
+      console.log(data);
     } catch (error) {
       console.error("Error fetching product data:", error);
       throw error; // Propagate the error to handle it in the calling code
@@ -71,12 +73,12 @@ function CartPage() {
         );
       }
       const response = await fetch(
-        `http://localhost:3000/user/delete-cart-user/${userId}/${cartItemId}`,
+        `http://localhost:3000/cartitem/delete-cartitem/${cartItemId}`,
         {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
-            token: `Bearer ${jwtToken}`,
+            Authorization: `Bearer ${jwtToken}`,
           },
         }
       );
@@ -97,40 +99,35 @@ function CartPage() {
 
   const handleCheckout = async () => {
     try {
-      const selectedItemsData = items
-        .filter((item) => selectedItems.includes(item.id))
-        .map((item) => ({
-          _id: item.id,
-          amount: item.amount,
-        }));
-
       const requestData = {
-        selectedItems: selectedItemsData,
+        userId: userId,
+        subTotal: totalAmount,
+        totalDiscount: totalDiscount,
       };
 
-      console.log("Request Data:", requestData);
-
       const response = await fetch(
-        `http://localhost:3000/order/check-out/${userId}`,
+        `http://localhost:3000/orders/create-order/${userId}`,
         {
           method: "POST",
           headers: {
-            token: `Bearer ${jwtToken}`,
+            Authorization: `Bearer ${jwtToken}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify(requestData),
         }
       );
 
+      console.log("Response:", response);
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
       const orderResponse = await response.json();
-      console.log("Response:", orderResponse);
+      const orderId = orderResponse.id;
 
-      const orderId = orderResponse._id;
       localStorage.setItem("orderId", orderId);
+      handleCheckoutItems(orderId);
       navigate(`/checkout`);
       console.log("Order placed successfully!");
     } catch (error) {
@@ -150,6 +147,45 @@ function CartPage() {
     });
   };
 
+  const handleCheckoutItems = async (orderId) => {
+    try {
+      const selectedVIds = items.map((item) => item.productVID);
+      const selectedPrices = items.map(
+        (item) => item.productVariant.product.price
+      );
+      const selectedDiscount = items.map(
+        (item) => item.productVariant.product.discount
+      );
+      const selectQuantity = items.map((item) => item.quantity);
+      const requestData = selectedVIds.map((productVID, index) => ({
+        orderID: orderId,            // Use the same orderId for each item
+        productVID: productVID,
+        price: selectedPrices[index],
+        discount: selectedDiscount[index],
+        quantity: selectQuantity[index]
+      }));
+      console.log(requestData);
+      const response = await fetch(
+        `http://localhost:3000/order-item/create-orderitems`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${jwtToken}`,
+          },
+          body: JSON.stringify(requestData),
+        }
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      console.log(response);
+    } catch {
+      message.error("1234566778");
+      return;
+    }
+  };
+
   const handleCheckAllChange = () => {
     setSelectedItems((prevSelectedItems) => {
       return prevSelectedItems.length === items.length
@@ -165,24 +201,19 @@ function CartPage() {
 
   const handleQuantityChange = async (itemId, value) => {
     try {
-      if (selectedItems.includes(itemId)) {
-        // If yes, update selectedItems by removing cartItemId
-        setSelectedItems((prevSelectedItems) =>
-          prevSelectedItems.filter((id) => id !== itemId)
-        );
-      }
-      const data = {
-        amount: value,
+      const requestData = {
+        quantity: value,
       };
+      console.log("Request Data:", requestData);
       const response = await fetch(
-        `http://localhost:3000/user/update-cart-user/${userId}/${itemId}`,
+        `http://localhost:3000/cartitem/update-cartitem/${itemId}`,
         {
-          method: "PUT",
+          method: "PATCH",
           headers: {
             "Content-Type": "application/json",
-            token: `Bearer ${jwtToken}`,
+            Authorization: `Bearer ${jwtToken}`,
           },
-          body: JSON.stringify(data),
+          body: JSON.stringify(requestData),
         }
       );
 
@@ -204,14 +235,25 @@ function CartPage() {
   const totalAmount = items.reduce(
     (total, item) =>
       selectedItems.includes(item.id)
-        ? total + item.price * item.amount
+        ? total + item.productVariant.product.price * item.quantity
         : total,
     0
   );
 
   const totalQuantity = items.reduce(
     (total, item) =>
-      selectedItems.includes(item.id) ? total + item.amount : total,
+      selectedItems.includes(item.id) ? total + item.quantity : total,
+    0
+  );
+
+  const totalDiscount = items.reduce(
+    (total, item) =>
+      selectedItems.includes(item.id)
+        ? total +
+          item.productVariant.product.price *
+            item.quantity *
+            item.productVariant.product.discount
+        : total,
     0
   );
 
@@ -259,35 +301,35 @@ function CartPage() {
                     height: 80,
                     width: 80,
                   }}
-                  alt={item.name}
-                  src={item.image}
+                  src={item.productVariant.product.picture}
+                  alt={item.title}
                 />
               </Col>
               <Col md={8}>
-                <span>{item.name} </span>
+                <span>{item.productVariant.product.title} </span>
               </Col>
               <Col md={3} offset={1}>
-                <span> {item.price}đ</span>
+                <span> {item.productVariant.product.price}đ</span>
               </Col>
               <Col md={3}>
                 <div className="amount_part">
                   <Button
                     className="amount_change_button"
                     onClick={() =>
-                      handleQuantityChange(item.id, item.amount + 1)
+                      handleQuantityChange(item.id, item.quantity + 1)
                     }
                   >
                     +
                   </Button>
 
-                  <span style={{ margin: "0px 10px" }}>{item.amount}</span>
+                  <span style={{ margin: "0px 10px" }}>{item.quantity}</span>
 
                   <Button
                     className="amount_change_button"
                     onClick={() =>
-                      handleQuantityChange(item.id, item.amount - 1)
+                      handleQuantityChange(item.id, item.quantity - 1)
                     }
-                    disabled={item.amount === 1}
+                    disabled={item.quantity === 1}
                   >
                     -
                   </Button>
@@ -295,7 +337,7 @@ function CartPage() {
               </Col>
               <Col md={3}>
                 <span className="cp_item_price">
-                  {item.price * item.amount}đ
+                  {item.productVariant.product.price * item.quantity}đ
                 </span>
               </Col>
               <Col md={1}>

@@ -22,29 +22,15 @@ import AdminPage from "../../pages/AdminPage";
 function DefineLayout() {
   const isUserAuthenticated = () => {
     const accessToken = getCookie("accessToken");
-    const refreshToken = getCookie("refreshToken");
+    const userid = getCookie("userid");
 
-    // const userid = getCookie("userid");
-
-    if (accessToken) {
+    if (accessToken && userid) {
       try {
         const decodedToken = JSON.parse(atob(accessToken.split(".")[1]));
-        console.log("decodedToken", decodedToken);
-        document.cookie = `userid=${decodedToken.id}; path=/`;
+
         if (decodedToken && decodedToken.exp) {
           const currentTimeInSeconds = Math.floor(Date.now() / 1000);
-          if (decodedToken.exp < currentTimeInSeconds) {
-            if (refreshToken) {
-              const decodedToken = JSON.parse(atob(accessToken.split(".")[1]));
-              if (decodedToken && decodedToken.exp) {
-                const currentTimeInSeconds = Math.floor(Date.now() / 1000);
-                return decodedToken.exp < currentTimeInSeconds;
-              }
-            }
-            return false; // Token đã hết hạn và không có refreshToken
-          }
-          return true;
-          // return decodedToken.exp > currentTimeInSeconds;
+          return decodedToken.exp > currentTimeInSeconds;
         }
       } catch (error) {
         console.error("Error decoding token:", error);

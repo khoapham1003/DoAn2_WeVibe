@@ -32,7 +32,6 @@ function MainPage() {
       try {
         const data = await fetchProductData();
         setItems(data.data);
-        console.log("Data:", items);
       } catch (error) {
         setError(error.message);
       } finally {
@@ -50,7 +49,7 @@ function MainPage() {
 
   const handleCardClick = (item) => {
     console.log("Card clicked:", item);
-    navigate(`/product-detail/${item.iProduct_id}`, { state: { item } });
+    navigate(`/product-detail/${item.id}`, { state: { item } });
   };
 
   return (
@@ -77,26 +76,23 @@ function MainPage() {
         {items.map((item) => (
           <Card
             className="card_item"
-            key={item.name}
+            key={item.title}
             hoverable
             bodyStyle={{ padding: "10px 24px" }}
             cover={
               <img
                 className="mp_book_item_image"
-                alt={item.name}
                 src={
-                  item.image == null
-                    ? require(`../../assets/user-content/img_default.webp`)
-                    : require(`../../assets/user-content/${item.image}`)
+                  item.picture
                 }
+                alt={item.title}
               />
             }
             onClick={() => handleCardClick(item)}
           >
             <div className="flex_column">
               <div className="title_start_container">
-                <span className="book_title">{item.name}</span>
-                <Rate disabled className="book_star" allowHalf />
+                <span className="book_title">{item.title}</span>
               </div>
               <span className="book_price">
                 {item.price}

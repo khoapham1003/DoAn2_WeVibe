@@ -2,71 +2,56 @@ import {
   Controller,
   Get,
   Post,
-  Body,
   Patch,
-  Param,
   Delete,
-  HttpException,
-  HttpStatus,
+  Param,
+  Body,
 } from '@nestjs/common';
 import { OrderService } from '../service/order.service';
 import { CreateOrderDto } from '../dto/create-order.dto';
 import { UpdateOrderDto } from '../dto/update-order.dto';
-import { Order } from '../entities/order.entity';
 
-@Controller('order')
+@Controller('orders')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
-  @Post('/create-order')
-  async create(@Body() createOrderDto: CreateOrderDto): Promise<Order> {
-    try {
-      return await this.orderService.create(createOrderDto);
-    } catch (error) {
-      throw new HttpException('Failed to create order', HttpStatus.BAD_REQUEST);
-    }
+  @Post('/create-order/:userId')
+  async createOrder(
+    @Body() createOrderDto: CreateOrderDto, 
+    @Param('userId') userId: number
+  ) {
+    return this.orderService.createOrder(createOrderDto, userId);
   }
 
-  @Get('/get-all-order')
-  async findAll(): Promise<Order[]> {
+  @Get()
+  async findAll() {
     return await this.orderService.findAll();
   }
 
-  @Get('/find-order/:mOrderId')
-  async findOne(@Param('mOrderId') id: string): Promise<Order> {
-    const order = await this.orderService.findOne(+id);
-    if (!order) {
-      throw new HttpException('Order not found', HttpStatus.NOT_FOUND);
-    }
-    return order;
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    return await this.orderService.findOne(+id);
   }
 
-  @Patch('/update-order/:mOrderId')
+
+  @Patch(':cartId/:orderId/complete')
+  async completeOrder(@Param('orderId') orderId: number,
+  @Param('cartId') cartId:number,
+  @Body() updateOrderDto: UpdateOrderDto,
+) {
+    return this.orderService.completeOrder(cartId,orderId, updateOrderDto);
+  }
+
+  @Patch(':id')
   async update(
-    @Param('mOrderId') id: string,
+    @Param('id') id: string,
     @Body() updateOrderDto: UpdateOrderDto,
-  ): Promise<void> {
-    const existingOrder = await this.orderService.findOne(+id);
-    if (!existingOrder) {
-      throw new HttpException('Order not found', HttpStatus.NOT_FOUND);
-    }
-    try {
-      await this.orderService.update(+id, updateOrderDto);
-    } catch (error) {
-      throw new HttpException('Failed to update order', HttpStatus.BAD_REQUEST);
-    }
+  ) {
+    return await this.orderService.update(+id, updateOrderDto);
   }
 
-  @Delete('/delete-order/:mOrderId')
-  async remove(@Param('mOrderId') id: string): Promise<void> {
-    const existingOrder = await this.orderService.findOne(+id);
-    if (!existingOrder) {
-      throw new HttpException('Order not found', HttpStatus.NOT_FOUND);
-    }
-    try {
-      await this.orderService.remove(+id);
-    } catch (error) {
-      throw new HttpException('Failed to delete order', HttpStatus.BAD_REQUEST);
-    }
+  @Delete(':id')
+  async remove(@Param('id') id: string) {
+    return await this.orderService.remove(+id);
   }
 }

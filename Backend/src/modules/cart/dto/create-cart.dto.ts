@@ -1,13 +1,12 @@
-import { IsIn, IsInt, IsNotEmpty, IsString } from 'class-validator';
-import { TYPE_STATUS } from 'src/shared/constants/status.const';
+import { IsString, IsNotEmpty, IsInt, IsOptional, Length } from 'class-validator';
 
 export class CreateCartDto {
-  @IsNotEmpty()
   @IsInt()
-  mUserId: number;
+  @IsNotEmpty()
+  userId: number;
 
   @IsString()
-  @IsNotEmpty()
-  @IsIn([TYPE_STATUS.ACTIVE, TYPE_STATUS.DELETE])
-  mStatus: string;
+  @IsOptional()
+  @Length(0, 50)
+  status?: string;
 }
