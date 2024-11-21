@@ -1,26 +1,22 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateCartDto } from './create-cart.dto';
-import {
-  IsDateString,
-  IsIn,
-  IsInt,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-} from 'class-validator';
-import { TYPE_STATUS } from 'src/shared/constants/status.const';
+import { IsString, IsOptional, IsInt, Length } from 'class-validator';
 
-export class UpdateCartDto extends PartialType(CreateCartDto) {
-  @IsNotEmpty()
+export class UpdateCartDto {
+  @IsOptional()
   @IsInt()
-  mUserId: number;
-
-  @IsString()
-  @IsNotEmpty()
-  @IsIn([TYPE_STATUS.ACTIVE, TYPE_STATUS.DELETE])
-  mStatus: string;
+  userId?: number;
 
   @IsOptional()
-  @IsDateString()
-  mModified?: string;
+  @IsString()
+  @Length(1, 255)
+  session?: string;
+
+  @IsOptional()
+  @IsString()
+  @Length(1, 255)
+  token?: string;
+
+  @IsOptional()
+  @IsString()
+  @Length(0, 50)
+  status?: string;
 }

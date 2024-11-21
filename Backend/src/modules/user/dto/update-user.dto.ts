@@ -1,55 +1,23 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateUserDto } from './create-user.dto';
-import {
-  IsEmail,
-  IsOptional,
-  IsString,
-  Length,
-  IsNotEmpty,
-  IsIn,
-  IsBoolean,
-} from 'class-validator';
-import { TYPE_STATUS } from 'src/shared/constants/status.const';
+import { IsString, IsEmail, IsOptional, IsBoolean, Length } from 'class-validator';
 
-export class UpdateUserDto extends PartialType(CreateUserDto) {
+export class UpdateUserDto {
   @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  mName?: string;
-
-  @IsOptional()
-  @IsEmail()
-  @IsString()
-  @IsNotEmpty()
-  mEmail?: string;
+  @Length(1, 50)
+  firstName?: string;
 
   @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  @Length(10, 20)
-  mPhone?: string;
-
-  @IsOptional()
-  @IsBoolean()
-  @IsNotEmpty()
-  mGender?: boolean;
+  @Length(1, 50)
+  middleName?: string;
 
   @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  mAddress?: string;
+  @Length(1, 50)
+  lastName?: string;
 
   @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  @Length(6, 100)
-  mPassword?: string;
-
-  @IsString()
-  @IsNotEmpty()
-  @IsIn([TYPE_STATUS.ACTIVE, TYPE_STATUS.DELETE])
-  mStatus: string;
-
-  @IsString()
-  mModified: string;
+  @Length(1, 20)
+  phoneNumber?: string;
 }

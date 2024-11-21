@@ -28,7 +28,7 @@ function ProductPage() {
     const fetchreviewsdata = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3000/product/get-details/${item._id}`,
+          `http://localhost:3000/product/get-product/${item.id}`,
           {
             method: "GET",
             headers: {
@@ -64,21 +64,21 @@ function ProductPage() {
   };
   const jwtToken = getCookie("accessToken");
   const userId = getCookie("userid");
-
-  console.log(item);
+  const cartId = getCookie("CartId");
 
   const handleAddToCart = async () => {
     setAmount(1); // Đặt lại số lượng sau khi thêm vào giỏ hàng
     try {
       const data = {
-        _id: item._id,
-        name: item.name,
-        image: item.image,
-        amount: amount,
+        productVID: 4,
+        quantity: amount,
+        cartID: Number(cartId),
+        price: item.price,
+        discount: item.discount,
       };
-      console.log(data);
+      console.log("34tyui",data);
       const response = await fetch(
-        `http://localhost:3000/user/cart-user/${userId}`,
+        `http://localhost:3000/cartitem/create-cart-item`,
         {
           method: "POST",
           headers: {
@@ -88,14 +88,17 @@ function ProductPage() {
           body: JSON.stringify(data),
         }
       );
+      console.log(response);
       if (response.ok) {
-        // navigate(`/`);
+        navigate(`/`);
         console.log("Item added to the cart in the database");
         message.success("Sản phẩm đã được thêm vào giỏ hàng!");
       } else {
         const error = await response.text();
-        console.log(error);
-        message.error("Vui lòng đăng nhập!");
+        if (error) {
+          message.error("Vui lòng đăng nhập!");
+        }
+        console.error("Failed to add item to the cart in the database");
       }
     } catch (error) {
       message.error("Vui lòng đăng nhập!");
@@ -121,17 +124,15 @@ function ProductPage() {
             <Col md={5} offset={1} className="image_column">
               <Image
                 src={
-                  item.image == null
-                    ? require(`../../assets/user-content/img_default.webp`)
-                    : require(`../../assets/user-content/${item.image}`)
+                  item.picture
                 }
-                alt={item.name}
+                alt={item.title}
               />
             </Col>
             <Col md={14} offset={1} className="shortdetail_column">
               <List className="detail_list">
                 <List.Item>
-                  <h1>{item.sProduct_name}</h1>
+                  <h1>{item.title}</h1>
                 </List.Item>
                 <List.Item>
                   <span className="price">{item.price}đ</span>
@@ -164,9 +165,9 @@ function ProductPage() {
                 <List.Item>
                   <h2>Mô tả sản phẩm</h2>
                 </List.Item>
-                <List.Item style={{ fontSize: "16px", color: "#8c8c8c" }}>
+                {/* <List.Item style={{ fontSize: "16px", color: "#8c8c8c" }}>
                   <ExhibitionContent content={item.description} />
-                </List.Item>
+                </List.Item> */}
               </List>
             </Col>
           </Row>

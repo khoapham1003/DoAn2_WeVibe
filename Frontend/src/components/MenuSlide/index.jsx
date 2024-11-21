@@ -1,7 +1,7 @@
-import { MenuOutlined } from "@ant-design/icons";
-import { Menu, Button } from "antd";
-import { useLocation } from "react-router-dom";
 import React, { useEffect, useState } from "react";
+import { Menu } from "antd";
+import { MenuOutlined } from "@ant-design/icons";
+import { useLocation } from "react-router-dom";
 
 const { SubMenu } = Menu;
 
@@ -11,23 +11,44 @@ const MenuSlide = ({ onMenuSelect }) => {
   const [menuData, setMenuData] = useState([]);
   const [menuVisible, setMenuVisible] = useState(false);
 
+  // Function to transform flat data to nested structure
+  const transformMenuData = (data) => {
+    const menuMap = {};
+    const roots = [];
+
+    data.forEach((item) => {
+      menuMap[item.id] = { ...item, children: [] };
+    });
+
+    // Build the tree structure
+    data.forEach((item) => {
+      if (item.parentId) {
+        // If item has a parentId, push it into its parent's children
+        menuMap[item.parentId]?.children.push(menuMap[item.id]);
+      } else {
+        // If no parentId, it's a root item
+        roots.push(menuMap[item.id]);
+      }
+    });
+
+    return roots;
+  };
+
+  // Fetch menu data and transform it
   const fetchMenuData = async () => {
     try {
-      const response = await fetch(
-        "https://localhost:3000/product/get-all-type",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch("http://localhost:3000/category/get-all-categories", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const data = await response.json();
-      setMenuData(data.data);
-      // console.log("menuslide:", data);
+      const transformedData = transformMenuData(data.data);
+      setMenuData(transformedData);
     } catch (error) {
       console.error("Error fetching menu data:", error);
     }
@@ -38,38 +59,38 @@ const MenuSlide = ({ onMenuSelect }) => {
   }, []);
 
   useEffect(() => {
-    const pathName = location.pathname;
-    setSelectedKeys(pathName);
+    setSelectedKeys(location.pathname);
   }, [location.pathname]);
 
-  console.log("menuslide:", menuData);
-  const handleMenuClick = (itemName) => {
-    console.log("Selected item:", itemName);
-    onMenuSelect(itemName);
-  };
-  const renderMenuItems = (menuItems) => {
-    return menuItems.map((itemName) => (
-      <Menu.Item key={itemName} onClick={() => handleMenuClick(itemName)}>
-        {itemName}
-      </Menu.Item>
-    ));
+  // Render menu items recursively
+  const renderMenuItems = (items) => {
+    return items.map((item) => {
+      if (item.children && item.children.length > 0) {
+        return (
+          <SubMenu key={item.id} title={item.title}>
+            {renderMenuItems(item.children)}
+          </SubMenu>
+        );
+      } else {
+        return <Menu.Item key={item.id}>{item.title}</Menu.Item>;
+      }
+    });
   };
 
   return (
     <div>
-      <Button onClick={() => setMenuVisible(!menuVisible)}>
+      <button onClick={() => setMenuVisible(!menuVisible)}>
         <MenuOutlined />
-      </Button>
+      </button>
       {menuVisible && (
         <Menu
           selectedKeys={[selectedKeys]}
           style={{
             backgroundColor: "#fff",
-            width: "10vw",
             borderRight: "none",
             fontSize: "10px",
           }}
-          // onClick={({ key }) => onMenuSelect(key)}
+          onClick={({ key }) => onMenuSelect(key)}
         >
           {renderMenuItems(menuData)}
         </Menu>

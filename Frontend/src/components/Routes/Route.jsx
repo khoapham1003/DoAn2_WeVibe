@@ -20,28 +20,15 @@ function AppRoutes() {
 
   const isUserAuthenticated = () => {
     const accessToken = getCookie("accessToken");
-    const refreshToken = getCookie("refreshToken");
-    if (accessToken && refreshToken) {
+    const userid = getCookie("userid");
+
+    if (accessToken && userid) {
       try {
-        const tokenParts = accessToken.split(".");
-        if (tokenParts.length !== 3) {
-          throw new Error("Invalid token format");
-        }
-        const decodedToken = JSON.parse(atob(tokenParts[1]));
+        const decodedToken = JSON.parse(atob(accessToken.split(".")[1]));
 
         if (decodedToken && decodedToken.exp) {
           const currentTimeInSeconds = Math.floor(Date.now() / 1000);
-          if (decodedToken.exp < currentTimeInSeconds) {
-            if (refreshToken) {
-              const decodedToken = JSON.parse(atob(accessToken.split(".")[1]));
-              if (decodedToken && decodedToken.exp) {
-                const currentTimeInSeconds = Math.floor(Date.now() / 1000);
-                return decodedToken.exp < currentTimeInSeconds;
-              }
-            }
-            return false;
-          }
-          return true;
+          return decodedToken.exp > currentTimeInSeconds;
         }
       } catch (error) {
         console.error("Error decoding token:", error);
@@ -58,7 +45,7 @@ function AppRoutes() {
         throw new Error("Invalid token format");
       }
       const decodedToken = JSON.parse(atob(tokenParts[1]));
-      return decodedToken && decodedToken.isAdmin === true;
+      return decodedToken && (decodedToken.role === 'admin') === true;
     }
     return false;
   };
