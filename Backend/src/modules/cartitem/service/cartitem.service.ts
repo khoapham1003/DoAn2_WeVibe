@@ -1,3 +1,4 @@
+import { ProductVariantService } from './../../productvariant/service/productvariant.service';
 import {
   Injectable,
   NotFoundException,
@@ -14,6 +15,7 @@ import { Cart } from 'src/modules/cart/entities/cart.entity';
 @Injectable()
 export class CartItemService {
   constructor(
+    private readonly productVariantService: ProductVariantService,
     @InjectRepository(CartItem)
     private readonly cartItemRepository: Repository<CartItem>,
     @InjectRepository(ProductVariant)
@@ -25,15 +27,18 @@ export class CartItemService {
   async createCartItem(
     createCartItemDto: CreateCartItemDto,
   ): Promise<CartItem> {
-    const { cartID, productVID, quantity, price } = createCartItemDto;
+    const { cartID, colorId, sizeId, productId, quantity, price } = createCartItemDto;
 
-    const productVariant = await this.productVariantRepository.findOne({
-      where: { id: createCartItemDto.productVID },
-    });
+    const productVariant = await this.productVariantService.getProductVariantId(
+      productId,
+      sizeId,
+      colorId,
+    );
+    const productVID = productVariant.id;
 
     if (!productVariant) {
       throw new NotFoundException(
-        `ProductVariant with ID ${createCartItemDto.productVID} not found.`,
+        `ProductVariant with ID ${productVID} not found.`,
       );
     }
 
@@ -105,8 +110,6 @@ export class CartItemService {
     }
 
     if (updateCartItemDto.quantity !== undefined) {
-     
-
       const newQuantity = updateCartItemDto.quantity;
       if (newQuantity < 0) {
         throw new BadRequestException('Quantity cannot be negative.');
@@ -176,12 +179,11 @@ export class CartItemService {
       where: { cartID, active: true },
       relations: ['productVariant'],
     });
-  
+
     if (!cartItems || cartItems.length === 0) {
       throw new NotFoundException(`No CartItems found for CartID ${cartID}`);
     }
-  
+
     return cartItems;
   }
-  
 }

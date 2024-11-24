@@ -19,7 +19,10 @@ export class ProductVariantController {
   create(@Body() createProductVariantDto: CreateProductVariantDto) {
     return this.productVariantService.create(createProductVariantDto);
   }
-
+  @Get('/get-by-productId/:productId')
+  async getProductVariantsByProductId(@Param('productId') productId: number) {
+    return await this.productVariantService.getProductVariantsByProductId(productId);
+  }
   @Get('/get-by-ids/:productId/:sizeId/:colorId')
   async getProductVariantId(
     @Param('productId') productId: number,

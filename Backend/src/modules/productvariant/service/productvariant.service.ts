@@ -17,6 +17,18 @@ export class ProductVariantService {
     return this.productVariantRepository.save(productVariant);
   }
 
+  async getProductVariantsByProductId(productId: number): Promise<ProductVariant[]> {
+    const productVariants = await this.productVariantRepository.find({
+      where: { productId: productId },
+      select: ['id', 'size', 'color'],
+    });
+
+    if (!productVariants || productVariants.length === 0) {
+      throw new NotFoundException(`No ProductVariants found for Product ID ${productId}`);
+    }
+
+    return productVariants;
+  }
   async getProductVariantId(productId: number, sizeId: number, colorId: number): Promise<ProductVariant> {
     const productVariant = await this.productVariantRepository.findOne({
       where: {

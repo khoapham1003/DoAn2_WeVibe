@@ -1,9 +1,18 @@
 import { IsInt, IsNotEmpty, IsPositive, IsOptional, IsNumber } from 'class-validator';
 
 export class CreateCartItemDto {
+
   @IsInt()
   @IsNotEmpty()
-  productVID: number;
+  productId: number;
+
+  @IsInt()
+  @IsNotEmpty()
+  sizeId: number;
+
+  @IsInt()
+  @IsNotEmpty()
+  colorId: number;
 
   @IsInt()
   @IsNotEmpty()
