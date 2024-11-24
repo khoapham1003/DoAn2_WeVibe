@@ -66,7 +66,7 @@ const SearchPage = () => {
             bodyStyle={{ padding: "10px 24px" }}
             cover={
               <img
-                className="mp_book_item_image"
+                className="mp_product_item_image"
                 alt={item.name}
                 src={item.image}
               />
@@ -75,14 +75,14 @@ const SearchPage = () => {
           >
             <div className="flex_column">
               <div className="title_start_container">
-                <span className="book_title">{item.name}</span>
+                <span className="product_title">{item.name}</span>
                 {/* <Rate
                   disabled
-                  className="book_star"
+                  className="product_star"
                   defaultValue={item.dProduct_start_count}
                 /> */}
               </div>
-              <span className="book_price">
+              <span className="product_price">
                 {item.price}
                 <span
                   style={{

@@ -69,7 +69,11 @@ function MainPage() {
       </h3>
       <Row className="title_bar">
         <Col>
-          <MenuSlide onMenuSelect={handleMenuSelect} />
+          <MenuSlide
+            size="large"
+            className="title_menu"
+            onMenuSelect={handleMenuSelect}
+          />
         </Col>
       </Row>
       <div className="card_container">
@@ -81,10 +85,8 @@ function MainPage() {
             bodyStyle={{ padding: "10px 24px" }}
             cover={
               <img
-                className="mp_book_item_image"
-                src={
-                  item.picture
-                }
+                className="mp_product_item_image"
+                src={item.picture}
                 alt={item.title}
               />
             }

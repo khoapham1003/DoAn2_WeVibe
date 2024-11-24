@@ -18,13 +18,9 @@ function Footer() {
     <footer className={cx("f_wrapper")}>
       <div className={cx("inner f_inner")}>
         <div className={cx("f_logo")}>
-          <img
-            className="f_logo_image"
-            src={images.logo1}
-            alt="WeVibe"
-          />
+          <img className="f_logo_image" src={images.logo1} alt="WeVibe" />
         </div>
-        <div className="help">
+        <div className="f_help">
           <div className="ContactInformation">
             <h2>Thông tin liên hệ </h2>
             <a href="./" style={{ wordWrap: "break-word" }}>
