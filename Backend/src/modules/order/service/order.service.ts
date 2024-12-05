@@ -65,16 +65,6 @@ export class OrderService {
     }
     updatedOrder.status = 'PENDING';
 
-    const cartItems = await this.CartItemService.findCartData(cartId);
-    if (!cartItems || cartItems.length === 0) {
-      throw new NotFoundException(`No CartItems found for Cart ID ${cartId}`);
-    }
-
-    for (const cartItem of cartItems) {
-      console.log(cartItem);
-      await this.cartItemRepository.update(cartItem.id, { active: false });
-    }
-
     return updatedOrder;
   }
   async findAll(): Promise<Order[]> {

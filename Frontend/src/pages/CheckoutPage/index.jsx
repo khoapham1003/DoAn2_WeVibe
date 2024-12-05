@@ -39,40 +39,42 @@ function CheckoutPage() {
     }
     return null;
   };
-  const orderId = localStorage.getItem("orderId");
+
+  const orderId = getCookie("orderId");
   const jwtToken = getCookie("accessToken");
   const userId = getCookie("userid");
   const cartId = getCookie("CartId");
-
+  const cartitemsId = getCookie("cartitemsId");
   useEffect(() => {
-    const fetchCheckOutData = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:3000/order-item/orderdata/${orderId}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${jwtToken}`,
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log(data);
-        setItems(data);
-        return data;
-      } catch (error) {
-        console.error("Error fetching product data:", error);
-      }
-    };
     fetchCheckOutData();
   }, []);
 
+  const fetchCheckOutData = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/order-item/orderdata/${orderId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      );
+      console.log(response);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log(data);
+      setItems(data);
+      return data;
+    } catch (error) {
+      console.error("Error fetching product data:", error);
+    }
+  };
   const calculateTotalPrice = () => {
     return items.reduce(
       (total, item) =>
@@ -131,7 +133,6 @@ function CheckoutPage() {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${jwtToken}`,
-
           },
           body: JSON.stringify(data),
         }
@@ -143,10 +144,39 @@ function CheckoutPage() {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       message.success(`Đặt hàng thành công.`);
-      setShowConfirmationPay(false);
-      navigate("/");
+      const cartitemsArray = cartitemsId
+        .split(",")
+        .map((item) => parseInt(item, 10));
+      for (const cartItemId of cartitemsArray) {
+        await removeCartItem(cartItemId);
+      }
+     setShowConfirmationPay(false);
+      await navigate("/");
     } catch (error) {
       console.error("Error placing the order:", error);
+    }
+  };
+
+  const removeCartItem = async (cartItemId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/cartitem/delete-cartitem/${cartItemId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      );
+      console.log(response);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      await fetchCartData(userId);
+    } catch (error) {
+      console.error("Error removing cart item:", error);
     }
   };
 
@@ -371,7 +401,10 @@ function CheckoutPage() {
                     order.country &&
                     order.province
                   ) {
-                    if (order.phoneNumber.length !== 10 || order.phoneNumber[0] !== "0") {
+                    if (
+                      order.phoneNumber.length !== 10 ||
+                      order.phoneNumber[0] !== "0"
+                    ) {
                       message.error(
                         "Số điện thoại phải gồm 10 chữ số và bắt đầu bằng số 0"
                       );

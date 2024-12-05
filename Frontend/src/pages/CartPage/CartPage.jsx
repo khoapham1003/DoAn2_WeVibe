@@ -125,10 +125,9 @@ function CartPage() {
 
       const orderResponse = await response.json();
       const orderId = orderResponse.id;
-
-      localStorage.setItem("orderId", orderId);
-      handleCheckoutItems(orderId);
-      navigate(`/checkout`);
+       document.cookie = `orderId=${orderId}; path=/`;
+      await handleCheckoutItems(orderId);
+      await navigate(`/checkout`);
       console.log("Order placed successfully!");
     } catch (error) {
       message.error("Vui lòng chọn sản phẩm bạn muốn thanh toán!");
@@ -136,20 +135,10 @@ function CartPage() {
     }
   };
 
-  const handleCheckboxChange = (e, itemId) => {
-    const { checked } = e.target;
-    setSelectedItems((prevSelectedItems) => {
-      if (checked) {
-        return [...prevSelectedItems, itemId];
-      } else {
-        return prevSelectedItems.filter((id) => id !== itemId);
-      }
-    });
-  };
-
+  console.log(selectedItems);
   const handleCheckoutItems = async (orderId) => {
     try {
-      const selectedVIds = items.map((item) => item.productVID);
+      const selectedVIds = selectedItems.map((item) => item.productVID);
       const selectedPrices = items.map(
         (item) => item.productVariant.product.price
       );
@@ -158,11 +147,11 @@ function CartPage() {
       );
       const selectQuantity = items.map((item) => item.quantity);
       const requestData = selectedVIds.map((productVID, index) => ({
-        orderID: orderId,            // Use the same orderId for each item
+        orderID: orderId,
         productVID: productVID,
         price: selectedPrices[index],
         discount: selectedDiscount[index],
-        quantity: selectQuantity[index]
+        quantity: selectQuantity[index],
       }));
       console.log(requestData);
       const response = await fetch(
@@ -179,6 +168,7 @@ function CartPage() {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
+      document.cookie = `cartitemsId=${selectedItems.map((item) => item.id)}; path=/`;
       console.log(response);
     } catch {
       message.error("1234566778");
@@ -186,11 +176,22 @@ function CartPage() {
     }
   };
 
+  const handleCheckboxChange = (e, selectedItem) => {
+    const { checked } = e.target;
+    setSelectedItems((prevSelectedItems) => {
+      if (checked) {
+        // Thêm item đã chọn vào mảng
+        return [...prevSelectedItems, selectedItem];
+      } else {
+        // Loại bỏ item nếu bỏ chọn
+        return prevSelectedItems.filter((item) => item.id !== selectedItem.id);
+      }
+    });
+  };
+
   const handleCheckAllChange = () => {
     setSelectedItems((prevSelectedItems) => {
-      return prevSelectedItems.length === items.length
-        ? []
-        : items.map((item) => item.id);
+      return prevSelectedItems.length === items.length ? [] : [...items];
     });
   };
 
@@ -232,30 +233,30 @@ function CartPage() {
     removeCartItem(cartItemId);
   };
 
-  const totalAmount = items.reduce(
-    (total, item) =>
-      selectedItems.includes(item.id)
-        ? total + item.productVariant.product.price * item.quantity
-        : total,
-    0
-  );
+  const totalAmount = items.reduce((total, item) => {
+    const isSelected = selectedItems.some((selected) => selected.id === item.id);
+    return isSelected
+      ? total + item.productVariant.product.price * item.quantity
+      : total;
+  }, 0);
+  
 
-  const totalQuantity = items.reduce(
-    (total, item) =>
-      selectedItems.includes(item.id) ? total + item.quantity : total,
-    0
-  );
+  const totalQuantity = items.reduce((total, item) => {
+    const isSelected = selectedItems.some((selected) => selected.id === item.id);
+    return isSelected ? total + item.quantity : total;
+  }, 0);
+  
 
-  const totalDiscount = items.reduce(
-    (total, item) =>
-      selectedItems.includes(item.id)
-        ? total +
+  const totalDiscount = items.reduce((total, item) => {
+    const isSelected = selectedItems.some((selected) => selected.id === item.id);
+    return isSelected
+      ? total +
           item.productVariant.product.price *
             item.quantity *
             item.productVariant.product.discount
-        : total,
-    0
-  );
+      : total;
+  }, 0);
+  
 
   return (
     <div>
@@ -266,9 +267,10 @@ function CartPage() {
       <div className="cartlist_header">
         <Col md={1}>
           <Checkbox
-            checked={items.length === selectedItems.length}
+            checked={selectedItems.length === items.length && items.length > 0}
+            
             onChange={handleCheckAllChange}
-          ></Checkbox>
+          />
         </Col>
         <Col md={2}>
           <h3>Sản phẩm</h3>
@@ -291,8 +293,10 @@ function CartPage() {
             <Row align="middle">
               <Col md={1}>
                 <Checkbox
-                  checked={selectedItems.includes(item.id)}
-                  onChange={(e) => handleCheckboxChange(e, item.id)}
+                  checked={selectedItems.some(
+                    (selected) => selected.id === item.id
+                  )}
+                  onChange={(e) => handleCheckboxChange(e, item)}
                 />
               </Col>
               <Col md={2}>

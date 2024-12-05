@@ -34,9 +34,9 @@ const Login = () => {
       );
 
       if (!response.ok) {
-        const error = await response.text();
+        const error = await response.json();
         if (error) {
-          message.error(`${error}`);
+          message.error(`${error.message}`);
         }
       } else {
         const responseData = await response.json();
@@ -69,7 +69,7 @@ const Login = () => {
       }
     } catch (error) {
       setError("Login failed. Please try again.");
-      console.error("Login failed", error);
+      console.error("Login failed", error.message);
     } finally {
       setLoading(false);
     }

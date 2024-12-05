@@ -30,7 +30,7 @@ export class AuthMiddleware implements NestMiddleware {
 
     // Trích xuất thông tin từ payload của token
     return {
-      userId: decoded['sub'], // Lấy `sub` làm `userId`
+      userId: decoded['UserId'], // Lấy `sub` làm `userId`
       email: decoded['email'], // Lấy email
       role: decoded['role'], // Lấy vai trò (role)
     };
