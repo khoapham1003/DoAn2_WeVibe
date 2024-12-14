@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { CreateProductDto } from '../dto/create-product.dto';
 import { UpdateProductDto } from '../dto/update-product.dto';
 import { Product } from '../entities/product.entity';
@@ -34,6 +34,15 @@ export class ProductService {
     // Trả về mảng các sản phẩm
     return categoryProducts.map(categoryProduct => categoryProduct.product);
   }
+
+  async searchProducts(keyword: string): Promise<Product[]> {
+    return this.productRepository.find({
+      where: [
+        { title : Like(`%${keyword}%`) }, 
+      ],
+    });
+  }
+  
 
   async findOne(id: number): Promise<Product> {
     const product = await this.productRepository.findOne({ where: { id } });

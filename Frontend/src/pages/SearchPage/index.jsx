@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Card, Col, Rate, Row } from "antd";
 import { useNavigate } from "react-router-dom";
 import MenuSlide from "../../components/MenuSlide";
+import background_log from "../../assets/images/background_log.png";
 
 const SearchPage = () => {
   const [items, setItems] = useState([]);
@@ -14,11 +15,20 @@ const SearchPage = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-
+        const datareq = {
+          "keyword" : searchValue
+        }
         const response = await fetch(
-          `http://localhost:3000/product/get-all?page=0&limit=4&filter=name&filter=${searchValue}`
+          `http://localhost:3000/product/search-product/`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(datareq),
+          }
         );
-
+        console.log(response)
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -44,45 +54,54 @@ const SearchPage = () => {
 
   const handleCardClick = (item) => {
     console.log("Card clicked:", item);
-    navigate(`/product-detail/${item.iProduct_id}`, { state: { item } });
+    navigate(`/product-detail/${item.id}`, { state: { item } });
   };
 
   return (
     <div>
+      <div
+        className="content"
+        style={{
+          backgroundImage: `url(${background_log})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          height: "400px",
+        }}
+      ></div>
       <h3 class="title-comm">
-        <span class="title-holder">TÌM KIẾM SẢN PHẨM</span>
+        <span class="title-holder">DANH MỤC SẢN PHẨM</span>
       </h3>
       <Row className="title_bar">
         <Col>
-          <MenuSlide onMenuSelect={handleMenuSelect} />
+          <MenuSlide
+            size="large"
+            className="title_menu"
+            onMenuSelect={handleMenuSelect}
+          />
         </Col>
       </Row>
       <div className="card_container">
         {items.map((item) => (
           <Card
             className="card_item"
-            key={item.name}
+            key={item.title}
             hoverable
             bodyStyle={{ padding: "10px 24px" }}
             cover={
               <img
                 className="mp_product_item_image"
-                alt={item.name}
-                src={item.image}
+                src={item.picture}
+                alt={item.title}
               />
             }
             onClick={() => handleCardClick(item)}
           >
             <div className="flex_column">
               <div className="title_start_container">
-                <span className="product_title">{item.name}</span>
-                {/* <Rate
-                  disabled
-                  className="product_star"
-                  defaultValue={item.dProduct_start_count}
-                /> */}
+                <span className="book_title">{item.title}</span>
               </div>
-              <span className="product_price">
+              <span className="book_price">
                 {item.price}
                 <span
                   style={{
@@ -101,6 +120,5 @@ const SearchPage = () => {
       </div>
     </div>
   );
-};
-
+}
 export default SearchPage;

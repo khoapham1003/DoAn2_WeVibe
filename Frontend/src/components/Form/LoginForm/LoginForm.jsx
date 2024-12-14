@@ -21,22 +21,19 @@ const Login = () => {
         Password: password,
       };
 
-      const response = await fetch(
-        "http://localhost:3000/auth/login",
-        {
-          method: "POST",
-          mode: "cors",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(requestBody),
-        }
-      );
+      const response = await fetch("http://localhost:3000/auth/login", {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      });
 
       if (!response.ok) {
-        const error = await response.text();
+        const error = await response.json();
         if (error) {
-          message.error(`${error}`);
+          message.error(`${error.message}`);
         }
       } else {
         const responseData = await response.json();
@@ -48,28 +45,26 @@ const Login = () => {
             const email = decodedToken.email;
             const CartId = decodedToken.CartId;
             const UserId = decodedToken.UserId;
-            const  role = decodedToken.role;
+            const role = decodedToken.role;
             document.cookie = `accessToken=${responseData.access_token}; path=/`;
             document.cookie = `email=${email}; path=/`;
             document.cookie = `CartId=${CartId}; path=/`;
             document.cookie = `userid=${UserId}; path=/`;
             document.cookie = `role=${role}; path=/`;
-            message.success("Đăng nhập thành công!");
-            if (role == 'admin') {
-             navigate(`/admin`);
+            await message.success("Đăng nhập thành công!");
+            if (role == "admin") {
+              navigate(`/admin`);
             } else {
-             navigate(`/`);
+              navigate(`/`);
             }
-          window.location.reload();
           } catch (error) {
             console.error("Error decoding token:", error);
           }
-        }     
-
+        }
       }
     } catch (error) {
       setError("Login failed. Please try again.");
-      console.error("Login failed", error);
+      console.error("Login failed", error.message);
     } finally {
       setLoading(false);
     }

@@ -1,3 +1,4 @@
+import { Roles } from 'src/Common/decorators/roles.decorator';
 import { CreateCategoryDto } from './../dto/create-category.dto';
 import { UpdateCategoryDto } from './../dto/update-category.dto';
 import { CategoryService } from './../service/category.service';
@@ -11,13 +12,17 @@ import {
   Delete,
   HttpException,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
+import { RolesGuard } from 'src/Common/Gard/role.gard';
 
 @Controller('category')
+@UseGuards(RolesGuard)
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Post('/create-category')
+  @Roles('admin')
   async create(@Body() createCategoryDto: CreateCategoryDto) {
     try {
       const category = await this.categoryService.create(createCategoryDto);
@@ -73,6 +78,7 @@ export class CategoryController {
   }
 
   @Patch('/update-category/:id')
+  @Roles('admin')
   async update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
     try {
       const updatedCategory = await this.categoryService.update(+id, updateCategoryDto);
@@ -96,6 +102,7 @@ export class CategoryController {
   }
 
   @Delete('/delete-category/:id')
+  @Roles('admin')
   async remove(@Param('id') id: number) {
     try {
   await this.categoryService.remove(+id);

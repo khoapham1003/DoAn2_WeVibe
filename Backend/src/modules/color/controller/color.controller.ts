@@ -8,16 +8,22 @@ import {
   Delete,
   HttpException,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { ColorService } from '../service/color.service';
 import { CreateColorDto } from '../dto/create-color.dto';
 import { UpdateColorDto } from '../dto/update-color.dto';
+import { Roles } from 'src/Common/decorators/roles.decorator';
+import { RolesGuard } from 'src/Common/Gard/role.gard';
 
 @Controller('color')
+@UseGuards(RolesGuard)
 export class ColorController {
+  
   constructor(private readonly colorService: ColorService) {}
 
   @Post('/create-color')
+  @Roles('admin')
   async create(@Body() createColorDto: CreateColorDto) {
     try {
       const color = await this.colorService.create(createColorDto);
@@ -63,6 +69,7 @@ export class ColorController {
   }
 
   @Patch('/update-corlor/:id')
+  @Roles('admin')
   async update(@Param('id') id: string, @Body() updateColorDto: UpdateColorDto) {
     try {
       const updatedColor = await this.colorService.update(+id, updateColorDto);
@@ -82,6 +89,7 @@ export class ColorController {
   }
 
   @Delete('/delete-color/:id')
+  @Roles('admin')
   async remove(@Param('id') id: string) {
     try {
       const result = await this.colorService.remove(+id);
