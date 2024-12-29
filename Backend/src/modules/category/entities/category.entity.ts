@@ -1,4 +1,16 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import { CategoryProduct } from 'src/modules/categoryproduct/entities/categoryproduct.entity';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  BeforeInsert,
+  BeforeUpdate,
+  ManyToOne,
+  JoinColumn,
+  OneToMany,
+} from 'typeorm';
 
 @Entity({ name: 'category' })
 export class Category {
@@ -37,13 +49,19 @@ export class Category {
   })
   updatedAt: string;
 
-  @ManyToOne(() => Category, category => category.children, { nullable: true })
+  @ManyToOne(() => Category, (category) => category.children, {
+    nullable: true,
+  })
   @JoinColumn({ name: 'parent_id' })
   parent: Category;
 
-  @OneToMany(() => Category, category => category.parent)
+  @OneToMany(() => Category, (category) => category.parent)
   children: Category[];
-
+  @OneToMany(
+    () => CategoryProduct,
+    (categoryProduct) => categoryProduct.category,
+  )
+  categoryProducts: CategoryProduct[];
   @BeforeInsert()
   setCreationDate() {
     this.createdAt = new Date().toISOString();

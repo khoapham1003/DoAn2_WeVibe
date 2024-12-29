@@ -1,5 +1,6 @@
+import { OrderItem } from 'src/modules/orderitem/entities/orderitem.entity';
 import { User } from 'src/modules/user/entities/user.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate, OneToMany } from 'typeorm';
 
 @Entity({ name: 'order' })
 export class Order {
@@ -86,4 +87,7 @@ export class Order {
   updateModificationDate() {
     this.updatedAt = new Date().toISOString();
   }
+
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.order)
+  orderItems: OrderItem[];
 }

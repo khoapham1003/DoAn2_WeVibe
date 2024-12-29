@@ -37,22 +37,46 @@ export class ProductController {
     }
   }
   @Post('search-product')
-async searchProducts(@Body() searchProductDto: SearchProductDto) {
-  const { keyword } = searchProductDto;
+  async searchProducts(@Body() searchProductDto: SearchProductDto) {
+    const { keyword } = searchProductDto;
 
-  try {
-    const products = await this.productService.searchProducts(keyword);
-    return { statusCode: HttpStatus.OK, data: products };
-  } catch (error) {
-    throw new HttpException(
-      { statusCode: HttpStatus.INTERNAL_SERVER_ERROR, message: error.message },
-      HttpStatus.INTERNAL_SERVER_ERROR,
-    );
+    try {
+      const products = await this.productService.searchProducts(keyword);
+      return { statusCode: HttpStatus.OK, data: products };
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
-}
+
+  @Get('get-all-products-with-categories')
+  async findAllWithCategories() {
+    try {
+      const products = await this.productService.findAllWithCategories();
+      return {
+        statusCode: HttpStatus.OK,
+        data: products,
+      };
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 
   @Get('category/:categoryId')
-  async getProductsByCategory(@Param('categoryId') categoryId: number): Promise<Product[]> {
+  async getProductsByCategory(
+    @Param('categoryId') categoryId: number,
+  ): Promise<Product[]> {
     return this.productService.findByCategory(categoryId);
   }
   @Get('get-all-products')
@@ -62,7 +86,26 @@ async searchProducts(@Body() searchProductDto: SearchProductDto) {
       return { statusCode: HttpStatus.OK, data: products };
     } catch (error) {
       throw new HttpException(
-        { statusCode: HttpStatus.INTERNAL_SERVER_ERROR, message: error.message },
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Get('get-all-products-admin')
+  async findAllAdmin() {
+    try {
+      const products = await this.productService.findAllAdmin();
+      return { statusCode: HttpStatus.OK, data: products };
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message,
+        },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -81,7 +124,10 @@ async searchProducts(@Body() searchProductDto: SearchProductDto) {
       return { statusCode: HttpStatus.OK, data: product };
     } catch (error) {
       throw new HttpException(
-        { statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR, message: error.message },
+        {
+          statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message,
+        },
         error.status || HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -89,9 +135,15 @@ async searchProducts(@Body() searchProductDto: SearchProductDto) {
 
   @Patch('update-product/:id')
   @Roles('admin')
-  async update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateProductDto: UpdateProductDto,
+  ) {
     try {
-      const updatedProduct = await this.productService.update(+id, updateProductDto);
+      const updatedProduct = await this.productService.update(
+        +id,
+        updateProductDto,
+      );
       if (!updatedProduct) {
         throw new HttpException(
           { statusCode: HttpStatus.NOT_FOUND, message: 'Product not found' },
@@ -118,10 +170,16 @@ async searchProducts(@Body() searchProductDto: SearchProductDto) {
           HttpStatus.NOT_FOUND,
         );
       }
-      return { statusCode: HttpStatus.OK, message: 'Product deleted successfully' };
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Product deleted successfully',
+      };
     } catch (error) {
       throw new HttpException(
-        { statusCode: HttpStatus.INTERNAL_SERVER_ERROR, message: error.message },
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message,
+        },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

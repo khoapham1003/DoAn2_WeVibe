@@ -15,9 +15,20 @@ import { UpdateTransactionDto } from '../dto/update-transaction.dto';
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 
-  @Post()
-  create(@Body() createTransactionDto: CreateTransactionDto) {
-    return this.transactionService.create(createTransactionDto);
+  @Post('/create-transaction')
+  async createTransaction(@Body() createTransactionDto: CreateTransactionDto): Promise<any> {
+    try {
+
+      const transaction = await this.transactionService.createTransaction(createTransactionDto);
+
+      return {
+        message: 'Transaction created successfully',
+        transaction,
+      };
+    } catch (error) {
+      console.error('Error creating transaction:', error.message);
+      throw error;
+    }
   }
 
   @Get()
@@ -28,18 +39,5 @@ export class TransactionController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.transactionService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateTransactionDto: UpdateTransactionDto,
-  ) {
-    return this.transactionService.update(+id, updateTransactionDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.transactionService.remove(+id);
   }
 }

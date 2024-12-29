@@ -18,6 +18,7 @@ import FilteredPage from "../../pages/Category";
 import SearchPage from "../../pages/SearchPage";
 import HistoryOrderPage from "../../pages/HistoryOrderPage";
 import AdminPage from "../../pages/AdminPage";
+import ConfirmOrderPage from "../../pages/AdminPage/Component/Order/ConfirmOrderPage";
 
 function DefineLayout() {
   const isUserAuthenticated = () => {
@@ -89,6 +90,7 @@ const privateRoutes = [
   { path: "/cart", component: CartPage },
   { path: "/history", component: HistoryOrderPage, layout: DefineLayout() },
   { path: "/admin", component: AdminPage, layout: DefineLayout() },
+  { path: "/confirmorder/:id", component: ConfirmOrderPage, layout: DefineLayout() },
 ];
 
 export { publicRoutes, privateRoutes };

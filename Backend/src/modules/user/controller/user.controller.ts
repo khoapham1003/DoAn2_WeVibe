@@ -16,15 +16,17 @@ import { ChangePasswordDto } from '../dto/changepassword-user.dto';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService
-    
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
   @Post('/create-user')
   async create(@Body() createUserDto: CreateUserDto) {
     try {
       const user = await this.userService.create(createUserDto);
-      return { statusCode: HttpStatus.CREATED, message: 'User created successfully', data: user };
+      return {
+        statusCode: HttpStatus.CREATED,
+        message: 'User created successfully',
+        data: user,
+      };
     } catch (error) {
       throw new HttpException(
         { statusCode: HttpStatus.BAD_REQUEST, message: error.message },
@@ -40,7 +42,10 @@ export class UserController {
       return { statusCode: HttpStatus.OK, data: users };
     } catch (error) {
       throw new HttpException(
-        { statusCode: HttpStatus.INTERNAL_SERVER_ERROR, message: error.message },
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message,
+        },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -59,7 +64,10 @@ export class UserController {
       return { statusCode: HttpStatus.OK, data: user };
     } catch (error) {
       throw new HttpException(
-        { statusCode: HttpStatus.INTERNAL_SERVER_ERROR, message: error.message },
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message,
+        },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -75,32 +83,68 @@ export class UserController {
           HttpStatus.NOT_FOUND,
         );
       }
-      return { statusCode: HttpStatus.OK, message: 'User updated successfully', data: updatedUser };
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'User updated successfully',
+        data: updatedUser,
+      };
     } catch (error) {
       throw new HttpException(
-        { statusCode: HttpStatus.INTERNAL_SERVER_ERROR, message: error.message },
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message,
+        },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
 
-  @Patch('/change-password/:id') 
+  @Patch('/change-password/:id')
   async changePassword(
     @Param('id') id: string,
     @Body() changePasswordDto: ChangePasswordDto,
   ) {
     try {
-      const updatedUser = await this.userService.changepassword(+id, changePasswordDto);
+      const updatedUser = await this.userService.changepassword(
+        +id,
+        changePasswordDto,
+      );
       if (!updatedUser) {
         throw new HttpException(
           { statusCode: HttpStatus.NOT_FOUND, message: 'User not found' },
           HttpStatus.NOT_FOUND,
         );
       }
-      return { statusCode: HttpStatus.OK, message: 'Password changed successfully', data: updatedUser };
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Password changed successfully',
+        data: updatedUser,
+      };
     } catch (error) {
       throw new HttpException(
-        { statusCode: HttpStatus.INTERNAL_SERVER_ERROR, message: error.message },
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Delete('delete-user/:userId')
+  async delete(@Param('userId') userId: string) {
+    try {
+      await this.userService.delete(+userId);
+      return {
+        statusCode: HttpStatus.NO_CONTENT,
+        message: 'User deleted successfully',
+      };
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message,
+        },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

@@ -34,6 +34,7 @@ import { OrderController } from './modules/order/controller/order.controller';
 import { CartitemController } from './modules/cartitem/controller/cartitem.controller';
 import { OrderItemController } from './modules/orderitem/controller/orderitem.controller';
 import { UserController } from './modules/user/controller/user.controller';
+import { TransactionController } from './modules/transaction/controller/transaction.controller';
 
 @Module({
   imports: [
@@ -60,13 +61,16 @@ import { UserController } from './modules/user/controller/user.controller';
     OrderitemModule,
     CartitemModule,
     AuthModule,
+    TransactionModule,
+    WallettransactionModule,
+    RecommendationModule
   ],
   controllers: [AppController],
   providers: [
     AppService,
     {
       provide: APP_GUARD,
-      useClass: RolesGuard, // Áp dụng RolesGuard toàn bộ ứng dụng
+      useClass: RolesGuard, 
     },
   ],
 })
@@ -90,6 +94,7 @@ export class AppModule implements NestModule {
         {path: '/category-product/create', method: RequestMethod.POST},
         {path: '/category-product/update/:id', method: RequestMethod.PATCH},
         {path: '/category-product/delete/:id', method: RequestMethod.DELETE},
+        {path: '/category-product/all', method: RequestMethod.GET},
         {path: '/product/create-product', method: RequestMethod.POST},
         {path: '/product/update-product/:id', method: RequestMethod.PATCH},
         {path: '/product/delete-product/:id', method: RequestMethod.DELETE},
@@ -98,6 +103,7 @@ export class AppModule implements NestModule {
         CartitemController,
         OrderItemController,
         UserController,
+        TransactionController,
       );
       // .forRoutes('orders', 'cart', 'cartitem', 'order-item', 'user', 'color');
   }

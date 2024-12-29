@@ -45,12 +45,15 @@ function UserAdmin() {
 
   const fetchProductData = async () => {
     try {
-      const response = await fetch("http://localhost:3000/user/getAll", {
-        headers: {
-          "Content-Type": "application/json",
-          token: `Bearer ${jwtToken}`,
-        },
-      });
+      const response = await fetch(
+        "http://localhost:3000/user/get-all-users",
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -63,50 +66,6 @@ function UserAdmin() {
       console.error("Error fetching product data:", error);
       throw error; // Propagate the error to handle it in the calling code
     }
-  };
-
-  const removeProduct = async (UserId) => {
-    try {
-      const response = await fetch(
-        `http://localhost:3000/user/delete-user/${UserId}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            token: `Bearer ${jwtToken}`,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      await fetchProductData();
-    } catch (error) {
-      console.error("Error removing item:", error);
-    }
-  };
-
-  const handleRemoveUser = (UserId) => {
-    removeProduct(UserId);
-  };
-
-  const showConfirm = (userId) => {
-    confirm({
-      title: "Bạn có chắc chắn muốn xóa user này không?",
-      icon: <ExclamationCircleOutlined />,
-      content: "Thao tác này không thể hoàn tác.",
-      okText: "Xác nhận",
-      okType: "danger",
-      cancelText: "Hủy bỏ",
-      onOk() {
-        handleRemoveUser(userId);
-      },
-      onCancel() {
-        console.log("Hủy bỏ xóa user");
-      },
-    });
   };
 
   return (
@@ -123,30 +82,25 @@ function UserAdmin() {
           <h3>Email</h3>
         </Col>
         <Col md={3} offset={1}>
-          <h3>Địa chỉ</h3>
+          <h3>Role</h3>
         </Col>
       </div>
       <div className="cop_cartlist_item">
         {items.map((item) => (
-          <Card className="cop_item_cart" key={item._id}>
+          <Card className="cop_item_cart" key={item.UserId}>
             <Row align="middle">
               <Col md={5} offset={1}>
-                <span>{item.name}</span>
+                <span>{item.firstName + ' ' + item.middleName + ' ' + item.lastName}</span>
               </Col>
               <Col md={3}>
-                <span>{item.phone}</span>
+                <span>{item.phoneNumber}</span>
               </Col>
               <Col md={3} offset={1}>
                 <span className="cop_item_price">{item.email}</span>
               </Col>
-              <Col md={6} offset={1}>
-                <span>{item.address}</span>
-              </Col>
               <Col md={3} offset={1}>
-                <span>
-                  <Button onClick={() => showConfirm(item._id)}>
-                    <FaTrash />
-                  </Button>
+                <span className="cop_item_price">
+                  {item.admin ? "Admin" : "User" }
                 </span>
               </Col>
             </Row>
