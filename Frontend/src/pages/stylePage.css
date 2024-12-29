@@ -7,7 +7,7 @@
   border-radius: 0.5vw;
 }
 .green {
-  color: #30cf82;
+  color: #4caf91;
 }
 .pp_padding {
   padding: 2vh 4vw;
@@ -61,8 +61,8 @@
 }
 .addtocart_button {
   background-color: #d5ffea;
-  border-color: #30cf82;
-  color: #30cf82;
+  border-color: #4caf91;
+  color: #4caf91;
   font-weight: 400;
   border-width: 1.5px;
   border-radius: 2px !important;
@@ -81,7 +81,7 @@
   display: flex;
   align-items: flex-start;
   vertical-align: middle;
-  background-color: #30cf82;
+  background-color: #4caf91;
   color: #fff;
   font-weight: 600;
 }
@@ -122,8 +122,8 @@
 }
 .rate_filter_button {
   background-color: white;
-  color: #30cf82;
-  border-color: #30cf82;
+  color: #4caf91;
+  border-color: #4caf91;
   border-radius: 0px;
   width: 8vw;
   margin: 0px 0.5vw;
@@ -187,8 +187,8 @@
 }
 .cart_button {
   background-color: #d5ffea;
-  border-color: #30cf82;
-  color: #30cf82;
+  border-color: #4caf91;
+  color: #4caf91;
   font-weight: 400;
   border-width: 1.5px;
   border-radius: 2px !important;
@@ -208,8 +208,8 @@
 }
 .cp_delete_button {
   background-color: #d5ffea;
-  border-color: #30cf82;
-  color: #30cf82;
+  border-color: #4caf91;
+  color: #4caf91;
   font-weight: 400;
   border-width: 1.5px;
   border-radius: 2px !important;
@@ -218,7 +218,7 @@
   justify-content: center;
 }
 .cp_item_price {
-  color: #30cf82;
+  color: #4caf91;
   font-weight: 600;
 }
 .order_info_cover span {
@@ -231,7 +231,7 @@
   display: flex;
   align-items: flex-start;
   vertical-align: middle;
-  background-color: #30cf82;
+  background-color: #4caf91;
   color: #fff;
   font-weight: 600;
 }
@@ -242,7 +242,7 @@
   border-radius: 0px;
   padding: 10px 20px;
   vertical-align: middle;
-  background-color: #30cf82;
+  background-color: #4caf91;
   color: white;
   font-weight: 600;
   margin-bottom: 0px;
@@ -276,8 +276,8 @@
 }
 .profilepage_button {
   background-color: #d5ffea;
-  color: #30cf82;
-  border-color: #30cf82;
+  color: #4caf91;
+  border-color: #4caf91;
   font-weight: 400;
   border-radius: 2px !important;
 }
@@ -294,15 +294,15 @@
   display: flex;
   align-items: flex-start;
   vertical-align: middle;
-  background-color: #30cf82;
+  background-color: #4caf91;
   color: #fff;
   font-weight: 600;
 }
 .cop_button1 {
   background-color: #d5ffea;
-  color: #30cf82;
+  color: #4caf91;
   border-radius: 2px !important;
-  border-color: #30cf82;
+  border-color: #4caf91;
   font-weight: 400;
   border-width: 1.5px;
   display: flex;
@@ -310,12 +310,12 @@
   justify-content: center;
 }
 .cop_button2 {
-  border-color: #30cf82;
+  border-color: #4caf91;
   font-weight: 400;
   border-width: 1.5px;
   border-radius: 2px !important;
   color: white;
-  background-color: #30cf82;
+  background-color: #4caf91;
   margin-left: 20px;
   display: flex;
   align-items: center;
@@ -350,7 +350,7 @@
   border-radius: 0;
 }
 .cop_item_price {
-  color: #30cf82;
+  color: #4caf91;
   font-weight: 600;
 }
 .cop_voucher {
@@ -384,13 +384,13 @@
   display: flex;
   align-items: flex-start;
   vertical-align: middle;
-  background-color: #30cf82;
+  background-color: #4caf91;
   color: #fff;
   font-weight: 600;
 }
 .ho_button1 {
   background-color: #d5ffea;
-  color: #30cf82;
+  color: #4caf91;
   font-weight: 600;
   border-radius: 2px !important;
 }
@@ -398,7 +398,7 @@
   font-weight: 600;
   border-radius: 2px !important;
   color: white;
-  background-color: #30cf82;
+  background-color: #4caf91;
   margin-left: 20px;
 }
 .ho_cartlist_header {
@@ -422,7 +422,7 @@
   border-radius: 0;
 }
 .ho_item_price {
-  color: #30cf82;
+  color: #4caf91;
   font-weight: 600;
 }
 .ho_voucher {
@@ -446,8 +446,8 @@
 }
 .ho_review_button {
   background-color: #d5ffea;
-  border-color: #30cf82;
-  color: #30cf82;
+  border-color: #4caf91;
+  color: #4caf91;
   font-weight: 400;
   border-width: 1.5px;
   border-radius: 2px !important;

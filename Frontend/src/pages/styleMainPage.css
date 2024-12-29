@@ -1,12 +1,10 @@
 /* Header 6*/
 .title-comm {
-  color: #fff;
   font-size: 18px;
   position: relative;
   margin-top: 1vh;
   margin-bottom: 2vh;
   font-weight: 700;
-  background-color: #f5f5f5;
   text-align: center;
 }
 .title-comm .title-holder {
@@ -24,12 +22,8 @@
 }
 .title_bar {
   display: flex;
-  border-radius: 6px;
-  /* background-color: #30cf82;*/
-  /* justify-content: center; */
   align-items: center;
   position: absolute;
-  width: 10vw;
 }
 .page_title {
   margin: 0px;
@@ -60,7 +54,7 @@
   border-radius: 0.5vw;
   max-height: 310px;
 }
-.mp_book_item_image {
+.mp_product_item_image {
   height: 190px;
   width: 190px !important;
 }
@@ -68,7 +62,7 @@
   height: 60px;
   margin: 0px;
 }
-.book_title {
+.product_title {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -76,11 +70,11 @@
   width: 140px;
   font-size: 12px;
 }
-.book_star {
-  color: #30cf82;
+.product_star {
+  color: #4caf91;
   font-size: 12px;
 }
-.book_price {
+.product_price {
   font-size: 15px !important;
   font-weight: 600;
   color: #174e34 !important;

@@ -1,68 +1,87 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Like, Repository } from 'typeorm';
 import { CreateProductDto } from '../dto/create-product.dto';
 import { UpdateProductDto } from '../dto/update-product.dto';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from '../entities/product.entity';
-import { DeepPartial, Repository } from 'typeorm';
-import { TYPE_STATUS } from 'src/shared/constants/status.const';
+import { CategoryProduct } from 'src/modules/categoryproduct/entities/categoryproduct.entity';
 
 @Injectable()
 export class ProductService {
   constructor(
     @InjectRepository(Product)
-    private productRepository: Repository<Product>,
+    private readonly productRepository: Repository<Product>,
+    @InjectRepository(CategoryProduct)
+    private readonly categoryProductRepository: Repository<CategoryProduct>,
   ) {}
-  create(createProductDto: CreateProductDto): Promise<Product> {
-    const product = this.productRepository.create(
-      createProductDto as unknown as DeepPartial<Product>,
-    );
-    return this.productRepository.save(product);
+
+  async create(createProductDto: CreateProductDto): Promise<Product> {
+    const product = this.productRepository.create(createProductDto);
+    return await this.productRepository.save(product);
   }
 
-  findAll(): Promise<Product[]> {
-    return this.productRepository.find();
+  async findAll(): Promise<Product[]> {
+    return await this.productRepository.find({
+      where: { shop: true },
+    });
+  }
+  async findAllAdmin(): Promise<Product[]> {
+    return await this.productRepository.find();
   }
 
-  findOne(mProductId: number): Promise<Product> {
-    return this.productRepository.findOneBy({ mProductId });
+  async findByCategory(categoryId: number): Promise<Product[]> {
+    // Lấy tất cả các sản phẩm có liên kết với categoryId từ bảng CategoryProduct
+    const categoryProducts = await this.categoryProductRepository.find({
+      where: { category: { id: categoryId } },
+      relations: ['product'], // Bao gồm thông tin sản phẩm
+    });
+
+    // Trả về mảng các sản phẩm
+    return categoryProducts.map((categoryProduct) => categoryProduct.product);
   }
 
-  findAllType(mTypeName: string): Promise<Product[]> {
-    return this.productRepository
-      .createQueryBuilder('product')
-      .leftJoinAndSelect('product.mTypeId', 'type')
-      .where('type.mTypeName = :mTypeName', { mTypeName })
-      .getMany();
+  async searchProducts(keyword: string): Promise<Product[]> {
+    return this.productRepository.find({
+      where: [{ title: Like(`%${keyword}%`) }],
+    });
+  }
+
+  async findOne(id: number): Promise<Product> {
+    const product = await this.productRepository.findOne({ where: { id } });
+    if (!product) {
+      throw new NotFoundException(`Product with ID ${id} not found`);
+    }
+    return product;
   }
 
   async update(
-    mProductId: number,
+    id: number,
     updateProductDto: UpdateProductDto,
-  ): Promise<void> {
-    await this.productRepository.update(
-      mProductId,
-      updateProductDto as unknown as DeepPartial<Product>,
-    );
+  ): Promise<Product> {
+    const product = await this.findOne(id);
+    const updatedProduct = Object.assign(product, updateProductDto);
+    return await this.productRepository.save(updatedProduct);
   }
 
-  async remove(mProductId: number): Promise<void> {
-    const product = await this.findOne(mProductId);
+  async remove(id: number): Promise<boolean> {
+    const product = await this.findOne(id);
     if (product) {
-      product.mStatus = TYPE_STATUS.DELETE;
-      await this.update(mProductId, this.toUpdateProductDto(product));
+      await this.productRepository.remove(product);
+      return true;
     }
+    return false;
   }
 
-  toUpdateProductDto(product: Product): UpdateProductDto {
-    const updateProductDto = new UpdateProductDto();
-    updateProductDto.mProductName = product.mProductName;
-    updateProductDto.mProductPrice = product.mProductPrice;
-    updateProductDto.mProductDescription = product.mProductDescription;
-    updateProductDto.mProductStockQuantity = product.mProductStockQuantity;
-    updateProductDto.mProductImage = product.mProductImage;
-    updateProductDto.mTypeId = product.mTypeId.mTypeId;
-    updateProductDto.mStatus = product.mStatus;
-    updateProductDto.mModified = product.mModified;
-    return updateProductDto;
+  async findAllWithCategories() {
+    // Sử dụng queryBuilder để tối ưu performance
+    const products = await this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.categoryProducts', 'categoryProduct')
+      .leftJoinAndSelect('categoryProduct.category', 'category')
+      .leftJoinAndSelect('category.parent', 'parentCategory')
+      .orderBy('product.id', 'DESC')
+      .getMany();
+
+    return products;
   }
 }

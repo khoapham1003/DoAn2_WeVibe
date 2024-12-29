@@ -8,16 +8,6 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const getCookie = (cookieName) => {
-    const cookies = document.cookie.split("; ");
-    for (const cookie of cookies) {
-      const [name, value] = cookie.split("=");
-      if (name === cookieName) {
-        return value;
-      }
-    }
-    return null;
-  };
   const handleLogIn = async () => {
     try {
       setLoading(true);
@@ -27,14 +17,11 @@ const Login = () => {
       const { username, password } = values;
 
       const requestBody = {
-        email: username,
-        password: password,
-        // sUser_username: username,
-        // sUser_password: password,
-        // rememberme: true,
+        Email: username,
+        Password: password,
       };
 
-      const response = await fetch("http://localhost:3000/user/sign-in", {
+      const response = await fetch("http://localhost:3000/auth/login", {
         method: "POST",
         mode: "cors",
         headers: {
@@ -44,43 +31,42 @@ const Login = () => {
       });
 
       if (!response.ok) {
-        const error = await response.text();
+        const error = await response.json();
         if (error) {
-          message.error(`${error}`);
+          message.error(`${error.message}`);
         }
       } else {
         const responseData = await response.json();
         console.log(responseData);
-
-        if (responseData.status == "ERR") {
-          message.error("Đăng nhập thất bại! Lỗi: " + responseData.message);
-          setError("Login failed. Please try again.");
-          console.error("Login failed", error);
-        } else {
-          document.cookie = `accessToken=${responseData.access_token}; path=/`;
-          document.cookie = `refreshToken=${responseData.refresh_token}; path=/`;
-          message.success("Đăng nhập thành công!");
-          const accessToken = responseData.access_token;
-          if (accessToken) {
-            const tokenParts = accessToken.split(".");
-            if (tokenParts.length !== 3) {
-              throw new Error("Invalid token format");
-            }
-            const decodedToken = JSON.parse(atob(tokenParts[1]));
-            if (decodedToken.isAdmin) {
+        const accessToken = responseData.access_token;
+        if (accessToken) {
+          try {
+            const decodedToken = JSON.parse(atob(accessToken.split(".")[1]));
+            const email = decodedToken.email;
+            const CartId = decodedToken.CartId;
+            const UserId = decodedToken.UserId;
+            const role = decodedToken.role;
+            document.cookie = `accessToken=${responseData.access_token}; path=/`;
+            document.cookie = `email=${email}; path=/`;
+            document.cookie = `CartId=${CartId}; path=/`;
+            document.cookie = `userid=${UserId}; path=/`;
+            document.cookie = `role=${role}; path=/`;
+            message.success("Đăng nhập thành công!");
+            if (role == "admin") {
+              console.log(role);
               navigate(`/admin`);
-              qq;
             } else {
               navigate(`/`);
             }
+            window.location.reload();
+          } catch (error) {
+            console.error("Error decoding token:", error);
           }
-
-          window.location.reload();
         }
       }
     } catch (error) {
       setError("Login failed. Please try again.");
-      console.error("Login failed", error);
+      console.error("Login failed", error.message);
     } finally {
       setLoading(false);
     }

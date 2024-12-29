@@ -31,24 +31,30 @@ const SearchBar = ({ onSearchResult, ...props }) => {
         onChange={(e) => setSearchValue(e.target.value)}
         onPressEnter={onSearch}
         value={searchValue}
-        placeholder="Search book"
+        placeholder="Search items..."
         allowClear
         size="large"
-        style={{ backgroundColor: "#d0d3cc" }}
+        style={{
+          border: "1px solid #4CAF91",
+          backgroundColor: "#F8F9FA",
+          color: "#127567",
+        }}
+        suffix={
+          <Button
+            style={{
+              border: "none",
+              boxShadow: "none",
+              width: "3rem",
+              height: "100%",
+              backgroundColor: "transparent",
+            }}
+            onClick={onSearch}
+          >
+            <AiOutlineSearch />
+          </Button>
+        }
         {...props}
       />
-      <Button
-        style={{
-          border: "none",
-          background: "#ffffff",
-          boxShadow: "none",
-          marginTop: "0.25rem",
-          width: "4rem",
-        }}
-        onClick={onSearch}
-      >
-        <AiOutlineSearch />
-      </Button>
     </div>
   );
 };

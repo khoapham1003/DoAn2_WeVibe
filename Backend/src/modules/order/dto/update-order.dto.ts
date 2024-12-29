@@ -1,34 +1,83 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateOrderDto } from './create-order.dto';
 import {
-  IsDateString,
-  IsIn,
-  IsInt,
-  IsOptional,
-  IsString,
-  IsDecimal,
-} from 'class-validator';
-import { ORDER_STATUS } from 'src/shared/constants/order-status.const';
-
-export class UpdateOrderDto extends PartialType(CreateOrderDto) {
-  @IsOptional()
-  @IsInt()
-  mUserId?: number;
-
-  @IsOptional()
-  @IsString()
-  @IsIn([ORDER_STATUS.PENDING, ORDER_STATUS.COMPLETE, ORDER_STATUS.CANCELLED])
-  mStatus?: string;
-
-  @IsOptional()
-  @IsDecimal()
-  mTotalAmount?: number;
-
-  @IsOptional()
-  @IsString()
-  mPaymentMethod?: string;
-
-  @IsOptional()
-  @IsDateString()
-  mModified?: string;
-}
+    IsString,
+    IsOptional,
+    IsInt,
+    IsPositive,
+    IsEmail,
+    IsNumber,
+    IsNotEmpty,
+  } from 'class-validator';
+  
+  export class UpdateOrderDto {
+    @IsString()
+    @IsOptional()
+    session?: string;
+  
+    @IsString()
+    @IsOptional()
+    token?: string;
+  
+    @IsString()
+    @IsNotEmpty()
+    status?: string;
+  
+    @IsNumber()
+    @IsNotEmpty()
+    @IsPositive()
+    subTotal?: number;
+  
+    @IsNumber()
+    @IsNotEmpty()
+    @IsOptional()
+    totalDiscount?: number;
+  
+    @IsNumber()
+    @IsNotEmpty()
+    shippingFee?: number;
+  
+    @IsNumber()
+    @IsNotEmpty()
+    @IsPositive()
+    grandTotal?: number;
+  
+    @IsString()
+    @IsNotEmpty()
+    firstName?: string;
+  
+    @IsString()
+    @IsNotEmpty()
+    middleName?: string;
+  
+    @IsString()
+    @IsNotEmpty()
+    lastName?: string;
+  
+    @IsString()
+    @IsNotEmpty()
+    phoneNumber?: string;
+  
+    @IsEmail()
+    @IsNotEmpty()
+    email?: string;
+  
+    @IsString()
+    @IsNotEmpty()
+    line1?: string;
+  
+    @IsString()
+    @IsNotEmpty()
+    line2?: string;
+  
+    @IsString()
+    @IsNotEmpty()
+    city?: string;
+  
+    @IsString()
+    @IsNotEmpty()
+    province?: string;
+  
+    @IsString()
+    @IsNotEmpty()
+    country?: string;
+  }
+  

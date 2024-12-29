@@ -36,6 +36,7 @@ function ChangePassword() {
     }
     return null;
   };
+  const userId = getCookie("userid");
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -48,17 +49,15 @@ function ChangePassword() {
 
   const handleChange = async () => {
     try {
-      const apiUrl = `https://localhost:3000/api/User/ChangePasswordForgotPassword`;
-      const jwtToken = getCookie("forgotToken");
+      const apiUrl = `http://localhost:3000/user/change-password/${userId}`;
 
       const data = {
-        sUser_tokenFP: jwtToken,
-        sUser_password: password,
-        sUser_confirmpassword: confirmpassword,
+        Password: password,
+        confirmPassword: confirmpassword,
       };
       console.log(data);
       const response = await fetch(apiUrl, {
-        method: "POST",
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
@@ -76,7 +75,6 @@ function ChangePassword() {
         }
       } else {
         message.success("Cập nhật mật khẩu thành công!");
-        document.cookie = `forgotToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
         navigate(`/sign_in`);
         window.location.reload();
       }

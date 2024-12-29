@@ -1,45 +1,49 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateProductDto } from './create-product.dto';
-import {
-  IsDateString,
-  IsIn,
-  IsInt,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-  Length,
-  MaxLength,
-} from 'class-validator';
-import { TYPE_STATUS } from 'src/shared/constants/status.const';
+import { IsString, IsOptional, IsNumber, IsBoolean, IsDateString, Min, MaxLength } from 'class-validator';
 
-export class UpdateProductDto extends PartialType(CreateProductDto) {
+export class UpdateProductDto {
   @IsString()
-  @Length(1, 100)
-  mProductName: string;
-
-  @IsNumber({ maxDecimalPlaces: 2 })
-  mProductPrice: number;
+  @IsOptional()
+  @MaxLength(255)
+  title?: string;
 
   @IsString()
-  mProductDescription: string;
+  @IsOptional()
+  @MaxLength(255)
+  slug?: string;
+
+  @IsString()
+  @IsOptional()
+  content?: string;
 
   @IsNumber()
-  mProductStockQuantity: number;
-
-  @IsString()
-  @MaxLength(200)
-  mProductImage: string;
-
-  @IsInt()
-  mTypeId: number;
-
-  @IsString()
-  @IsNotEmpty()
-  @IsIn([TYPE_STATUS.ACTIVE, TYPE_STATUS.DELETE])
-  mStatus: string;
-
   @IsOptional()
+  @Min(0)
+  price?: number;
+
+  @IsNumber()
+  @IsOptional()
+  @Min(0)
+  quantity?: number;
+
+  @IsBoolean()
+  @IsOptional()
+  shop?: boolean;
+
+  @IsNumber()
+  @IsOptional()
+  @Min(0)
+  discount?: number;
+
   @IsDateString()
-  mModified?: string;
+  @IsOptional()
+  startsAt?: Date;
+
+  @IsDateString()
+  @IsOptional()
+  endsAt?: Date;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(255)
+  picture?: string;
 }

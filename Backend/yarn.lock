@@ -684,6 +684,11 @@
     semver "^7.3.5"
     tar "^6.1.11"
 
+"@microsoft/tsdoc@^0.15.0":
+  version "0.15.0"
+  resolved "https://registry.npmjs.org/@microsoft/tsdoc/-/tsdoc-0.15.0.tgz"
+  integrity sha512-HZpPoABogPvjeJOdzCOSJsXeL/SMCBgBZMVC3X3d7YYp2gf31MfxhUoYUNwf1ERPJOnQc0wkFn9trqI6ZEdZuA==
+
 "@nestjs/cli@^10.0.0":
   version "10.4.5"
   resolved "https://registry.npmjs.org/@nestjs/cli/-/cli-10.4.5.tgz"
@@ -709,7 +714,7 @@
     webpack "5.94.0"
     webpack-node-externals "3.0.0"
 
-"@nestjs/common@^10.0.0", "@nestjs/common@^10.4.5", "@nestjs/common@^8.0.0 || ^9.0.0 || ^10.0.0":
+"@nestjs/common@^10.0.0", "@nestjs/common@^10.4.5", "@nestjs/common@^8.0.0 || ^9.0.0 || ^10.0.0", "@nestjs/common@^9.0.0 || ^10.0.0":
   version "10.4.5"
   resolved "https://registry.npmjs.org/@nestjs/common/-/common-10.4.5.tgz"
   integrity sha512-N/yUyuYCBMb0+H6jHhntR7PURzji0usID/DByhOfooyk/aPGscI0aQKwOA6edlJlT92hHUvXYLJ5p3npj7KcjQ==
@@ -727,7 +732,7 @@
     dotenv-expand "10.0.0"
     lodash "4.17.21"
 
-"@nestjs/core@^10.0.0", "@nestjs/core@^10.4.5", "@nestjs/core@^8.0.0 || ^9.0.0 || ^10.0.0":
+"@nestjs/core@^10.0.0", "@nestjs/core@^10.4.5", "@nestjs/core@^8.0.0 || ^9.0.0 || ^10.0.0", "@nestjs/core@^9.0.0 || ^10.0.0":
   version "10.4.5"
   resolved "https://registry.npmjs.org/@nestjs/core/-/core-10.4.5.tgz"
   integrity sha512-wk0KJ+6tuidqAdeemsQ40BCp1BgMsSuSLG577aqXLxXYoa8FQYPrdxoSzd05znYLwJYM55fisZWb3FLF9HT2qw==
@@ -747,10 +752,10 @@
     "@types/jsonwebtoken" "9.0.5"
     jsonwebtoken "9.0.2"
 
-"@nestjs/mapped-types@^2.0.5":
-  version "2.0.5"
-  resolved "https://registry.npmjs.org/@nestjs/mapped-types/-/mapped-types-2.0.5.tgz"
-  integrity sha512-bSJv4pd6EY99NX9CjBIyn4TVDoSit82DUZlL4I3bqNfy5Gt+gXTa86i3I/i0iIV9P4hntcGM5GyO+FhZAhxtyg==
+"@nestjs/mapped-types@^2.0.5", "@nestjs/mapped-types@2.0.6":
+  version "2.0.6"
+  resolved "https://registry.npmjs.org/@nestjs/mapped-types/-/mapped-types-2.0.6.tgz"
+  integrity sha512-84ze+CPfp1OWdpRi1/lOu59hOhTz38eVzJvRKrg9ykRFwDz+XleKfMsG0gUqNZYFa6v53XYzeD+xItt8uDW7NQ==
 
 "@nestjs/passport@^10.0.3":
   version "10.0.3"
@@ -778,6 +783,18 @@
     comment-json "4.2.3"
     jsonc-parser "3.3.1"
     pluralize "8.0.0"
+
+"@nestjs/swagger@^8.0.7":
+  version "8.0.7"
+  resolved "https://registry.npmjs.org/@nestjs/swagger/-/swagger-8.0.7.tgz"
+  integrity sha512-zaTMCEZ/CxX7QYF110nTqJsn7eCXp4VI9kv7+AdUcIlBmhhgJpggBw2Mx2p6xVjyz1EoWXGfxxWKnxEyaQwFlg==
+  dependencies:
+    "@microsoft/tsdoc" "^0.15.0"
+    "@nestjs/mapped-types" "2.0.6"
+    js-yaml "4.1.0"
+    lodash "4.17.21"
+    path-to-regexp "3.3.0"
+    swagger-ui-dist "5.18.2"
 
 "@nestjs/testing@^10.0.0":
   version "10.4.3"
@@ -832,6 +849,11 @@
   version "0.1.1"
   resolved "https://registry.npmjs.org/@pkgr/core/-/core-0.1.1.tgz"
   integrity sha512-cq8o4cWH0ibXh9VGi5P20Tu9XF/0fFXl9EUinr9QfTM7a7p0oTA4iJRCQWppXR1Pg8dSM0UCItCkPwsk9qWWYA==
+
+"@scarf/scarf@=1.4.0":
+  version "1.4.0"
+  resolved "https://registry.npmjs.org/@scarf/scarf/-/scarf-1.4.0.tgz"
+  integrity sha512-xxeapPiUXdZAE3che6f3xogoJPeZgig6omHEy1rIY5WVsB3H2BHNnZH+gHG6x91SCWyQCzWGsuL2Hh3ClO5/qQ==
 
 "@sinclair/typebox@^0.27.8":
   version "0.27.8"
@@ -2511,7 +2533,7 @@ expect@^29.0.0, expect@^29.7.0:
     jest-message-util "^29.7.0"
     jest-util "^29.7.0"
 
-express@4.21.0:
+"express@>=4.0.0 || >=5.0.0-beta", express@4.21.0:
   version "4.21.0"
   resolved "https://registry.npmjs.org/express/-/express-4.21.0.tgz"
   integrity sha512-VqcNGcj/Id5ZT1LZ/cfihi3ttTn+NJmkli2eZADigjq29qTlWi/hAQ43t/VLPq8+UX06FCEx3ByOYet6ZFblng==
@@ -3634,7 +3656,7 @@ js-yaml@^3.13.1:
     argparse "^1.0.7"
     esprima "^4.0.0"
 
-js-yaml@^4.1.0:
+js-yaml@^4.1.0, js-yaml@4.1.0:
   version "4.1.0"
   resolved "https://registry.npmjs.org/js-yaml/-/js-yaml-4.1.0.tgz"
   integrity sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==
@@ -3695,7 +3717,7 @@ jsonfile@^6.0.1:
   optionalDependencies:
     graceful-fs "^4.1.6"
 
-jsonwebtoken@^9.0.0, jsonwebtoken@9.0.2:
+jsonwebtoken@^9.0.0, jsonwebtoken@^9.0.2, jsonwebtoken@9.0.2:
   version "9.0.2"
   resolved "https://registry.npmjs.org/jsonwebtoken/-/jsonwebtoken-9.0.2.tgz"
   integrity sha512-PRp66vJ865SSqOlgqS8hujT5U4AOgMfhrwYIuIhfKaoSCZcirrmASQr8CX7cUg+RMih+hgznrjp99o+W4pJLHQ==
@@ -5078,6 +5100,20 @@ supports-preserve-symlinks-flag@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz"
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
+
+swagger-ui-dist@>=5.0.0, swagger-ui-dist@5.18.2:
+  version "5.18.2"
+  resolved "https://registry.npmjs.org/swagger-ui-dist/-/swagger-ui-dist-5.18.2.tgz"
+  integrity sha512-J+y4mCw/zXh1FOj5wGJvnAajq6XgHOyywsa9yITmwxIlJbMqITq3gYRZHaeqLVH/eV/HOPphE6NjF+nbSNC5Zw==
+  dependencies:
+    "@scarf/scarf" "=1.4.0"
+
+swagger-ui-express@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.npmjs.org/swagger-ui-express/-/swagger-ui-express-5.0.1.tgz"
+  integrity sha512-SrNU3RiBGTLLmFU8GIJdOdanJTl4TOmT27tt3bWWHppqYmAZ6IDuEuBvMU6nZq0zLEe6b/1rACXCgLZqO6ZfrA==
+  dependencies:
+    swagger-ui-dist ">=5.0.0"
 
 symbol-observable@4.0.0:
   version "4.0.0"

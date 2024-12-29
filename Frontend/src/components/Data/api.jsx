@@ -2,19 +2,20 @@
 
 export const fetchProductData = async () => {
   try {
-    const response = await fetch("http://localhost:3000/product/get-all", {
+    const response = await fetch('http://localhost:3000/product/get-all-products', {
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     });
-
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
+    console.log("APTI lấy data product")
     const data = await response.json();
+    console.log(data);
     return data;
   } catch (error) {
-    console.error("Error fetching product data:", error);
+    console.error('Error fetching product data:', error);
     throw error; // Propagate the error to handle it in the calling code
   }
 };

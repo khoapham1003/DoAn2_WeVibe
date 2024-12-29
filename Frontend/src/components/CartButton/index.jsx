@@ -12,8 +12,12 @@ function CartButton() {
         icon={<ShoppingCartOutlined />}
         style={{
           display: "inline",
-          border: "none",
           boxShadow: "none",
+          background: "#ffffff",
+          color: "#127567",
+          border: "none",
+          cursor: "pointer",
+          width: "3rem",
         }}
         onClick={() => {
           navigate("/cart");

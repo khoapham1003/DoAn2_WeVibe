@@ -1,37 +1,44 @@
-import {
-  IsString,
-  IsNumber,
-  Length,
-  MaxLength,
-  IsNotEmpty,
-  IsIn,
-  IsInt,
-} from 'class-validator';
-import { TYPE_STATUS } from 'src/shared/constants/status.const';
+import { IsString, IsNotEmpty, IsNumber, IsOptional, IsBoolean, IsDateString, Min, MaxLength } from 'class-validator';
 
 export class CreateProductDto {
   @IsString()
-  @Length(1, 100)
-  mProductName: string;
-
-  @IsNumber({ maxDecimalPlaces: 2 })
-  mProductPrice: number;
-
-  @IsString()
-  mProductDescription: string;
-
-  @IsNumber()
-  mProductStockQuantity: number;
-
-  @IsString()
-  @MaxLength(200)
-  mProductImage: string;
-
-  @IsInt()
-  mTypeId: number;
+  @IsNotEmpty()
+  @MaxLength(255)
+  title: string;
 
   @IsString()
   @IsNotEmpty()
-  @IsIn([TYPE_STATUS.ACTIVE, TYPE_STATUS.DELETE])
-  mStatus: string;
+  @MaxLength(255)
+  slug: string;
+
+  @IsString()
+  @IsNotEmpty()
+  content: string;
+
+  @IsNumber()
+  @Min(0)
+  price: number;
+
+  @IsNumber()
+  @Min(0)
+  quantity: number;
+
+  @IsBoolean()
+  shop: boolean;
+
+  @IsNumber()
+  @IsOptional()
+  @Min(0)
+  discount?: number;
+
+  @IsDateString()
+  startsAt: Date;
+
+  @IsDateString()
+  endsAt: Date;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(255)
+  picture?: string;
 }

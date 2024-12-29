@@ -1,22 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { IoLocationSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import { Button, Row, Col, List, Card, Image, Modal, Input, Rate } from "antd";
-import { message } from "antd";
-
-const { TextArea } = Input;
+import { Button, Row, Col, List, Card, Image, Input, message } from "antd";
 
 function HistoryOrderPage() {
-  const [items, setItems] = useState([]);
-  const [order, setOrder] = useState([]);
-  const [shippingFee, setShippingFee] = useState(30000);
-  const [isReviewModalVisible, setReviewModalVisible] = useState(false);
-  const [reviewData, setReviewData] = useState({
-    iReview_start: 1,
-    sReview_content: "",
-  });
-  const [selectedItemIndex, setSelectedItemIndex] = useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [order, setOrder] = useState(null); // Changed from empty array to null
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   const getCookie = (cookieName) => {
     const cookies = document.cookie.split("; ");
@@ -28,125 +19,143 @@ function HistoryOrderPage() {
     }
     return null;
   };
+
   const orderId = localStorage.getItem("orderhistoryId");
+
   const jwtToken = getCookie("accessToken");
 
   useEffect(() => {
-    const fetchCheckOutData = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:3000/order/get-details-order/${orderId}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${jwtToken}`,
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log(data);
-        setItems(data.data.orderItems);
-        setOrder(data.data.shippingAddress);
-        return data;
-      } catch (error) {
-        console.error("Error fetching product data:", error);
-      }
-    };
-    fetchCheckOutData();
+    fetchOrderData();
   }, []);
 
-  const calculateTotalPrice = () => {
-    return items.reduce((total, item) => total + item.price * item.amount, 0);
-  };
-
-  let totalPrice = calculateTotalPrice();
-
-  const handleReviewClick = (index) => {
-    setReviewModalVisible(true);
-    setSelectedItemIndex(index);
-  };
-
-  const handleReviewSubmit = async () => {
+  const fetchOrderData = async () => {
     try {
-      if (selectedItemIndex !== null) {
-        const selectedProduct = items[selectedItemIndex];
-        const requestBody = {
-          iOrder_id: order.iOrder_id,
-          lReview_products: [
-            {
-              id: selectedProduct.id,
-              iReview_start: reviewData.iReview_start,
-              sReview_content: reviewData.sReview_content,
-            },
-          ],
-        };
-        console.log(`requestdata`, requestBody);
-        const response = await fetch("https://localhost:3000/api/Review", {
-          method: "POST",
+      const response = await fetch(
+        `http://localhost:3000/orders/order-detail/${orderId}`,
+        {
+          method: "GET",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${jwtToken}`,
           },
-          body: JSON.stringify(requestBody),
-        });
-
-        if (!response.ok) {
-          const error = await response.text();
-          if (error) {
-            message.error(`${error}`);
-          }
-          throw new Error(`HTTP error! Status: ${response.status}`);
         }
+      );
 
-        message.success("Review submitted successfully");
-        setReviewModalVisible(false);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
+
+      const data = await response.json();
+      setOrder(data.data[0]);
+      console.log(order);
     } catch (error) {
-      console.error("Error submitting review:", error);
-      message.error("Error submitting review");
+      console.error("Error fetching order data:", error);
     }
   };
 
+  if (!order) {
+    return <div>Loading...</div>; 
+  }
+
   return (
     <div>
-      <h3 class="title-comm">
-        <span class="title-holder">ĐƠN HÀNG ĐÃ MUA</span>
+      <h3 className="title-comm">
+        <span className="title-holder">ĐẶT HÀNG</span>
       </h3>
-      <div className="ho_container">
+      <div className="cop_container">
         <div className="recipient_info">
           <List>
             <List.Item>
               <h2>Thông tin người nhận</h2>
             </List.Item>
-            <List.Item>Tên người dùng: {order.fullName}</List.Item>
-            <List.Item>Phone: {order.phone}</List.Item>
-            <List.Item>Địa chỉ: {order.address}</List.Item>
+            <List.Item>
+              <div>
+                Họ:
+                <Input name="lastName" value={order.address?.lastName || ""} />
+              </div>
+            </List.Item>
+            <List.Item>
+              <div>
+                Tên đệm:
+                <Input
+                  name="middleName"
+                  value={order.address?.middleName || ""}
+                />
+              </div>
+            </List.Item>
+            <List.Item>
+              <div>
+                Tên:
+                <Input
+                  name="firstName"
+                  value={order.address?.firstName || ""}
+                />
+              </div>
+            </List.Item>
+            <List.Item>
+              <div>
+                Số điện thoại:
+                <Input name="phoneNumber" value={order.address?.phone || ""} />
+              </div>
+            </List.Item>
+            <List.Item>
+              <div>
+                Email:
+                <Input name="email" value={order.address?.email || ""} />
+              </div>
+            </List.Item>
+            <List.Item>
+              <div>
+                Địa chỉ 1:
+                <Input name="line1" value={order.address?.line1 || ""} />
+              </div>
+            </List.Item>
+            <List.Item>
+              <div>
+                Địa chỉ 2 (tùy chọn):
+                <Input name="line2" value={order.address?.line2 || ""} />
+              </div>
+            </List.Item>
+            <List.Item>
+              <div>
+                Thành phố:
+                <Input name="city" value={order.address?.city || ""} />
+              </div>
+            </List.Item>
+            <List.Item>
+              <div>
+                Tỉnh:
+                <Input name="province" value={order.address?.province || ""} />
+              </div>
+            </List.Item>
+            <List.Item>
+              <div>
+                Quốc gia:
+                <Input name="country" value={order.address?.country || ""} />
+              </div>
+            </List.Item>
           </List>
         </div>
-        <div className="ho_cartlist_header">
+
+        <div className="cop_cartlist_header">
           <Col md={2} offset={1}>
             <h3>Sản phẩm</h3>
           </Col>
           <Col md={8}></Col>
-          <Col md={2} offset={1}>
+          <Col md={3} offset={1}>
             <h3>Đơn giá</h3>
           </Col>
-          <Col md={2} offset={1}>
+          <Col md={3} offset={1}>
             <h3>Số lượng</h3>
           </Col>
-          <Col md={2} offset={1}>
+          <Col md={3} offset={1}>
             <h3>Thành tiền</h3>
           </Col>
         </div>
-        <div className="ho_cartlist_item">
-          {items.map((item, index) => (
-            <Card className="ho_item_cart">
+
+        <div className="cop_cartlist_item">
+          {order.items?.map((item) => (
+            <Card className="cop_item_cart" key={item.id}>
               <Row align="middle">
                 <Col md={2} offset={1}>
                   <Image
@@ -154,74 +163,49 @@ function HistoryOrderPage() {
                       height: 80,
                       width: 80,
                     }}
-                    src={item.image}
-                    alt={item.name}
+                    alt={item.productName}
+                    src={item.picture}
                   />
                 </Col>
                 <Col md={8}>
-                  <span>{item.name}</span>
+                  <span>{item.productName}</span>
                 </Col>
-                <Col md={2} offset={1}>
+                <Col md={3} offset={1}>
                   <span>{item.price}đ</span>
                 </Col>
-                <Col md={2} offset={1}>
-                  <span>{item.amount}</span>
+                <Col md={3} offset={1}>
+                  <span>{item.quantity}</span>
                 </Col>
-                <Col md={2} offset={1}>
-                  <span className="ho_item_price">
-                    {item.price * item.amount}đ
-                  </span>
+                <Col md={3} offset={1}>
+                  <span className="cop_item_price">{item.totalPrice}đ</span>
                 </Col>
               </Row>
             </Card>
           ))}
         </div>
-        <div className="ho_checkout_info">
+
+        <div className="cop_checkout_info">
           <List>
             <List.Item>
               <h2>Thanh toán</h2>
             </List.Item>
             <List.Item>
-              <span>Tổng tiền hàng: {totalPrice}đ</span>
+              <span>Tổng tiền hàng: {order.subTotal}đ</span>
             </List.Item>
             <List.Item>
-              <span>Phí vận chuyển: {shippingFee}đ</span>
+              <span>Phí vận chuyển: {order.shippingFee}đ</span>
+            </List.Item>
+            <List.Item>
+              <span>Tổng giảm giá: {order.totalDiscount}đ</span>
             </List.Item>
             <List.Item>
               <span style={{ fontWeight: "500", fontStyle: "italic" }}>
-                Tổng thanh toán: {totalPrice + shippingFee} đ
+                Tổng thanh toán: {order.grandTotal}đ
               </span>
             </List.Item>
           </List>
         </div>
       </div>
-
-      <Modal
-        title="Đánh giá sản phẩm"
-        visible={isReviewModalVisible}
-        onOk={handleReviewSubmit}
-        onCancel={() => setReviewModalVisible(false)}
-      >
-        <p>Đánh giá sao:</p>
-        <Rate
-          value={reviewData.iReview_start}
-          onChange={(value) =>
-            setReviewData({ ...reviewData, iReview_start: value })
-          }
-          min={1}
-        />
-        <p>Nội dung đánh giá:</p>
-        <TextArea
-          rows={4}
-          value={reviewData.sReview_content}
-          onChange={(e) =>
-            setReviewData({
-              ...reviewData,
-              sReview_content: e.target.value,
-            })
-          }
-        />
-      </Modal>
     </div>
   );
 }

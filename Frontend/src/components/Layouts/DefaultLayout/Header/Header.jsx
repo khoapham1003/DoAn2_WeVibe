@@ -61,10 +61,13 @@ function Header() {
               icon={<UserOutlined />}
               style={{
                 display: "inline",
-                width: "4vh",
-                height: "4vh",
-                border: "none",
                 boxShadow: "none",
+                width: "3rem",
+                color: "#127567",
+                border: "none",
+                fontWeight: "600",
+                cursor: "pointer",
+                background: "#ffffff",
               }}
             ></Button>
           </Dropdown>

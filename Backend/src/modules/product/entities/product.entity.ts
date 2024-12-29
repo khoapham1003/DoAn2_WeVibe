@@ -1,69 +1,86 @@
-import { Type } from 'src/modules/type/entities/type.entity';
+import { CategoryProduct } from 'src/modules/categoryproduct/entities/categoryproduct.entity';
 import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
   BeforeInsert,
   BeforeUpdate,
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
+  OneToMany,
 } from 'typeorm';
 
 @Entity({ name: 'product' })
 export class Product {
-  @PrimaryGeneratedColumn('increment', { name: 'm_product_id' })
-  mProductId: number;
+  @PrimaryGeneratedColumn('increment', { name: 'id' })
+  id: number;
 
-  @Column({ name: 'm_product_name', type: 'varchar', length: 100 })
-  mProductName: string;
+  @Column({ type: 'varchar', length: 255 })
+  title: string;
 
-  @Column({ name: 'm_product_price', type: 'int' })
-  mProductPrice: number;
+  @Column({ type: 'varchar', length: 255 })
+  slug: string;
 
-  @Column({ name: 'm_product_description', type: 'text' })
-  mProductDescription: string;
+  @Column({ type: 'text' })
+  content: string;
 
-  @Column({ name: 'm_product_stock_quantity', type: 'int' })
-  mProductStockQuantity: number;
+  @Column({ type: 'float' })
+  price: number;
 
-  @Column({ name: 'm_product_image', type: 'varchar', length: 200 })
-  mProductImage: string;
+  @Column({ type: 'int' })
+  quantity: number;
 
-  @ManyToOne(() => Type)
-  @JoinColumn({ name: 'm_type_id' })
-  mTypeId: Type;
+  @Column({ type: 'boolean' })
+  shop: boolean;
 
-  @Column({ name: 'm_status' })
-  mStatus: string;
-
-  @Column({
-    name: 'm_created',
-    type: 'timestamp',
+  @CreateDateColumn({
+    name: 'created_at',
+    type: 'datetime',
     transformer: {
       to: (value: string) => (value ? new Date(value) : null),
       from: (value: Date) => (value ? value.toISOString() : null),
     },
   })
-  mCreated: string;
+  createdAt: string;
 
-  @Column({
-    name: 'm_modified',
-    type: 'timestamp',
+  @UpdateDateColumn({
+    name: 'updated_at',
+    type: 'datetime',
     transformer: {
       to: (value: string) => (value ? new Date(value) : null),
       from: (value: Date) => (value ? value.toISOString() : null),
     },
   })
-  mModified: string;
+  updatedAt: string;
+
+  @Column({ type: 'float', nullable: true })
+  discount: number;
+
+  @Column({ name: 'starts_at', type: 'datetime' })
+  startsAt: Date;
+
+  @Column({ name: 'ends_at', type: 'datetime' })
+  endsAt: Date;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  picture: string;
 
   @BeforeInsert()
   setCreationDate() {
-    this.mCreated = new Date().toISOString();
-    this.mModified = new Date().toISOString();
+    const now = new Date().toISOString();
+    this.createdAt = now;
+    this.updatedAt = now;
+    this.startsAt = new Date(now);
+    this.endsAt = new Date(now);
   }
 
   @BeforeUpdate()
   updateModificationDate() {
-    this.mModified = new Date().toISOString();
+    this.updatedAt = new Date().toISOString();
   }
+  @OneToMany(
+    () => CategoryProduct,
+    (categoryProduct) => categoryProduct.product,
+  )
+  categoryProducts: CategoryProduct[];
 }

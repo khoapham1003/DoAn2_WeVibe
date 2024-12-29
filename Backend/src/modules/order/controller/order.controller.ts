@@ -2,71 +2,151 @@ import {
   Controller,
   Get,
   Post,
-  Body,
   Patch,
-  Param,
   Delete,
-  HttpException,
+  Param,
+  Body,
   HttpStatus,
+  HttpException,
+  Query,
 } from '@nestjs/common';
 import { OrderService } from '../service/order.service';
 import { CreateOrderDto } from '../dto/create-order.dto';
 import { UpdateOrderDto } from '../dto/update-order.dto';
-import { Order } from '../entities/order.entity';
+import { ConfirmOrderDto } from '../dto/confirm-order.dto';
 
-@Controller('order')
+@Controller('orders')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
-  @Post('/create-order')
-  async create(@Body() createOrderDto: CreateOrderDto): Promise<Order> {
+  @Post('/create-order/:userId')
+  async createOrder(
+    @Body() createOrderDto: CreateOrderDto,
+    @Param('userId') userId: number,
+  ) {
+    return this.orderService.createOrder(createOrderDto, userId);
+  }
+
+  @Get('/order-statistics')
+  async orderStatistics() {
     try {
-      return await this.orderService.create(createOrderDto);
+      const statistics = await this.orderService.orderStatistics();
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Order statistics fetched successfully',
+        data: statistics,
+      };
     } catch (error) {
-      throw new HttpException('Failed to create order', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
-  @Get('/get-all-order')
-  async findAll(): Promise<Order[]> {
-    return await this.orderService.findAll();
-  }
-
-  @Get('/find-order/:mOrderId')
-  async findOne(@Param('mOrderId') id: string): Promise<Order> {
-    const order = await this.orderService.findOne(+id);
-    if (!order) {
-      throw new HttpException('Order not found', HttpStatus.NOT_FOUND);
+  @Get('/order-detail/:orderId')
+  async orderDetail(@Param('orderId') orderId: number) {
+    try {
+      const orderDetail = await this.orderService.orderDetail(orderId);
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Order statistics fetched successfully',
+        data: orderDetail,
+      };
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
-    return order;
   }
 
-  @Patch('/update-order/:mOrderId')
-  async update(
-    @Param('mOrderId') id: string,
+  @Get('/order-pending')
+  async orderProcessing() {
+    try {
+      const orderProcessing = await this.orderService.orderProcessing();
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Order Pending fetched successfully',
+        data: orderProcessing,
+      };
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Get('/order-history/:userId')
+  async orderHistory(
+    @Param('userId') userId: number,
+  ) {
+    try {
+      const orderHistory = await this.orderService.orderHistory(userId);
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Order History fetched successfully',
+        data: orderHistory,
+      };
+    } catch (error) {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+  @Get('/order-statistics1')
+  async getOrderStatistics(
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+  ) {
+    return this.orderService.getOrderStatistics(startDate, endDate);
+  }
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    return await this.orderService.findOne(+id);
+  }
+
+  @Patch('/confirm-order/:orderId')
+  async confirmOrder(
+    @Param('orderId') orderId: number,
+    @Body() ConfirmOrderDto: ConfirmOrderDto,
+  ) {
+    return this.orderService.confirmOrder( orderId, ConfirmOrderDto);
+  }
+
+  @Patch(':cartId/:orderId/complete')
+  async completeOrder(
+    @Param('orderId') orderId: number,
+    @Param('cartId') cartId: number,
     @Body() updateOrderDto: UpdateOrderDto,
-  ): Promise<void> {
-    const existingOrder = await this.orderService.findOne(+id);
-    if (!existingOrder) {
-      throw new HttpException('Order not found', HttpStatus.NOT_FOUND);
-    }
-    try {
-      await this.orderService.update(+id, updateOrderDto);
-    } catch (error) {
-      throw new HttpException('Failed to update order', HttpStatus.BAD_REQUEST);
-    }
+  ) {
+    return this.orderService.completeOrder(cartId, orderId, updateOrderDto);
   }
 
-  @Delete('/delete-order/:mOrderId')
-  async remove(@Param('mOrderId') id: string): Promise<void> {
-    const existingOrder = await this.orderService.findOne(+id);
-    if (!existingOrder) {
-      throw new HttpException('Order not found', HttpStatus.NOT_FOUND);
-    }
-    try {
-      await this.orderService.remove(+id);
-    } catch (error) {
-      throw new HttpException('Failed to delete order', HttpStatus.BAD_REQUEST);
-    }
+  @Patch(':id')
+  async update(
+    @Param('id') id: string,
+    @Body() updateOrderDto: UpdateOrderDto,
+  ) {
+    return await this.orderService.update(+id, updateOrderDto);
+  }
+
+  @Delete(':id')
+  async remove(@Param('id') id: string) {
+    return await this.orderService.remove(+id);
   }
 }

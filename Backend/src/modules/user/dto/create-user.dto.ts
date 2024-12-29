@@ -1,50 +1,37 @@
-import {
-  IsBoolean,
-  IsEmail,
-  IsIn,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  Length,
-} from 'class-validator';
-import { TYPE_STATUS } from 'src/shared/constants/status.const';
+import { IsString, IsEmail, IsOptional, IsBoolean, Length } from 'class-validator';
 
 export class CreateUserDto {
   @IsString()
-  @IsNotEmpty()
-  mName: string;
-
-  @IsString()
-  @IsEmail()
-  @IsNotEmpty()
-  mEmail: string;
-
-  @IsString()
-  @IsNotEmpty()
-  @Length(6, 100)
-  mComfirmPassword: string;
-
-  @IsString()
-  @IsNotEmpty()
-  @Length(10, 20)
-  mPhone: string;
-
-  @IsBoolean()
-  @IsNotEmpty()
-  mGender: boolean;
-
-  @IsString()
-  @IsNotEmpty()
-  mAddress: string;
+  @Length(1, 50)
+  firstName: string;
 
   @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  @Length(6, 100)
-  mPassword: string;
+  @Length(1, 50)
+  middleName?: string;
 
   @IsString()
-  @IsNotEmpty()
-  @IsIn([TYPE_STATUS.ACTIVE, TYPE_STATUS.DELETE])
-  mStatus: string;
+  @Length(1, 50)
+  lastName: string;
+
+  @IsOptional()
+  @IsString()
+  @Length(1, 20)
+  phoneNumber?: string;
+
+  @IsEmail()
+  @Length(1, 100)
+  email: string;
+
+  @IsString()
+  @Length(1, 255)
+  passwordHash: string;
+
+  @IsOptional()
+  @IsBoolean()
+  admin?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  guest?: boolean;
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
 import { DatePicker, Space, Button, Select } from "antd";
-import { Card, Row, Descriptions } from "antd";
+import { Card, Row, Descriptions, Tabs } from "antd";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -20,9 +20,11 @@ ChartJS.register(
   Legend
 );
 const { Option } = Select;
+const { TabPane } = Tabs;
 
 function OrderAdmin() {
   const [items, setItems] = useState([]);
+  const [orders, setOrders] = useState({ pending: [], complete: [] });
   const [chartData, setChartData] = useState({});
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -42,16 +44,17 @@ function OrderAdmin() {
   const jwtToken = getCookie("accessToken");
   useEffect(() => {
     fetchProductData();
+    fetchOrderData();
   }, []);
 
-  const fetchProductData = async () => {
+  const fetchOrderData = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/order/get-all-order/`,
+        `http://localhost:3000/orders/order-pending`,
         {
           headers: {
             "Content-Type": "application/json",
-            token: `Bearer ${jwtToken}`,
+            Authorization: `Bearer ${jwtToken}`,
           },
         }
       );
@@ -61,8 +64,66 @@ function OrderAdmin() {
       }
       const data = await response.json();
       console.log(data.data);
-      processChartData(data.data, startDate, endDate);
+      const orderdata = data.data;
+      const pendingOrders = orderdata.filter(
+        (order) => order.status === "PENDING"
+      );
+      const completeOrders = orderdata.filter(
+        (order) => order.status === "COMPLETED"
+      );
+      console.log(pendingOrders, completeOrders);
+
+      setOrders({ pending: pendingOrders, complete: completeOrders });
+    } catch (error) {
+      console.error("Error fetching product data:", error);
+      throw error;
+    }
+  };
+
+  const fetchProductData = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/orders/order-statistics`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log(data.data);
       setItems(data.data);
+      //  processChartData(data.data, startDate, endDate);
+    } catch (error) {
+      console.error("Error fetching product data:", error);
+      throw error;
+    }
+  };
+  const fetchChartData = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/orders/order-statistics1?startDate=${
+          startDate?.toISOString().split("T")[0]
+        }&endDate=${endDate?.toISOString().split("T")[0]}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log(data);
+      processChartData(data, startDate, endDate);
     } catch (error) {
       console.error("Error fetching product data:", error);
       throw error;
@@ -73,6 +134,7 @@ function OrderAdmin() {
     if (startDate && endDate) {
       console.log("Fetching orders with dates:", startDate, endDate);
       fetchProductData();
+      fetchChartData();
     }
   }, [startDate, endDate]);
 
@@ -249,14 +311,10 @@ function OrderAdmin() {
     setDataType(type);
   };
 
-  const total = items.reduce((sum, item) => sum + item.totalPrice, 0);
-
-  const totalAmount = items.reduce((total, order) => {
-    return (
-      total +
-      order.orderItems.reduce((orderTotal, item) => orderTotal + item.amount, 0)
-    );
-  }, 0);
+  const handleCardClick = (item) => {
+    console.log("Card clicked:", item);
+    localStorage.setItem("orderconfirmId", item._id);
+  };
 
   return (
     <div>
@@ -266,18 +324,19 @@ function OrderAdmin() {
       </Row>
       <div className="admin-info">
         <div className="admin-info-totalSale">
-          <h3>Tổng giá trị bán ra: </h3>
-          <span>{total}</span>
+          <h3>Tổng giá trị bán ra:</h3>
+          <span>{items?.totalGrandTotal || 0}</span>
         </div>
         <div className="admin-info-totalOrder">
-          <h3>Tổng đơn hàng: </h3>
-          <span>{items.length}</span>
+          <h3>Tổng đơn hàng:</h3>
+          <span>{items?.totalOrders || 0}</span>
         </div>
         <div className="admin-info-totalProduct">
-          <h3>Tổng số lượng sản phẩm bán ra: </h3>
-          <span>{totalAmount}</span>
+          <h3>Tổng số lượng sản phẩm bán ra:</h3>
+          <span>{items?.totalQuantity || 0}</span>
         </div>
       </div>
+
       <Row>
         <h2 className="detail_h2">Biểu Đồ Tổng Giá Trị Bán Ra</h2>
       </Row>
@@ -452,31 +511,69 @@ function OrderAdmin() {
         className="order-history"
         style={{ display: "flex", flexDirection: "column-reverse" }}
       >
-        {items.map((item) => (
-          <Card
-            className="order_history_cart"
-            bodyStyle={{ padding: "5px 3vw 0px" }}
-            hoverable
-          >
-            <Descriptions column={1} size="small">
-              <Descriptions.Item label="Tên người nhận">
-                {item.shippingAddress.fullName}
-              </Descriptions.Item>
-              <Descriptions.Item label="SĐT">
-                {item.shippingAddress.phone}
-              </Descriptions.Item>
-              <Descriptions.Item label="Địa chỉ nhận hàng">
-                {item.shippingAddress.address}
-              </Descriptions.Item>
-              <Descriptions.Item label="Ngày mua">
-                {item.createdAt}
-              </Descriptions.Item>
-              <Descriptions.Item label="Tổng đơn hàng">
-                {item.totalPrice}
-              </Descriptions.Item>
-            </Descriptions>
-          </Card>
-        ))}
+        <Tabs defaultActiveKey="1">
+          <TabPane tab="Pending Orders" key="1">
+            {orders.pending.length > 0 ? (
+              orders.pending.map((item) => (
+                <Card
+                  key={item.id}
+                  className="order_history_cart"
+                  bodyStyle={{ padding: "5px 3vw 0px" }}
+                  onClick={() => handleCardClick(item)}
+                  hoverable
+                >
+                  <Descriptions column={1} size="small">
+                    <Descriptions.Item label="Tên người nhận">
+                      {item.address.name}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="SĐT">
+                      {item.address.phone}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Địa chỉ nhận hàng">
+                      {item.address.city}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Tổng đơn hàng">
+                      {item.grandTotal}
+                    </Descriptions.Item>
+                  </Descriptions>
+                </Card>
+              ))
+            ) : (
+              <p>No pending orders.</p>
+            )}
+          </TabPane>
+
+          <TabPane tab="Complete Orders" key="2">
+            {orders.complete.length > 0 ? (
+              orders.complete.map((item) => (
+                <Card
+                  key={item.id}
+                  className="order_history_cart"
+                  bodyStyle={{ padding: "5px 3vw 0px" }}
+                  hoverable
+                  onClick={() => handleCardClick(item)}
+                >
+                  <Descriptions column={1} size="small">
+                    <Descriptions.Item label="Tên người nhận">
+                      {item.address.name}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="SĐT">
+                      {item.address.phone}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Địa chỉ nhận hàng">
+                      {item.address.city}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Tổng đơn hàng">
+                      {item.grandTotal}
+                    </Descriptions.Item>
+                  </Descriptions>
+                </Card>
+              ))
+            ) : (
+              <p>No complete orders.</p>
+            )}
+          </TabPane>
+        </Tabs>
       </div>
     </div>
   );

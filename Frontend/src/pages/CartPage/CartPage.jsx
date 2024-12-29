@@ -31,6 +31,7 @@ function CartPage() {
   };
   const userId = getCookie("userid");
   const jwtToken = getCookie("accessToken");
+  const cartId = getCookie("CartId");
 
   const fetchCartData = async () => {
     try {
@@ -40,12 +41,12 @@ function CartPage() {
       }
 
       const response = await fetch(
-        `http://localhost:3000/user/get-cart-user/${userId}`,
+        `http://localhost:3000/cartitem/get-cart-data/${cartId}`,
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            token: `Bearer ${jwtToken}`,
+            Authorization: `Bearer ${jwtToken}`,
           },
         }
       );
@@ -53,9 +54,10 @@ function CartPage() {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
+
       const data = await response.json();
-      setItems(data.products);
-      console.log(items);
+      setItems(data);
+      console.log(data);
     } catch (error) {
       console.error("Error fetching product data:", error);
       throw error; // Propagate the error to handle it in the calling code
@@ -71,12 +73,12 @@ function CartPage() {
         );
       }
       const response = await fetch(
-        `http://localhost:3000/user/delete-cart-user/${userId}/${cartItemId}`,
+        `http://localhost:3000/cartitem/delete-cartitem/${cartItemId}`,
         {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
-            token: `Bearer ${jwtToken}`,
+            Authorization: `Bearer ${jwtToken}`,
           },
         }
       );
@@ -97,41 +99,35 @@ function CartPage() {
 
   const handleCheckout = async () => {
     try {
-      const selectedItemsData = items
-        .filter((item) => selectedItems.includes(item.id))
-        .map((item) => ({
-          _id: item.id,
-          amount: item.amount,
-        }));
-
       const requestData = {
-        selectedItems: selectedItemsData,
+        userId: userId,
+        subTotal: totalAmount,
+        totalDiscount: totalDiscount,
       };
 
-      console.log("Request Data:", requestData);
-
       const response = await fetch(
-        `http://localhost:3000/order/check-out/${userId}`,
+        `http://localhost:3000/orders/create-order/${userId}`,
         {
           method: "POST",
           headers: {
-            token: `Bearer ${jwtToken}`,
+            Authorization: `Bearer ${jwtToken}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify(requestData),
         }
       );
 
+      console.log("Response:", response);
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
       const orderResponse = await response.json();
-      console.log("Response:", orderResponse);
-
-      const orderId = orderResponse._id;
-      localStorage.setItem("orderId", orderId);
-      navigate(`/checkout`);
+      const orderId = orderResponse.id;
+       document.cookie = `orderId=${orderId}; path=/`;
+      await handleCheckoutItems(orderId);
+      await navigate(`/checkout`);
       console.log("Order placed successfully!");
     } catch (error) {
       message.error("Vui lòng chọn sản phẩm bạn muốn thanh toán!");
@@ -139,22 +135,63 @@ function CartPage() {
     }
   };
 
-  const handleCheckboxChange = (e, itemId) => {
+  console.log(selectedItems);
+  const handleCheckoutItems = async (orderId) => {
+    try {
+      const selectedVIds = selectedItems.map((item) => item.productVID);
+      const selectedPrices = items.map(
+        (item) => item.productVariant.product.price
+      );
+      const selectedDiscount = items.map(
+        (item) => item.productVariant.product.discount
+      );
+      const selectQuantity = items.map((item) => item.quantity);
+      const requestData = selectedVIds.map((productVID, index) => ({
+        orderID: orderId,
+        productVID: productVID,
+        price: selectedPrices[index],
+        discount: selectedDiscount[index],
+        quantity: selectQuantity[index],
+      }));
+      console.log(requestData);
+      const response = await fetch(
+        `http://localhost:3000/order-item/create-orderitems`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${jwtToken}`,
+          },
+          body: JSON.stringify(requestData),
+        }
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      document.cookie = `cartitemsId=${selectedItems.map((item) => item.id)}; path=/`;
+      console.log(response);
+    } catch {
+      message.error("1234566778");
+      return;
+    }
+  };
+
+  const handleCheckboxChange = (e, selectedItem) => {
     const { checked } = e.target;
     setSelectedItems((prevSelectedItems) => {
       if (checked) {
-        return [...prevSelectedItems, itemId];
+        // Thêm item đã chọn vào mảng
+        return [...prevSelectedItems, selectedItem];
       } else {
-        return prevSelectedItems.filter((id) => id !== itemId);
+        // Loại bỏ item nếu bỏ chọn
+        return prevSelectedItems.filter((item) => item.id !== selectedItem.id);
       }
     });
   };
 
   const handleCheckAllChange = () => {
     setSelectedItems((prevSelectedItems) => {
-      return prevSelectedItems.length === items.length
-        ? []
-        : items.map((item) => item.id);
+      return prevSelectedItems.length === items.length ? [] : [...items];
     });
   };
 
@@ -165,24 +202,19 @@ function CartPage() {
 
   const handleQuantityChange = async (itemId, value) => {
     try {
-      if (selectedItems.includes(itemId)) {
-        // If yes, update selectedItems by removing cartItemId
-        setSelectedItems((prevSelectedItems) =>
-          prevSelectedItems.filter((id) => id !== itemId)
-        );
-      }
-      const data = {
-        amount: value,
+      const requestData = {
+        quantity: value,
       };
+      console.log("Request Data:", requestData);
       const response = await fetch(
-        `http://localhost:3000/user/update-cart-user/${userId}/${itemId}`,
+        `http://localhost:3000/cartitem/update-cartitem/${itemId}`,
         {
-          method: "PUT",
+          method: "PATCH",
           headers: {
             "Content-Type": "application/json",
-            token: `Bearer ${jwtToken}`,
+            Authorization: `Bearer ${jwtToken}`,
           },
-          body: JSON.stringify(data),
+          body: JSON.stringify(requestData),
         }
       );
 
@@ -201,19 +233,30 @@ function CartPage() {
     removeCartItem(cartItemId);
   };
 
-  const totalAmount = items.reduce(
-    (total, item) =>
-      selectedItems.includes(item.id)
-        ? total + item.price * item.amount
-        : total,
-    0
-  );
+  const totalAmount = items.reduce((total, item) => {
+    const isSelected = selectedItems.some((selected) => selected.id === item.id);
+    return isSelected
+      ? total + item.productVariant.product.price * item.quantity
+      : total;
+  }, 0);
+  
 
-  const totalQuantity = items.reduce(
-    (total, item) =>
-      selectedItems.includes(item.id) ? total + item.amount : total,
-    0
-  );
+  const totalQuantity = items.reduce((total, item) => {
+    const isSelected = selectedItems.some((selected) => selected.id === item.id);
+    return isSelected ? total + item.quantity : total;
+  }, 0);
+  
+
+  const totalDiscount = items.reduce((total, item) => {
+    const isSelected = selectedItems.some((selected) => selected.id === item.id);
+    return isSelected
+      ? total +
+          item.productVariant.product.price *
+            item.quantity *
+            item.productVariant.product.discount
+      : total;
+  }, 0);
+  
 
   return (
     <div>
@@ -224,9 +267,10 @@ function CartPage() {
       <div className="cartlist_header">
         <Col md={1}>
           <Checkbox
-            checked={items.length === selectedItems.length}
+            checked={selectedItems.length === items.length && items.length > 0}
+            
             onChange={handleCheckAllChange}
-          ></Checkbox>
+          />
         </Col>
         <Col md={2}>
           <h3>Sản phẩm</h3>
@@ -249,8 +293,10 @@ function CartPage() {
             <Row align="middle">
               <Col md={1}>
                 <Checkbox
-                  checked={selectedItems.includes(item.id)}
-                  onChange={(e) => handleCheckboxChange(e, item.id)}
+                  checked={selectedItems.some(
+                    (selected) => selected.id === item.id
+                  )}
+                  onChange={(e) => handleCheckboxChange(e, item)}
                 />
               </Col>
               <Col md={2}>
@@ -259,35 +305,35 @@ function CartPage() {
                     height: 80,
                     width: 80,
                   }}
-                  alt={item.name}
-                  src={item.image}
+                  src={item.productVariant.product.picture}
+                  alt={item.title}
                 />
               </Col>
               <Col md={8}>
-                <span>{item.name} </span>
+                <span>{item.productVariant.product.title} </span>
               </Col>
               <Col md={3} offset={1}>
-                <span> {item.price}đ</span>
+                <span> {item.productVariant.product.price}đ</span>
               </Col>
               <Col md={3}>
                 <div className="amount_part">
                   <Button
                     className="amount_change_button"
                     onClick={() =>
-                      handleQuantityChange(item.id, item.amount + 1)
+                      handleQuantityChange(item.id, item.quantity + 1)
                     }
                   >
                     +
                   </Button>
 
-                  <span style={{ margin: "0px 10px" }}>{item.amount}</span>
+                  <span style={{ margin: "0px 10px" }}>{item.quantity}</span>
 
                   <Button
                     className="amount_change_button"
                     onClick={() =>
-                      handleQuantityChange(item.id, item.amount - 1)
+                      handleQuantityChange(item.id, item.quantity - 1)
                     }
-                    disabled={item.amount === 1}
+                    disabled={item.quantity === 1}
                   >
                     -
                   </Button>
@@ -295,7 +341,7 @@ function CartPage() {
               </Col>
               <Col md={3}>
                 <span className="cp_item_price">
-                  {item.price * item.amount}đ
+                  {item.productVariant.product.price * item.quantity}đ
                 </span>
               </Col>
               <Col md={1}>
