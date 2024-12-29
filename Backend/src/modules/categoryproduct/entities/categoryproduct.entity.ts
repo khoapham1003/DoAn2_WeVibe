@@ -13,11 +13,11 @@ export class CategoryProduct {
   @Column({ name: 'product_id', type: 'int' })
   productId: number;
 
-  @ManyToOne(() => Category, { eager: true })
+  @ManyToOne(() => Category, category => category.categoryProducts)
   @JoinColumn({ name: 'category_id' })
   category: Category;
 
-  @ManyToOne(() => Product, { eager: true })
+  @ManyToOne(() => Product, product => product.categoryProducts)
   @JoinColumn({ name: 'product_id' })
   product: Product;
 }

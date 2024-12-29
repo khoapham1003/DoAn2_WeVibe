@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { Button, Row, Col, List, Card, Image, Input, message } from "antd";
 
-function HistoryOrderPage() {
+function ConfirmOrderPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const [order, setOrder] = useState(null); // Changed from empty array to null
@@ -56,6 +56,36 @@ function HistoryOrderPage() {
   if (!order) {
     return <div>Loading...</div>; 
   }
+
+  const handleConfirmOrder = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/orders/confirm-order/${orderId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${jwtToken}`,
+          },
+          body: JSON.stringify({
+            status: "COMPLETED",
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Error confirming the order");
+      }
+
+      const result = await response.json();
+      message.success("Order confirmed successfully!");
+      await setShowConfirmation(true);
+      // navigate("/admin");
+    } catch (error) {
+      console.error("Error confirming the order:", error);
+      message.error("There was an issue confirming the order.");
+    }
+  };
 
   return (
     <div>
@@ -203,6 +233,17 @@ function HistoryOrderPage() {
                 Tổng thanh toán: {order.grandTotal}đ
               </span>
             </List.Item>
+            <List.Item>
+              <Button
+                className="cop_button1"
+                style={{ width: "150px" }}
+                onClick={() => {
+                  handleConfirmOrder();
+                }}
+              >
+                Xác Nhận Đơn Hàng
+              </Button>
+            </List.Item>
           </List>
         </div>
       </div>
@@ -210,4 +251,4 @@ function HistoryOrderPage() {
   );
 }
 
-export default HistoryOrderPage;
+export default ConfirmOrderPage;

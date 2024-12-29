@@ -1,4 +1,14 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate } from 'typeorm';
+import { CategoryProduct } from 'src/modules/categoryproduct/entities/categoryproduct.entity';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  BeforeInsert,
+  BeforeUpdate,
+  OneToMany,
+} from 'typeorm';
 
 @Entity({ name: 'product' })
 export class Product {
@@ -68,4 +78,9 @@ export class Product {
   updateModificationDate() {
     this.updatedAt = new Date().toISOString();
   }
+  @OneToMany(
+    () => CategoryProduct,
+    (categoryProduct) => categoryProduct.product,
+  )
+  categoryProducts: CategoryProduct[];
 }

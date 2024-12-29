@@ -51,12 +51,14 @@ const Login = () => {
             document.cookie = `CartId=${CartId}; path=/`;
             document.cookie = `userid=${UserId}; path=/`;
             document.cookie = `role=${role}; path=/`;
-            await message.success("Đăng nhập thành công!");
+            message.success("Đăng nhập thành công!");
             if (role == "admin") {
+              console.log(role);
               navigate(`/admin`);
             } else {
               navigate(`/`);
             }
+            window.location.reload();
           } catch (error) {
             console.error("Error decoding token:", error);
           }

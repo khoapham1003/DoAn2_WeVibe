@@ -15,7 +15,8 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import ProductAdmin from "./Component/Product";
 import UserAdmin from "./Component/User";
-import OrderAdmin from "./Component/Order";
+import OrderStatistics from "./Component/Order";
+import CategoriesAdmin from "./Component/Category";
 
 const { TabPane } = Tabs;
 
@@ -32,11 +33,14 @@ function AdminPage() {
         <TabPane tab="Products" key="product">
           <ProductAdmin />
         </TabPane>
+        <TabPane tab="Categories" key="categories">
+          <CategoriesAdmin />
+        </TabPane>
         <TabPane tab="Users" key="user">
           <UserAdmin />
         </TabPane>
         <TabPane tab="Orders" key="order">
-          <OrderAdmin />
+          <OrderStatistics />
         </TabPane>
       </Tabs>
     </div>

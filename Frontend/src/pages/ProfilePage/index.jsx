@@ -11,6 +11,7 @@ import {
   message,
   Col,
   Card,
+  Tabs,
 } from "antd";
 import "../stylePage.css";
 
@@ -25,14 +26,14 @@ const getCookie = (cookieName) => {
   }
   return null;
 };
-
+const { TabPane } = Tabs;
 const userId = getCookie("userid");
 const jwtToken = getCookie("accessToken");
 function ProfilePage() {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [items, setItems] = useState([]);
-
+  const [orders, setOrders] = useState({ pending: [], complete: [] });
   const [userData, setUserData] = useState(null);
   const [editedData, setEditedData] = useState({
     firstName: "",
@@ -238,25 +239,35 @@ function ProfilePage() {
 
   useEffect(() => {
     const fetchHistoryOrder = async () => {
-      const apiUrl = `http://localhost:3000/order/get-all-order/${userId}`;
       try {
-        const response = await fetch(apiUrl, {
-          method: "GET",
-          headers: {
-            token: `Bearer ${jwtToken}`,
-          },
-        });
+        const response = await fetch(
+          `http://localhost:3000/orders/order-history/${userId}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${jwtToken}`,
+            },
+          }
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
-
         const data = await response.json();
-        console.log(data);
-        setItems(data.data);
-        return data;
+        console.log(response);
+        const orderdata = data.data;
+        const pendingOrders = orderdata.filter(
+          (order) => order.status === "PENDING"
+        );
+        const completeOrders = orderdata.filter(
+          (order) => order.status === "COMPLETED"
+        );
+        console.log(pendingOrders, completeOrders);
+
+        setOrders({ pending: pendingOrders, complete: completeOrders });
       } catch (error) {
         console.error("Error fetching product data:", error);
+        throw error;
       }
     };
     fetchHistoryOrder();
@@ -264,7 +275,7 @@ function ProfilePage() {
 
   const handleCardClick = (item) => {
     console.log("Card clicked:", item);
-    localStorage.setItem("orderhistoryId", item._id);
+    localStorage.setItem("orderhistoryId", item.id);
     navigate(`/history`);
   };
 
@@ -418,30 +429,30 @@ function ProfilePage() {
               />
             </Form.Item>
             <Form.Item
-          className="no_margin"
-          label={
-            <span className="label">
-              <span style={{ color: "red" }}>* </span>Xác nhận mật khẩu
-            </span>
-          }
-          name="confirmpassword"
-          dependencies={["newpassword"]}
-          hasFeedback
-          rules={[
-            {
-              required: true,
-              message: "Xin vui lòng nhập Xác nhận mật khẩu!",
-            },
-            ({ getFieldValue }) => ({
-              validator(_, value) {
-                if (!value || getFieldValue("newpassword") === value) {
-                  return Promise.resolve();
-                }
-                return Promise.reject(new Error("Mật khẩu không khớp!"));
-              },
-            }),
-          ]}
-        >
+              className="no_margin"
+              label={
+                <span className="label">
+                  <span style={{ color: "red" }}>* </span>Xác nhận mật khẩu
+                </span>
+              }
+              name="confirmpassword"
+              dependencies={["newpassword"]}
+              hasFeedback
+              rules={[
+                {
+                  required: true,
+                  message: "Xin vui lòng nhập Xác nhận mật khẩu!",
+                },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue("newpassword") === value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(new Error("Mật khẩu không khớp!"));
+                  },
+                }),
+              ]}
+            >
               <Input.Password
                 value={changePasswordData.confirmPassword}
                 placeholder="Xác Nhận Mật khẩu"
@@ -455,33 +466,73 @@ function ProfilePage() {
         <Row>
           <h2 className="detail_h2">LỊCH SỬ GIAO DỊCH</h2>
         </Row>
-        <div style={{ display: "flex", flexDirection: "column-reverse" }}>
-          {items.map((item) => (
-            <Card
-              className="order_history_cart"
-              bodyStyle={{ padding: "5px 3vw 0px" }}
-              hoverable
-              onClick={() => handleCardClick(item)}
-            >
-              <Descriptions column={1} size="small">
-                <Descriptions.Item label="Tên người nhận">
-                  {item.shippingAddress.fullName}
-                </Descriptions.Item>
-                <Descriptions.Item label="SĐT">
-                  {item.shippingAddress.phone}
-                </Descriptions.Item>
-                <Descriptions.Item label="Địa chỉ nhận hàng">
-                  {item.shippingAddress.address}
-                </Descriptions.Item>
-                <Descriptions.Item label="Ngày mua">
-                  {item.createdAt}
-                </Descriptions.Item>
-                <Descriptions.Item label="Tổng đơn hàng">
-                  {item.totalPrice}
-                </Descriptions.Item>
-              </Descriptions>
-            </Card>
-          ))}
+        <div
+          className="order-history"
+          style={{ display: "flex", flexDirection: "column-reverse" }}
+        >
+          <Tabs defaultActiveKey="1">
+            <TabPane tab="Pending Orders" key="1">
+              {orders.pending.length > 0 ? (
+                orders.pending.map((item) => (
+                  <Card
+                    key={item.id}
+                    className="order_history_cart"
+                    bodyStyle={{ padding: "5px 3vw 0px" }}
+                    onClick={() => handleCardClick(item)}
+                    hoverable
+                  >
+                    <Descriptions column={1} size="small">
+                      <Descriptions.Item label="Tên người nhận">
+                        {item.address.name}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="SĐT">
+                        {item.address.phone}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Địa chỉ nhận hàng">
+                        {item.address.city}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Tổng đơn hàng">
+                        {item.grandTotal}
+                      </Descriptions.Item>
+                    </Descriptions>
+                  </Card>
+                ))
+              ) : (
+                <p>No pending orders.</p>
+              )}
+            </TabPane>
+
+            <TabPane tab="Complete Orders" key="2">
+              {orders.complete.length > 0 ? (
+                orders.complete.map((item) => (
+                  <Card
+                    key={item.id}
+                    className="order_history_cart"
+                    bodyStyle={{ padding: "5px 3vw 0px" }}
+                    hoverable
+                    onClick={() => handleCardClick(item)}
+                  >
+                    <Descriptions column={1} size="small">
+                      <Descriptions.Item label="Tên người nhận">
+                        {item.address.name}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="SĐT">
+                        {item.address.phone}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Địa chỉ nhận hàng">
+                        {item.address.city}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Tổng đơn hàng">
+                        {item.grandTotal}
+                      </Descriptions.Item>
+                    </Descriptions>
+                  </Card>
+                ))
+              ) : (
+                <p>No complete orders.</p>
+              )}
+            </TabPane>
+          </Tabs>
         </div>
       </div>
     </div>

@@ -21,6 +21,11 @@ export class ProductService {
   }
 
   async findAll(): Promise<Product[]> {
+    return await this.productRepository.find({
+      where: { shop: true },
+    });
+  }
+  async findAllAdmin(): Promise<Product[]> {
     return await this.productRepository.find();
   }
 
@@ -32,17 +37,14 @@ export class ProductService {
     });
 
     // Trả về mảng các sản phẩm
-    return categoryProducts.map(categoryProduct => categoryProduct.product);
+    return categoryProducts.map((categoryProduct) => categoryProduct.product);
   }
 
   async searchProducts(keyword: string): Promise<Product[]> {
     return this.productRepository.find({
-      where: [
-        { title : Like(`%${keyword}%`) }, 
-      ],
+      where: [{ title: Like(`%${keyword}%`) }],
     });
   }
-  
 
   async findOne(id: number): Promise<Product> {
     const product = await this.productRepository.findOne({ where: { id } });
@@ -52,7 +54,10 @@ export class ProductService {
     return product;
   }
 
-  async update(id: number, updateProductDto: UpdateProductDto): Promise<Product> {
+  async update(
+    id: number,
+    updateProductDto: UpdateProductDto,
+  ): Promise<Product> {
     const product = await this.findOne(id);
     const updatedProduct = Object.assign(product, updateProductDto);
     return await this.productRepository.save(updatedProduct);
@@ -65,5 +70,18 @@ export class ProductService {
       return true;
     }
     return false;
+  }
+
+  async findAllWithCategories() {
+    // Sử dụng queryBuilder để tối ưu performance
+    const products = await this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.categoryProducts', 'categoryProduct')
+      .leftJoinAndSelect('categoryProduct.category', 'category')
+      .leftJoinAndSelect('category.parent', 'parentCategory')
+      .orderBy('product.id', 'DESC')
+      .getMany();
+
+    return products;
   }
 }

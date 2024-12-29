@@ -2,12 +2,21 @@ import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { IoLocationSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import { Button, Row, Col, List, Card, Image, Modal, Input } from "antd";
+import { Button, Row, Col, List, Card, Image, Modal, Input, Radio } from "antd";
 import { message } from "antd";
+import { ethers } from "ethers";
+import contractABI from "../../components/Contracts/contractABI.json"; // Đảm bảo bạn lưu ABI vào file JSON
 
+const rawContractAddress = "0x2514F58f641d199E2F14d641d77100E053996497";
 function CheckoutPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
+  const paymentMethods = [
+    { key: "COD", label: "Thanh toán khi nhận hàng (COD)" },
+    { key: "blockchain", label: "Thanh toán bằng Blockchain Token" },
+  ];
+
   const [items, setItems] = useState([]);
   const [order, setOrder] = useState({
     lastName: "L",
@@ -25,10 +34,15 @@ function CheckoutPage() {
   const [voucherDiscount, setVoucherDiscount] = useState(0);
   const [shippingFee, setShippingFee] = useState(30000);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [showConfirmationPay, setShowConfirmationPay] = useState(false);
+  //const [showConfirmationPay, setShowConfirmationPay] = useState(false);
   const [isApply, setisApply] = useState(false);
   const [isCheck, setisCheck] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
+  const [balance, setBalance] = useState("0"); // Số dư token của người dùng
+  const [blockNumber, setBlockNumber] = useState(null); // Số khối hiện tại
+  const [userAddress, setUserAddress] = useState(""); // Địa chỉ ví của người dùng
+  const [showConfirmationPay, setShowConfirmationPay] = useState(false);
+
   const getCookie = (cookieName) => {
     const cookies = document.cookie.split("; ");
     for (const cookie of cookies) {
@@ -45,9 +59,132 @@ function CheckoutPage() {
   const userId = getCookie("userid");
   const cartId = getCookie("CartId");
   const cartitemsId = getCookie("cartitemsId");
+
+  let contractAddress;
+  try {
+    contractAddress = ethers.getAddress(rawContractAddress);
+  } catch (error) {
+    console.error("Địa chỉ hợp đồng không hợp lệ:", error.message);
+    message.error("Địa chỉ hợp đồng không hợp lệ!");
+  }
+
   useEffect(() => {
     fetchCheckOutData();
   }, []);
+
+  const fetchBlockchainInfo = async () => {
+    try {
+      // Kết nối với mạng BuildBear qua JsonRpcProvider
+      const provider = new ethers.JsonRpcProvider(
+        "https://rpc.buildbear.io/cooperative-omegared-0720832f"
+      );
+
+      // Lấy số khối mới nhất
+      const latestBlock = await provider.getBlockNumber();
+      setBlockNumber(latestBlock);
+      console.log("Số khối mới nhất:", latestBlock);
+
+      // Kết nối với MetaMask và lấy thông tin ví
+      if (window.ethereum) {
+        const browserProvider = new ethers.BrowserProvider(window.ethereum);
+        const signer = await browserProvider.getSigner(); // Lấy signer từ MetaMask
+        const address = await signer.getAddress(); // Lấy địa chỉ ví
+        setUserAddress(address);
+        console.log("Địa chỉ ví người dùng:", address);
+
+        // Khởi tạo hợp đồng
+        if (contractAddress) {
+          const contract = new ethers.Contract(
+            contractAddress,
+            contractABI,
+            provider
+          );
+          console.log("Hợp đồng:", address);
+          const balance = await contract.balanceOf(
+            "0xD6D44D446C93542B604e7C189747c70B3a0Ff217"
+          );
+          setBalance(ethers.formatUnits(balance, 18)); // Hiển thị số dư token
+          console.log("Số dư token:", ethers.formatUnits(balance, 18));
+          // Lấy số dư token
+        }
+      } else {
+        message.error("Vui lòng cài đặt MetaMask!");
+      }
+    } catch (error) {
+      // Xử lý lỗi
+      console.error("Lỗi khi kết nối blockchain:", error.message);
+      message.error("Không thể lấy thông tin blockchain.");
+    }
+  };
+
+  // Xử lý thanh toán
+  const handlePaymentWithBlockchain = async () => {
+    try {
+      if (!window.ethereum) {
+        message.error("Vui lòng cài đặt MetaMask!");
+        return;
+      }
+
+      const browserProvider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await browserProvider.getSigner();
+      const contract = new ethers.Contract(
+        contractAddress,
+        contractABI,
+        signer
+      );
+
+      // Địa chỉ nhận thanh toán
+      const recipientAddress = "0xe72b366514f3DA2B2C3379B0136770bbd92E7413";
+
+      const tokenToSend = "1";
+      const amountToSend = ethers.parseUnits(tokenToSend, 18);
+
+      // Thực hiện giao dịch
+      const tx = await contract.transfer(recipientAddress, amountToSend);
+      console.log("Giao dịch đã tạo:", tx);
+      message.info("Giao dịch đang được xử lý...");
+      await tx.wait(); // Chờ giao dịch được xác nhận
+      message.success(`Đã thanh toán thành công!`);
+      const transactionData = {
+        orderId: parseInt(orderId), // Cập nhật với ID đơn hàng thực tế
+        amount: parseFloat(tokenToSend),
+        paymentMethodType: "Blockchain",
+        status: "SUCCESS",
+        paymentDetails: JSON.stringify({
+          hash: tx.hash,
+          from: tx.from,
+          to: tx.to,
+          gasLimit: tx.gasLimit.toString(),
+          gasPrice: tx.gasPrice.toString(),
+        }),
+      };
+
+      const response = await fetch(
+        "http://localhost:3000/transaction/create-transaction",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${jwtToken}`,
+          },
+          body: JSON.stringify(transactionData),
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log("Giao dịch đã được lưu:", result);
+      } else {
+        console.error("Lỗi khi lưu giao dịch:", await response.text());
+      }
+
+      handlePayment();
+      setShowConfirmationPay(false);
+    } catch (error) {
+      console.error("Lỗi khi thực hiện thanh toán:", error.message);
+      message.error("Thanh toán không thành công.");
+    }
+  };
 
   const fetchCheckOutData = async () => {
     try {
@@ -106,7 +243,7 @@ function CheckoutPage() {
     return totalPrice;
   };
 
-  const handleConfirmPayment = async () => {
+  const handlePayment = async () => {
     try {
       const data = {
         lastName: order.lastName,
@@ -150,10 +287,21 @@ function CheckoutPage() {
       for (const cartItemId of cartitemsArray) {
         await removeCartItem(cartItemId);
       }
-     setShowConfirmationPay(false);
+      setShowConfirmationPay(false);
       await navigate("/");
     } catch (error) {
       console.error("Error placing the order:", error);
+    }
+  };
+
+  const handleConfirmPayment = () => {
+    if (selectedPaymentMethod === "COD") {
+      handlePayment();
+      message.success("Bạn đã chọn Thanh toán khi nhận hàng (COD).");
+    } else if (selectedPaymentMethod === "blockchain") {
+      fetchBlockchainInfo();
+      handlePaymentWithBlockchain();
+      setShowConfirmationPay(true); // Mở modal thanh toán blockchain
     }
   };
 
@@ -178,6 +326,10 @@ function CheckoutPage() {
     } catch (error) {
       console.error("Error removing cart item:", error);
     }
+  };
+
+  const handlePaymentMethodChange = (e) => {
+    setSelectedPaymentMethod(e.target.value);
   };
 
   const handleApplyVoucher = () => {
@@ -385,6 +537,23 @@ function CheckoutPage() {
               </span>
             </List.Item>
             <List.Item>
+              <h4>Phương thức thanh toán</h4>
+              <List
+                dataSource={paymentMethods}
+                renderItem={(method) => (
+                  <List.Item>
+                    <Radio
+                      value={method.key}
+                      checked={selectedPaymentMethod === method.key}
+                      onChange={handlePaymentMethodChange}
+                    >
+                      {method.label}
+                    </Radio>
+                  </List.Item>
+                )}
+              />
+            </List.Item>
+            <List.Item>
               <Button
                 className="cop_button1"
                 style={{ width: "150px" }}
@@ -421,6 +590,7 @@ function CheckoutPage() {
                     message.error("Vui lòng nhập đầy đủ thông tin người nhận!");
                   }
                 }}
+                disabled={!selectedPaymentMethod}
               >
                 Thanh toán
               </Button>

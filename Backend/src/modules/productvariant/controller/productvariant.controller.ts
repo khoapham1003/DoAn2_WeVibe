@@ -36,7 +36,6 @@ export class ProductVariantController {
   ) {
     return await this.productVariantService.getProductVariantId(productId, sizeId, colorId);
   }
-
   @Get('/get-all-productvariants')
   findAll() {
     return this.productVariantService.findAll();
