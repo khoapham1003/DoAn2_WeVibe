@@ -125,7 +125,7 @@ function CartPage() {
 
       const orderResponse = await response.json();
       const orderId = orderResponse.id;
-       document.cookie = `orderId=${orderId}; path=/`;
+      document.cookie = `orderId=${orderId}; path=/`;
       await handleCheckoutItems(orderId);
       await navigate(`/checkout`);
       console.log("Order placed successfully!");
@@ -168,7 +168,9 @@ function CartPage() {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      document.cookie = `cartitemsId=${selectedItems.map((item) => item.id)}; path=/`;
+      document.cookie = `cartitemsId=${selectedItems.map(
+        (item) => item.id
+      )}; path=/`;
       console.log(response);
     } catch {
       message.error("1234566778");
@@ -234,21 +236,25 @@ function CartPage() {
   };
 
   const totalAmount = items.reduce((total, item) => {
-    const isSelected = selectedItems.some((selected) => selected.id === item.id);
+    const isSelected = selectedItems.some(
+      (selected) => selected.id === item.id
+    );
     return isSelected
       ? total + item.productVariant.product.price * item.quantity
       : total;
   }, 0);
-  
 
   const totalQuantity = items.reduce((total, item) => {
-    const isSelected = selectedItems.some((selected) => selected.id === item.id);
+    const isSelected = selectedItems.some(
+      (selected) => selected.id === item.id
+    );
     return isSelected ? total + item.quantity : total;
   }, 0);
-  
 
   const totalDiscount = items.reduce((total, item) => {
-    const isSelected = selectedItems.some((selected) => selected.id === item.id);
+    const isSelected = selectedItems.some(
+      (selected) => selected.id === item.id
+    );
     return isSelected
       ? total +
           item.productVariant.product.price *
@@ -256,7 +262,6 @@ function CartPage() {
             item.productVariant.product.discount
       : total;
   }, 0);
-  
 
   return (
     <div>
@@ -268,7 +273,6 @@ function CartPage() {
         <Col md={1}>
           <Checkbox
             checked={selectedItems.length === items.length && items.length > 0}
-            
             onChange={handleCheckAllChange}
           />
         </Col>
@@ -276,6 +280,12 @@ function CartPage() {
           <h3>Sản phẩm</h3>
         </Col>
         <Col md={8}></Col>
+        <Col md={3} offset={1}>
+          <h3>Kích Thước</h3>
+        </Col>
+        <Col md={3} offset={1}>
+          <h3>Color</h3>
+        </Col>
         <Col md={3} offset={1}>
           <h3>Đơn giá</h3>
         </Col>
@@ -311,6 +321,12 @@ function CartPage() {
               </Col>
               <Col md={8}>
                 <span>{item.productVariant.product.title} </span>
+              </Col>
+              <Col md={3}>
+                <span>{item.productVariant.size.name} </span>
+              </Col>
+              <Col md={3} offset={1}>
+                <span> {item.productVariant.color.name}</span>
               </Col>
               <Col md={3} offset={1}>
                 <span> {item.productVariant.product.price}đ</span>
