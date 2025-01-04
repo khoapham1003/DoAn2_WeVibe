@@ -233,6 +233,7 @@ export class OrderService {
         phone: order.phoneNumber,
         email: order.email,
       },
+      status: order.status,
       subTotal: order.subTotal,
       totalDiscount: order.totalDiscount,
       shippingFee: order.shippingFee,
@@ -245,6 +246,8 @@ export class OrderService {
           quantity: item.quantity,
           price: item.price,
           totalPrice: item.quantity * item.price,
+          size: item.productVariant.size.name,
+          color: item.productVariant.color.name,
         })),
     }));
   }

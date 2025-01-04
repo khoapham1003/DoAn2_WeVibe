@@ -54,7 +54,7 @@ function HistoryOrderPage() {
   };
 
   if (!order) {
-    return <div>Loading...</div>; 
+    return <div>Loading...</div>;
   }
 
   return (
@@ -169,6 +169,12 @@ function HistoryOrderPage() {
                 </Col>
                 <Col md={8}>
                   <span>{item.productName}</span>
+                </Col>
+                <Col md={3}>
+                  <span>{item.size} </span>
+                </Col>
+                <Col md={3} offset={1}>
+                  <span> {item.color}</span>
                 </Col>
                 <Col md={3} offset={1}>
                   <span>{item.price}đ</span>

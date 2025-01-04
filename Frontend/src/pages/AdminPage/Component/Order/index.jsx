@@ -11,6 +11,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { useNavigate } from "react-router-dom";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -30,6 +31,8 @@ function OrderAdmin() {
   const [endDate, setEndDate] = useState(null);
   const [chartType, setChartType] = useState("daily");
   const [dataType, setDataType] = useState("totalPrice");
+  const navigate = useNavigate();
+
   const getCookie = (cookieName) => {
     const cookies = document.cookie.split("; ");
     for (const cookie of cookies) {
@@ -313,7 +316,8 @@ function OrderAdmin() {
 
   const handleCardClick = (item) => {
     console.log("Card clicked:", item);
-    localStorage.setItem("orderconfirmId", item._id);
+    localStorage.setItem("orderconfirmId", item.id);
+    navigate("/confirmorder/" + item.id);
   };
 
   return (

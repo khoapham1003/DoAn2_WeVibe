@@ -177,9 +177,9 @@ function CheckoutPage() {
       } else {
         console.error("Lỗi khi lưu giao dịch:", await response.text());
       }
-
-      handlePayment();
-      setShowConfirmationPay(false);
+      await handlePayment();
+      await setShowConfirmationPay(false);
+      navigate(`/`);
     } catch (error) {
       console.error("Lỗi khi thực hiện thanh toán:", error.message);
       message.error("Thanh toán không thành công.");
@@ -501,6 +501,12 @@ function CheckoutPage() {
                 </Col>
                 <Col md={8}>
                   <span>{item.productVariant.product.title}</span>
+                </Col>
+                <Col md={3}>
+                  <span>{item.productVariant.size.name} </span>
+                </Col>
+                <Col md={3} offset={1}>
+                  <span> {item.productVariant.color.name}</span>
                 </Col>
                 <Col md={3} offset={1}>
                   <span>{item.productVariant.product.price}đ</span>

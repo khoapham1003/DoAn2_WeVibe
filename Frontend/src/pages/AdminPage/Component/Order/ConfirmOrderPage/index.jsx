@@ -6,7 +6,7 @@ import { Button, Row, Col, List, Card, Image, Input, message } from "antd";
 function ConfirmOrderPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [order, setOrder] = useState(null); // Changed from empty array to null
+  const [order, setOrder] = useState([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
 
   const getCookie = (cookieName) => {
@@ -54,7 +54,7 @@ function ConfirmOrderPage() {
   };
 
   if (!order) {
-    return <div>Loading...</div>; 
+    return <div>Loading...</div>;
   }
 
   const handleConfirmOrder = async () => {
@@ -200,6 +200,12 @@ function ConfirmOrderPage() {
                 <Col md={8}>
                   <span>{item.productName}</span>
                 </Col>
+                <Col md={3}>
+                  <span>{item.size} </span>
+                </Col>
+                <Col md={3} offset={1}>
+                  <span> {item.color}</span>
+                </Col>
                 <Col md={3} offset={1}>
                   <span>{item.price}đ</span>
                 </Col>
@@ -240,6 +246,7 @@ function ConfirmOrderPage() {
                 onClick={() => {
                   handleConfirmOrder();
                 }}
+                disabled={order.status === "COMPLETED"}
               >
                 Xác Nhận Đơn Hàng
               </Button>
