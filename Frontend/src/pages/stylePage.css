@@ -29,8 +29,9 @@
 }
 .detail_list h1 {
   margin: 0;
-  font-size: 25px;
+  font-size: 2rem;
   font-weight: 500;
+  font-style: italic;
 }
 .pp_rate {
   display: flex;
@@ -57,7 +58,8 @@
   justify-content: flex-start !important;
 }
 .amount_box {
-  margin-left: 30px;
+  margin-left: 2rem;
+  width: 4rem;
 }
 .addtocart_button {
   background-color: #d5ffea;
