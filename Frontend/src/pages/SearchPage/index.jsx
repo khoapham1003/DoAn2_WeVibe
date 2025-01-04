@@ -95,9 +95,9 @@ const SearchPage = () => {
           >
             <div className="flex_column">
               <div className="title_start_container">
-                <span className="book_title">{item.title}</span>
+                <span className="product_title">{item.title}</span>
               </div>
-              <span className="book_price">
+              <span className="product_price">
                 {item.price}
                 <span
                   style={{

@@ -88,11 +88,6 @@ const FilteredPage = () => {
               <div className="flex_column">
                 <div className="title_start_container">
                   <span className="product_title">{item.title}</span>
-                  {/* <Rate
-                    disabled
-                    className="product_star"
-                    defaultValue={item.dProduct_start_count}
-                  /> */}
                 </div>
                 <span className="product_price">
                   {item.price}
