@@ -19,16 +19,16 @@ function CheckoutPage() {
 
   const [items, setItems] = useState([]);
   const [order, setOrder] = useState({
-    lastName: "L",
-    middleName: "L",
-    firstName: "L",
+    lastName: "Lương Lê",
+    middleName: "Duy",
+    firstName: "Tiến",
     phoneNumber: "0123456789",
-    email: "t@gmail.com", //
-    line1: "1",
-    line2: "1",
-    city: "1",
-    province: "1",
-    country: "1",
+    email: "tien1214@gmail.com", //
+    line1: "1015",
+    line2: "",
+    city: "TP Ho Chi Minh",
+    province: "TP Ho Chi Minh",
+    country: "Viet Nam",
   });
   const [promotionalCode, setPromotionalCode] = useState("");
   const [voucherDiscount, setVoucherDiscount] = useState(0);
@@ -103,9 +103,9 @@ function CheckoutPage() {
           const balance = await contract.balanceOf(
             "0xD6D44D446C93542B604e7C189747c70B3a0Ff217"
           );
-          setBalance(ethers.formatUnits(balance, 18)); // Hiển thị số dư token
+          setBalance(ethers.formatUnits(balance, 18));
           console.log("Số dư token:", ethers.formatUnits(balance, 18));
-          // Lấy số dư token
+      
         }
       } else {
         message.error("Vui lòng cài đặt MetaMask!");
@@ -178,8 +178,9 @@ function CheckoutPage() {
         console.error("Lỗi khi lưu giao dịch:", await response.text());
       }
 
-      handlePayment();
-      setShowConfirmationPay(false);
+      await handlePayment();
+      await setShowConfirmationPay(false);
+      navigate(`/`);
     } catch (error) {
       console.error("Lỗi khi thực hiện thanh toán:", error.message);
       message.error("Thanh toán không thành công.");
@@ -501,6 +502,12 @@ function CheckoutPage() {
                 </Col>
                 <Col md={8}>
                   <span>{item.productVariant.product.title}</span>
+                </Col>
+                <Col md={3}>
+                  <span>{item.productVariant.size.name} </span>
+                </Col>
+                <Col md={3} offset={1}>
+                  <span> {item.productVariant.color.name}</span>
                 </Col>
                 <Col md={3} offset={1}>
                   <span>{item.productVariant.product.price}đ</span>

@@ -88,7 +88,9 @@ function CartPage() {
       }
 
       await fetchCartData(userId);
+      message.success("Xóa mặt hàng trong giỏ hàng thành công!");
     } catch (error) {
+      message.error("Xóa mặt hàng trong giỏ hàng thất bại!");
       console.error("Error removing cart item:", error);
     }
   };
@@ -389,6 +391,7 @@ function CartPage() {
               size="large"
               className="cart_button"
               onClick={handleCheckout}
+              disabled={selectedItems.length === 0}
             >
               Mua Hàng
             </Button>

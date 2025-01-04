@@ -35,6 +35,8 @@ function ProfilePage() {
   const [items, setItems] = useState([]);
   const [orders, setOrders] = useState({ pending: [], complete: [] });
   const [userData, setUserData] = useState(null);
+  const [ChangePasswordForm] = Form.useForm();
+
   const [editedData, setEditedData] = useState({
     firstName: "",
     lastName: "",
@@ -180,10 +182,10 @@ function ProfilePage() {
   };
 
   const handleModalCancel = () => {
-    // Reset the change password form state and hide the modal
     setChangePasswordData({
       oldPassword: "",
       newPassword: "",
+      confirmPassword: "",
     });
     setChangePasswordModalVisible(false);
   };
@@ -214,7 +216,8 @@ function ProfilePage() {
         try {
           const error = await response.text();
           if (error) {
-            message.error(`${error}`);
+            ChangePasswordForm.resetFields();
+            message.error("Đổi mật khẩu! Vui lòng thử lại sau!");
           }
         } catch (error) {
           // Handle non-JSON response or other errors
@@ -223,7 +226,7 @@ function ProfilePage() {
       }
       if (response.ok) {
         message.success("Thay đổi mật khẩu thành công!");
-
+        ChangePasswordForm.resetFields();
         setChangePasswordData({
           oldPassword: "",
           newPassword: "",
@@ -296,9 +299,9 @@ function ProfilePage() {
                 {isEditing ? (
                   <Space>
                     <Input
-                      value={editedData.firstName}
+                      value={editedData.lastName}
                       onChange={(e) =>
-                        handleInputChange("firstName", e.target.value)
+                        handleInputChange("lastName", e.target.value)
                       }
                       placeholder="Họ"
                     />
@@ -310,15 +313,15 @@ function ProfilePage() {
                       placeholder="Tên đệm"
                     />
                     <Input
-                      value={editedData.lastName}
+                      value={editedData.firstName}
                       onChange={(e) =>
-                        handleInputChange("lastName", e.target.value)
+                        handleInputChange("firstName", e.target.value)
                       }
                       placeholder="Tên"
                     />
                   </Space>
                 ) : (
-                  `${userData.firstName} ${userData.middleName} ${userData.lastName}`
+                  `${userData.lastName} ${userData.middleName} ${userData.firstName}`
                 )}
               </Descriptions.Item>
 
@@ -391,7 +394,7 @@ function ProfilePage() {
             </Button>,
           ]}
         >
-          <Form layout="vertical">
+          <Form form={ChangePasswordForm} layout="vertical">
             <Form.Item
               className="no_margin"
               label={<p className="label">Mật khẩu cũ</p>}
@@ -489,7 +492,16 @@ function ProfilePage() {
                         {item.address.phone}
                       </Descriptions.Item>
                       <Descriptions.Item label="Địa chỉ nhận hàng">
-                        {item.address.city}
+                        {item.address.line1 +
+                          ", " +
+                          (item.address.line2
+                            ? item.address.line2 + ", "
+                            : "") +
+                          item.address.city +
+                          ", " +
+                          item.address.province +
+                          ", " +
+                          item.address.country}
                       </Descriptions.Item>
                       <Descriptions.Item label="Tổng đơn hàng">
                         {item.grandTotal}
@@ -520,7 +532,16 @@ function ProfilePage() {
                         {item.address.phone}
                       </Descriptions.Item>
                       <Descriptions.Item label="Địa chỉ nhận hàng">
-                        {item.address.city}
+                      {item.address.line1 +
+                          ", " +
+                          (item.address.line2
+                            ? item.address.line2 + ", "
+                            : "") +
+                          item.address.city +
+                          ", " +
+                          item.address.province +
+                          ", " +
+                          item.address.country}
                       </Descriptions.Item>
                       <Descriptions.Item label="Tổng đơn hàng">
                         {item.grandTotal}

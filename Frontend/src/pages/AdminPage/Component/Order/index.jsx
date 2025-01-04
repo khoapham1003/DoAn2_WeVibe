@@ -11,6 +11,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { useNavigate } from "react-router-dom";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -23,6 +24,7 @@ const { Option } = Select;
 const { TabPane } = Tabs;
 
 function OrderAdmin() {
+  const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [orders, setOrders] = useState({ pending: [], complete: [] });
   const [chartData, setChartData] = useState({});
@@ -313,7 +315,8 @@ function OrderAdmin() {
 
   const handleCardClick = (item) => {
     console.log("Card clicked:", item);
-    localStorage.setItem("orderconfirmId", item._id);
+    localStorage.setItem("orderconfirmId", item.id);
+    navigate("/confirmorder/" + item.id);
   };
 
   return (
@@ -530,7 +533,14 @@ function OrderAdmin() {
                       {item.address.phone}
                     </Descriptions.Item>
                     <Descriptions.Item label="Địa chỉ nhận hàng">
-                      {item.address.city}
+                      {item.address.line1 +
+                        ", " +
+                        (item.address.line2 ? item.address.line2 + ", " : "") +
+                        item.address.city +
+                        ", " +
+                        item.address.province +
+                        ", " +
+                        item.address.country}
                     </Descriptions.Item>
                     <Descriptions.Item label="Tổng đơn hàng">
                       {item.grandTotal}
@@ -561,7 +571,14 @@ function OrderAdmin() {
                       {item.address.phone}
                     </Descriptions.Item>
                     <Descriptions.Item label="Địa chỉ nhận hàng">
-                      {item.address.city}
+                      {item.address.line1 +
+                        ", " +
+                        (item.address.line2 ? item.address.line2 + ", " : "") +
+                        item.address.city +
+                        ", " +
+                        item.address.province +
+                        ", " +
+                        item.address.country}
                     </Descriptions.Item>
                     <Descriptions.Item label="Tổng đơn hàng">
                       {item.grandTotal}

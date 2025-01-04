@@ -1,4 +1,4 @@
-import { Button, Card, Col, Form, Modal, Row, Input } from "antd";
+import { Button, Card, Col, Form, Modal, Row, Input, message } from "antd";
 import React, { useState, useEffect } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { IoMdAdd } from "react-icons/io";
@@ -69,7 +69,10 @@ function ColorManegement() {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       await fetchCategoryData(); // Refresh categories list
+      message.success("Thêm danh mục màu sắc thành công!");
+      setIsAddModalVisible(false);
     } catch (error) {
+      message.error("Thêm danh mục màu sắc thất bại!");
       console.error("Error adding category:", error);
     }
   };
@@ -93,7 +96,10 @@ function ColorManegement() {
       }
 
       await fetchCategoryData();
+      setIsEditModalVisible(false);
+      message.success("Sửa danh mục màu sắc thành công!");
     } catch (error) {
+      message.error("Sửa danh mục màu sắc thất bại!");
       console.error("Error updating category:", error);
     }
   };
@@ -103,7 +109,7 @@ function ColorManegement() {
       .validateFields()
       .then((values) => {
         addCategory(values);
-        setIsAddModalVisible(false);
+        addForm.resetFields();
       })
       .catch((info) => {
         console.log("Validation failed:", info);
@@ -116,6 +122,7 @@ function ColorManegement() {
       .then((values) => {
         editCategory(currentItemId, values);
         setIsEditModalVisible(false);
+        form.resetFields();
       })
       .catch((info) => {
         console.log("Validation failed:", info);
@@ -173,7 +180,9 @@ function ColorManegement() {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       fetchCategoryData(); // Refresh categories list
+      message.success("Xóa danh mục màu sắc thành công!");
     } catch (error) {
+      message.error("Xóa danh mục màu sắc thất bại!");
       console.error("Error deleting category:", error);
     }
   };

@@ -12,6 +12,30 @@ const cx = classNames.bind();
 function Header() {
   const navigate = useNavigate();
 
+  const getCookie = (cookieName) => {
+    const cookies = document.cookie.split("; ");
+    for (const cookie of cookies) {
+      const [name, value] = cookie.split("=");
+      if (name === cookieName) {
+        return value;
+      }
+    }
+    return null;
+  };
+
+  const isAdmin = () => {
+    const accessToken = getCookie("accessToken");
+    if (accessToken) {
+      const tokenParts = accessToken.split(".");
+      if (tokenParts.length !== 3) {
+        throw new Error("Invalid token format");
+      }
+      const decodedToken = JSON.parse(atob(tokenParts[1]));
+      return decodedToken && (decodedToken.role === "admin") === true;
+    }
+    return false;
+  };
+
   const handleLogout = () => {
     // Xóa accessToken và userid từ cookie
     document.cookie = `accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
@@ -31,6 +55,19 @@ function Header() {
       >
         Thông tin tài khoản
       </Menu.Item>
+
+      {isAdmin() && (
+        <Menu.Item
+          key="admin"
+          icon={<UserOutlined />}
+          onClick={() => {
+            navigate("/admin");
+          }}
+        >
+          Admin
+        </Menu.Item>
+      )}
+
       <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={handleLogout}>
         Đăng xuất
       </Menu.Item>

@@ -153,6 +153,8 @@ export class OrderService {
       where: [{ status: 'PENDING' }, { status: 'COMPLETED' }],
     });
 
+
+
     // Trả về dữ liệu định dạng phù hợp
     return orders.map((order) => ({
       id: order.id,
@@ -162,7 +164,7 @@ export class OrderService {
         city: order.city,
         province: order.province,
         country: order.country,
-        name: order.firstName + ' ' + order.middleName + ' ' + order.lastName,
+        name: order.lastName + ' ' + order.middleName + ' ' + order.firstName,
         phone: order.phoneNumber,
       },
       status: order.status,
@@ -191,7 +193,7 @@ export class OrderService {
         city: order.city,
         province: order.province,
         country: order.country,
-        name: order.firstName + ' ' + order.middleName + ' ' + order.lastName,
+        name: order.lastName + ' ' + order.middleName + ' ' + order.firstName,
         phone: order.phoneNumber,
       },
       status: order.status,
@@ -212,6 +214,7 @@ export class OrderService {
     const orderItems = await this.orderItemRepository.find({
       where: { orderID: orderId },
     });
+    console.log(orderId);
 
     if (!orderItems.length) {
       throw new NotFoundException(
@@ -233,6 +236,7 @@ export class OrderService {
         phone: order.phoneNumber,
         email: order.email,
       },
+      status: order.status,
       subTotal: order.subTotal,
       totalDiscount: order.totalDiscount,
       shippingFee: order.shippingFee,
@@ -245,6 +249,8 @@ export class OrderService {
           quantity: item.quantity,
           price: item.price,
           totalPrice: item.quantity * item.price,
+          size: item.productVariant.size.name,
+          color: item.productVariant.color.name,
         })),
     }));
   }

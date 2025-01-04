@@ -6,7 +6,7 @@ import { Button, Row, Col, List, Card, Image, Input, message } from "antd";
 function ConfirmOrderPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [order, setOrder] = useState(null); // Changed from empty array to null
+  const [order, setOrder] = useState([]); // Changed from empty array to null
   const [showConfirmation, setShowConfirmation] = useState(false);
 
   const getCookie = (cookieName) => {
@@ -20,7 +20,7 @@ function ConfirmOrderPage() {
     return null;
   };
 
-  const orderId = localStorage.getItem("orderhistoryId");
+  const orderId = localStorage.getItem("orderconfirmId");
 
   const jwtToken = getCookie("accessToken");
 
@@ -44,8 +44,10 @@ function ConfirmOrderPage() {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
+      console.log(response);
 
       const data = await response.json();
+      console.log(data);
       setOrder(data.data[0]);
       console.log(order);
     } catch (error) {
@@ -54,7 +56,7 @@ function ConfirmOrderPage() {
   };
 
   if (!order) {
-    return <div>Loading...</div>; 
+    return <div>Loading...</div>;
   }
 
   const handleConfirmOrder = async () => {
@@ -78,12 +80,13 @@ function ConfirmOrderPage() {
       }
 
       const result = await response.json();
-      message.success("Order confirmed successfully!");
+      message.success("Xác nhận đơn hàng thành công!");
       await setShowConfirmation(true);
+
       // navigate("/admin");
     } catch (error) {
       console.error("Error confirming the order:", error);
-      message.error("There was an issue confirming the order.");
+      message.error("Lỗi!!! Xác nhận đơn hành thành công!");
     }
   };
 
@@ -200,6 +203,12 @@ function ConfirmOrderPage() {
                 <Col md={8}>
                   <span>{item.productName}</span>
                 </Col>
+                <Col md={3}>
+                  <span>{item.size} </span>
+                </Col>
+                <Col md={3} offset={1}>
+                  <span> {item.color}</span>
+                </Col>
                 <Col md={3} offset={1}>
                   <span>{item.price}đ</span>
                 </Col>
@@ -240,6 +249,7 @@ function ConfirmOrderPage() {
                 onClick={() => {
                   handleConfirmOrder();
                 }}
+                disabled={order.status === "COMPLETED"}
               >
                 Xác Nhận Đơn Hàng
               </Button>

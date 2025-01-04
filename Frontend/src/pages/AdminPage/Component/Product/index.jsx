@@ -13,6 +13,7 @@ import {
   Menu,
   Dropdown,
   DatePicker,
+  message,
 } from "antd";
 import React, { useState, useEffect } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
@@ -42,6 +43,7 @@ function ProductAdmin() {
   const [form] = Form.useForm();
   const [formvariant] = Form.useForm();
   const [addForm] = Form.useForm();
+  const [formCate] = Form.useForm();
   const { confirm } = Modal;
 
   const getCookie = (cookieName) => {
@@ -229,12 +231,14 @@ function ProductAdmin() {
       }
       console.log(response);
       await fetchProductCategoryData();
+      message.success("Xóa sản phẩm thành công!");
     } catch (error) {
+      message.error("Xóa sản phẩm thất bại!");
       console.error("Error removing item:", error);
     }
   };
 
-  const  handleRemoveVariantItem = async (ItemId) => {
+  const handleRemoveVariantItem = async (ItemId) => {
     try {
       const response = await fetch(
         `http://localhost:3000/product-variants/delete-productvariant/${ItemId}`,
@@ -252,7 +256,9 @@ function ProductAdmin() {
       }
 
       await fetchVariantData(currentItemId);
+      message.success("Xóa mẫu sản phẩm thành công!");
     } catch (error) {
+      message.error("Xóa mẫu sản phẩm thất bại!");
       console.error("Error removing item:", error);
     }
   };
@@ -280,7 +286,10 @@ function ProductAdmin() {
       }
 
       await fetchProductCategoryData();
+      message.success("Chỉnh sửa sản phẩm thành công!");
+      setIsEditModalVisible(false);
     } catch (error) {
+      message.error("Chỉnh sửa sản phẩm thất bại!");
       console.error("Error updating product:", error);
     }
   };
@@ -304,7 +313,12 @@ function ProductAdmin() {
       }
 
       await fetchProductCategoryData();
+
+      setIsAddModalVisible(false);
+
+      message.success("Thêm sản phẩm thành công!");
     } catch (error) {
+      message.error("Thêm sản phẩm thất bại!");
       console.error("Error adding product:", error);
     }
   };
@@ -332,7 +346,10 @@ function ProductAdmin() {
       }
 
       await fetchProductCategoryData();
+      message.success("Thêm danh mục vào sản phẩm thành công!");
+      formCate.resetFields();
     } catch (error) {
+      message.error("Thêm danh mục sản phẩm thất bại!");
       console.error("Error adding product:", error);
     }
   };
@@ -362,7 +379,10 @@ function ProductAdmin() {
       }
       await addQuantityProduct(quantity);
       await fetchProductCategoryData();
+      message.success("Thêm mẫu sản phẩm thành công!");
+      formvariant.resetFields();
     } catch (error) {
+      message.error("Thêm mẫu sản phẩm thất bại!");
       console.error("Error adding product:", error);
     }
   };
@@ -386,6 +406,7 @@ function ProductAdmin() {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
+      await fetchVariantData(currentItemId);
     } catch (error) {
       console.error("Error adding product:", error);
     }
@@ -418,7 +439,7 @@ function ProductAdmin() {
       .validateFields()
       .then((values) => {
         editProduct(currentItemId, values);
-        setIsEditModalVisible(false);
+        form.resetFields();
       })
       .catch((info) => {
         console.log("Validate Failed:", info);
@@ -520,15 +541,18 @@ function ProductAdmin() {
       .then((values) => {
         const payload = {
           ...values,
+          slug: values.slug || "",
+          shop: values.shop || false,
+          discount: values.discount || 0,
+          picture: values.picture || "",
+          content: values.content || "",
           quantity: 0,
-          startsAt: new Date(values.startsAt).toISOString(),
-          endsAt: new Date(values.endsAt).toISOString(),
+          startsAt: new Date().toISOString(),
+          endsAt: new Date().toISOString(),
         };
 
         addProduct(payload);
-
-        // Đóng modal sau khi thêm
-        setIsAddModalVisible(false);
+        addForm.resetFields();
       })
       .catch((info) => {
         console.log("Validation failed:", info);
@@ -678,6 +702,9 @@ function ProductAdmin() {
                               {variant.size.size})
                             </span>
                             <span>
+                              <b>Số lượng:</b> {variant.quantity} 
+                            </span>
+                            <span>
                               <Button
                                 onClick={() => showVariantConfirm(variant.id)}
                               >
@@ -713,20 +740,10 @@ function ProductAdmin() {
           >
             <Input />
           </Form.Item>
-          <Form.Item
-            name="slug"
-            label="Slug"
-            rules={[{ required: true, message: "Vui lòng nhập slug!" }]}
-          >
+          <Form.Item name="slug" label="Slug">
             <Input />
           </Form.Item>
-          <Form.Item
-            name="content"
-            label="Nội dung mô tả"
-            rules={[
-              { required: true, message: "Vui lòng nhập nội dung mô tả!" },
-            ]}
-          >
+          <Form.Item name="content" label="Nội dung mô tả">
             <Input.TextArea rows={4} />
           </Form.Item>
           <Form.Item
@@ -744,8 +761,8 @@ function ProductAdmin() {
             ]}
           >
             <InputNumber min={0} style={{ width: "100%" }} />
-          </Form.Item> */}
-          <Form.Item
+          </Form.Item> 
+           <Form.Item
             name="discount"
             label="Giảm giá (%)"
             rules={[
@@ -772,17 +789,8 @@ function ProductAdmin() {
             ]}
           >
             <Input placeholder="YYYY-MM-DDTHH:mm:ss.sssZ" />
-          </Form.Item>
-          <Form.Item
-            name="picture"
-            label="Hình ảnh sản phẩm (URL)"
-            rules={[
-              {
-                required: true,
-                message: "Vui lòng nhập đường dẫn hình ảnh sản phẩm!",
-              },
-            ]}
-          >
+          </Form.Item> */}
+          <Form.Item name="picture" label="Hình ảnh sản phẩm (URL)">
             <Input />
           </Form.Item>
           <Form.Item
@@ -811,22 +819,10 @@ function ProductAdmin() {
           >
             <Input />
           </Form.Item>
-          <Form.Item
-            name="slug"
-            label="Slug"
-            rules={[
-              { required: true, message: "Vui lòng nhập slug cho sản phẩm!" },
-            ]}
-          >
+          <Form.Item name="slug" label="Slug">
             <Input />
           </Form.Item>
-          <Form.Item
-            name="content"
-            label="Mô tả sản phẩm"
-            rules={[
-              { required: true, message: "Vui lòng nhập mô tả sản phẩm!" },
-            ]}
-          >
+          <Form.Item name="content" label="Mô tả sản phẩm">
             <Input.TextArea rows={4} />
           </Form.Item>
           <Form.Item
@@ -845,7 +841,7 @@ function ProductAdmin() {
           >
             <InputNumber min={0} style={{ width: "100%" }} />
           </Form.Item> */}
-          <Form.Item
+          {/* <Form.Item
             name="discount"
             label="Giảm giá (%)"
             rules={[
@@ -872,17 +868,8 @@ function ProductAdmin() {
             ]}
           >
             <Input placeholder="YYYY-MM-DDTHH:mm:ss.sssZ" />
-          </Form.Item>
-          <Form.Item
-            name="picture"
-            label="Hình ảnh sản phẩm (URL)"
-            rules={[
-              {
-                required: true,
-                message: "Vui lòng nhập đường dẫn hình ảnh sản phẩm!",
-              },
-            ]}
-          >
+          </Form.Item> */}
+          <Form.Item name="picture" label="Hình ảnh sản phẩm (URL)">
             <Input />
           </Form.Item>
           <Form.Item
@@ -895,14 +882,14 @@ function ProductAdmin() {
         </Form>
       </Modal>
       <Modal
-        title="Chỉnh sửa danh mục sản phẩm"
+        title="Chỉnh sửa danh mục cho sản phẩm"
         visible={isCategoryEditModalVisible}
         onOk={handleCategoryEditOk}
         onCancel={handleCategoryEditCancel}
         okText="Lưu"
         cancelText="Hủy bỏ"
       >
-        <Form layout="vertical" name="edit_category_form">
+        <Form form={formCate} layout="vertical" name="edit_category_form">
           <Form.Item
             name="categoryDropdown"
             label="Chọn danh mục"
@@ -921,7 +908,7 @@ function ProductAdmin() {
         </Form>
       </Modal>
       <Modal
-        title="Chỉnh sửa chi tiết sản phẩm"
+        title="Thêm mẫu sản phẩm"
         visible={isVariantEditModalVisible}
         onOk={handleVariantEditOk}
         onCancel={handleVariantEditCancel}

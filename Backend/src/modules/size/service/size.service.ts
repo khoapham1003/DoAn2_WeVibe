@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Size } from '../entities/size.entity';
@@ -12,7 +17,26 @@ export class SizeService {
     private readonly sizeRepository: Repository<Size>,
   ) {}
 
+  async checkIfNameExists(name: string): Promise<boolean> {
+    const existingSize = await this.sizeRepository.findOne({
+      where: { name },
+    });
+    if (existingSize) return true;
+    else return false;
+  }
+
+  // Tạo kích thước mới
   async create(createSizeDto: CreateSizeDto): Promise<Size> {
+    const { name } = createSizeDto;
+
+    const exists = await this.checkIfNameExists(name);
+    if (exists) {
+      throw new HttpException(
+        `Size with the name ${name} already exists`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const size = this.sizeRepository.create(createSizeDto);
     return await this.sizeRepository.save(size);
   }

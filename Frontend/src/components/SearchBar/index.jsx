@@ -13,7 +13,6 @@ const SearchBar = ({ onSearchResult, ...props }) => {
 
     if (searchValue) {
       navigate(`/search/${searchValue}`);
-      window.location.reload();
     } else {
       navigate(`/`);
       window.location.reload();
