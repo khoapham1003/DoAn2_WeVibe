@@ -69,11 +69,7 @@ function MainPage() {
       </h3>
       <Row className="title_bar">
         <Col>
-          <MenuSlide
-            size="large"
-            className="title_menu"
-            onMenuSelect={handleMenuSelect}
-          />
+          <MenuSlide size="large" onMenuSelect={handleMenuSelect} />
         </Col>
       </Row>
       <div className="card_container">
