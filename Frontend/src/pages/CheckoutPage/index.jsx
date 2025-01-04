@@ -136,7 +136,7 @@ function CheckoutPage() {
       // Địa chỉ nhận thanh toán
       const recipientAddress = "0xe72b366514f3DA2B2C3379B0136770bbd92E7413";
 
-      const tokenToSend = "1";
+      const tokenToSend = (totalPrice / 1000).toString();
       const amountToSend = ethers.parseUnits(tokenToSend, 18);
 
       // Thực hiện giao dịch
@@ -569,7 +569,6 @@ function CheckoutPage() {
                     order.middleName &&
                     order.lastName &&
                     order.line1 &&
-                    order.line2 &&
                     order.email &&
                     order.phoneNumber &&
                     order.city &&

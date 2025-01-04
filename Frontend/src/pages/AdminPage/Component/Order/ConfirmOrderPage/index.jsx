@@ -20,7 +20,7 @@ function ConfirmOrderPage() {
     return null;
   };
 
-  const orderId = localStorage.getItem("orderhistoryId");
+  const orderId = localStorage.getItem("orderconfirmId");
 
   const jwtToken = getCookie("accessToken");
 
@@ -44,7 +44,7 @@ function ConfirmOrderPage() {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-
+      console.log(response);
       const data = await response.json();
       setOrder(data.data[0]);
       console.log(order);
@@ -80,7 +80,7 @@ function ConfirmOrderPage() {
       const result = await response.json();
       message.success("Order confirmed successfully!");
       await setShowConfirmation(true);
-      // navigate("/admin");
+      navigate("/admin");
     } catch (error) {
       console.error("Error confirming the order:", error);
       message.error("There was an issue confirming the order.");
