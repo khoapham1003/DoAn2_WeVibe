@@ -259,11 +259,17 @@ function ProfilePage() {
         const data = await response.json();
         console.log(response);
         const orderdata = data.data;
-        const pendingOrders = orderdata.filter(
+        let pendingOrders = orderdata.filter(
           (order) => order.status === "PENDING"
         );
-        const completeOrders = orderdata.filter(
+        let completeOrders = orderdata.filter(
           (order) => order.status === "COMPLETED"
+        );
+        pendingOrders = pendingOrders.sort(
+          (a, b) => new Date(b.createAt) - new Date(a.createAt)
+        );
+        completeOrders = completeOrders.sort(
+          (a, b) => new Date(b.createAt) - new Date(a.createAt)
         );
         console.log(pendingOrders, completeOrders);
 
@@ -283,15 +289,21 @@ function ProfilePage() {
   };
 
   return (
-    <div>
+    <div className="admin_tab_container">
       <h3 class="title-comm">
         <span class="title-holder">TÀI KHOẢN CỦA TÔI</span>
       </h3>
-      <Row>
-        <h2 className="detail_h2">THÔNG TIN CÁ NHÂN</h2>
-      </Row>
-      <div className="cover">
-        <Col className="profilepage_container">
+      <div
+        className="card_container"
+        style={{
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <Row>
+          <h2 className="detail_h2">THÔNG TIN CÁ NHÂN</h2>
+        </Row>
+        <Col>
           {userData && (
             <Descriptions className="description" column={1}>
               {/* Full Name - First Name, Middle Name, Last Name */}
@@ -367,16 +379,16 @@ function ProfilePage() {
 
         <Row>
           <h2 className="detail_h2">ĐỔI MẬT KHẨU</h2>
-          <div className="profilepage_container">
-            <Button
-              size="large"
-              className="profilepage_button"
-              onClick={handleChangePasswordClick}
-            >
-              Đổi mật khẩu
-            </Button>
-          </div>
         </Row>
+        <div>
+          <Button
+            size="large"
+            className="profilepage_button"
+            onClick={handleChangePasswordClick}
+          >
+            Đổi mật khẩu
+          </Button>
+        </div>
         <Modal
           title="Change Password"
           visible={isChangePasswordModalVisible}
@@ -533,7 +545,7 @@ function ProfilePage() {
                         {item.address.phone}
                       </Descriptions.Item>
                       <Descriptions.Item label="Địa chỉ nhận hàng">
-                      {item.address.line1 +
+                        {item.address.line1 +
                           ", " +
                           (item.address.line2
                             ? item.address.line2 + ", "

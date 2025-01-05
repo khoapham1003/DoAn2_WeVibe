@@ -37,9 +37,9 @@ export class CartItem {
   })
   updatedAt: string;
 
-  @ManyToOne(() => ProductVariant, { eager: true })
-  @JoinColumn({ name: 'product_vid' })
-  productVariant: ProductVariant;
+ @ManyToOne(() => ProductVariant, { eager: true })
+productVariant: ProductVariant;
+
 
   @ManyToOne(() => Cart, { eager: true })
   @JoinColumn({ name: 'cart_id' })

@@ -17,7 +17,7 @@ export class Category {
   @PrimaryGeneratedColumn('increment', { name: 'id' })
   id: number;
 
-  @Column({ name: 'parent_id', type: 'int', nullable: true })
+  @Column({ name: 'parentId', type: 'int', nullable: true })
   parentId: number;
 
   @Column({ type: 'varchar', length: 255 })
@@ -52,7 +52,6 @@ export class Category {
   @ManyToOne(() => Category, (category) => category.children, {
     nullable: true,
   })
-  @JoinColumn({ name: 'parent_id' })
   parent: Category;
 
   @OneToMany(() => Category, (category) => category.parent)

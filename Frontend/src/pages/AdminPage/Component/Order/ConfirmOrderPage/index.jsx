@@ -95,74 +95,162 @@ function ConfirmOrderPage() {
       </h3>
       <div className="cop_container">
         <div className="recipient_info">
-          <List>
+          <List
+            style={{
+              padding: "20px",
+              backgroundColor: "#f9f9f9",
+              borderRadius: "8px",
+            }}
+          >
             <List.Item>
               <h2>Thông tin người nhận</h2>
             </List.Item>
+            {/* Họ, Tên đệm, Tên */}
             <List.Item>
-              <div>
-                Họ:
-                <Input name="lastName" value={order.address?.lastName || ""} />
+              <div
+                style={{ display: "flex", gap: "16px", marginBottom: "16px" }}
+              >
+                <div style={{ flex: 1 }}>
+                  <label>Họ:</label>
+                  <Input
+                    name="lastName"
+                    value={order.address?.lastName || ""}
+                    style={{
+                      width: "100%",
+                      padding: "8px",
+                      boxSizing: "border-box",
+                    }}
+                  />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label>Tên đệm:</label>
+                  <Input
+                    name="middleName"
+                    value={order.address?.middleName || ""}
+                    style={{
+                      width: "100%",
+                      padding: "8px",
+                      boxSizing: "border-box",
+                    }}
+                  />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label>Tên:</label>
+                  <Input
+                    name="firstName"
+                    value={order.address?.firstName || ""}
+                    style={{
+                      width: "100%",
+                      padding: "8px",
+                      boxSizing: "border-box",
+                    }}
+                  />
+                </div>
               </div>
             </List.Item>
+            {/* Số điện thoại, Email */}
             <List.Item>
-              <div>
-                Tên đệm:
-                <Input
-                  name="middleName"
-                  value={order.address?.middleName || ""}
-                />
+              <div
+                style={{ display: "flex", gap: "16px", marginBottom: "16px" }}
+              >
+                <div style={{ flex: 1 }}>
+                  <label>Số điện thoại:</label>
+                  <Input
+                    name="phoneNumber"
+                    value={order.address?.phone || ""}
+                    style={{
+                      width: "100%",
+                      padding: "8px",
+                      boxSizing: "border-box",
+                    }}
+                  />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label>Email:</label>
+                  <Input
+                    name="email"
+                    value={order.address?.email || ""}
+                    style={{
+                      width: "100%",
+                      padding: "8px",
+                      boxSizing: "border-box",
+                    }}
+                  />
+                </div>
               </div>
             </List.Item>
+            {/* Địa chỉ 1, Địa chỉ 2 */}
             <List.Item>
-              <div>
-                Tên:
-                <Input
-                  name="firstName"
-                  value={order.address?.firstName || ""}
-                />
+              <div
+                style={{ display: "flex", gap: "16px", marginBottom: "16px" }}
+              >
+                <div style={{ flex: 1 }}>
+                  <label>Địa chỉ 1:</label>
+                  <Input
+                    name="line1"
+                    value={order.address?.line1 || ""}
+                    style={{
+                      width: "100%",
+                      padding: "8px",
+                      boxSizing: "border-box",
+                    }}
+                  />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label>Địa chỉ 2 (tùy chọn):</label>
+                  <Input
+                    name="line2"
+                    value={order.address?.line2 || ""}
+                    style={{
+                      width: "100%",
+                      padding: "8px",
+                      boxSizing: "border-box",
+                    }}
+                  />
+                </div>
               </div>
             </List.Item>
+            {/* Thành phố, Tỉnh, Quốc gia */}
             <List.Item>
-              <div>
-                Số điện thoại:
-                <Input name="phoneNumber" value={order.address?.phone || ""} />
-              </div>
-            </List.Item>
-            <List.Item>
-              <div>
-                Email:
-                <Input name="email" value={order.address?.email || ""} />
-              </div>
-            </List.Item>
-            <List.Item>
-              <div>
-                Địa chỉ 1:
-                <Input name="line1" value={order.address?.line1 || ""} />
-              </div>
-            </List.Item>
-            <List.Item>
-              <div>
-                Địa chỉ 2 (tùy chọn):
-                <Input name="line2" value={order.address?.line2 || ""} />
-              </div>
-            </List.Item>
-            <List.Item>
-              <div>
-                Thành phố:
-                <Input name="city" value={order.address?.city || ""} />
-              </div>
-            </List.Item>
-            <List.Item>
-              <div>
-                Tỉnh:
-                <Input name="province" value={order.address?.province || ""} />
-              </div>
-            </List.Item>
-            <List.Item>
-              <div>
-                Quốc gia:
-                <Input name="country" value={order.address?.country || ""} />
+              <div
+                style={{ display: "flex", gap: "16px", marginBottom: "16px" }}
+              >
+                <div style={{ flex: 1 }}>
+                  <label>Thành phố:</label>
+                  <Input
+                    name="city"
+                    value={order.address?.city || ""}
+                    style={{
+                      width: "100%",
+                      padding: "8px",
+                      boxSizing: "border-box",
+                    }}
+                  />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label>Tỉnh:</label>
+                  <Input
+                    name="province"
+                    value={order.address?.province || ""}
+                    style={{
+                      width: "100%",
+                      padding: "8px",
+                      boxSizing: "border-box",
+                    }}
+                  />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label>Quốc gia:</label>
+                  <Input
+                    name="country"
+                    value={order.address?.country || ""}
+                    style={{
+                      width: "100%",
+                      padding: "8px",
+                      boxSizing: "border-box",
+                    }}
+                  />
+                </div>
               </div>
             </List.Item>
           </List>

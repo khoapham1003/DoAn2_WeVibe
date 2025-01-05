@@ -84,13 +84,13 @@ function ProductAdmin() {
       );
 
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        setVariants([]);
       }
       const data = await response.json();
       console.log(data);
       setVariants(data);
-      fetchVariantData();
     } catch (error) {
+      message.error("Không tìm thấy mẫu sản phẩm của sản phẩm này!");
       console.error("Error fetching product data:", error);
       throw error;
     }
@@ -229,12 +229,12 @@ function ProductAdmin() {
           },
         }
       );
-
+      console.log(response);
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
+      fetchVariantData(currentItemId);
 
-      await fetchVariantData(currentItemId);
       message.success("Xóa mẫu sản phẩm thành công!");
     } catch (error) {
       message.error("Xóa mẫu sản phẩm thất bại!");
@@ -627,8 +627,9 @@ function ProductAdmin() {
                 <span className="cop_item_price">
                   {item?.categoryProducts?.length
                     ? item.categoryProducts
+                        .filter((cp) => cp.categoryId !== null)
                         .map((cp) => cp.category?.title)
-                        .join(", ")
+                        .join(", ") || "No categories"
                     : "No categories"}
                 </span>
               </Col>
@@ -666,7 +667,7 @@ function ProductAdmin() {
                 </span>
               </Col>
               <br></br>
-              <Col md={4}>
+              <Col md={10} style={{ textAlign: "left" }}>
                 <Button onClick={() => toggleDropdown(item.id)}>
                   Danh sách mẫu SP
                 </Button>
@@ -675,9 +676,9 @@ function ProductAdmin() {
                     <ul>
                       {variants.length > 0 ? (
                         variants.map((variant) => (
-                          <div>
-                            <span>
-                              <b>Color:</b> {variant.color.name} (
+                          <div className="variant-row" key={variant.id}>
+                            <span className="variant-color">
+                              <b>Màu sắc:</b> {variant.color.name}
                               <span
                                 style={{
                                   display: "inline-block",
@@ -688,15 +689,13 @@ function ProductAdmin() {
                                   marginLeft: 5,
                                 }}
                               ></span>
-                              )
                             </span>
-                            <br />
-                            <span>
-                              <b>Size:</b> {variant.size.name} (
+                            <span className="variant-size">
+                              <b>Kích cỡ:</b> {variant.size.name} (
                               {variant.size.size})
                             </span>
                             <span>
-                              <b>Số lượng:</b> {variant.quantity} 
+                              <b>Số lượng:</b> {variant.quantity}
                             </span>
                             <span>
                               <Button

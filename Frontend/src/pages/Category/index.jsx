@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { Button, Card, Col, Row, Pagination, Rate } from "antd";
+import { Button, Card, Col, Row, Pagination, Rate, Select } from "antd";
 import { useNavigate } from "react-router-dom";
 import MenuSlide from "../../components/MenuSlide";
 
 const { Meta } = Card;
+const { Option } = Select;
 
 const FilteredPage = () => {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ const FilteredPage = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [sortOrder, setSortOrder] = useState(null);
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 100,
@@ -46,6 +48,22 @@ const FilteredPage = () => {
     fetchData();
   }, [selectedMenu, pagination.current, pagination.pageSize]);
 
+  useEffect(() => {
+    if (sortOrder) {
+      const sortedItems = [...items];
+      if (sortOrder === "price-asc") {
+        sortedItems.sort((a, b) => a.price - b.price);
+      } else if (sortOrder === "price-desc") {
+        sortedItems.sort((a, b) => b.price - a.price);
+      } else if (sortOrder === "name-asc") {
+        sortedItems.sort((a, b) => a.title.localeCompare(b.title));
+      } else if (sortOrder === "name-desc") {
+        sortedItems.sort((a, b) => b.title.localeCompare(a.title));
+      }
+      setItems(sortedItems); // Cập nhật lại mảng items đã sắp xếp
+    }
+  }, [sortOrder, items]);
+
   const handleMenuSelect = (selectedValue) => {
     setSelectedMenu(selectedValue);
     navigate(`/${selectedValue}`);
@@ -54,6 +72,23 @@ const FilteredPage = () => {
 
   const handleProductClick = (item) => {
     navigate(`/product-detail/${item.id}`, { state: { item } });
+  };
+
+  const handleSortChange = (value) => {
+    if (sortOrder) {
+      const sortedItems = [...items];
+      if (sortOrder === "price-asc") {
+        sortedItems.sort((a, b) => a.price - b.price);
+      } else if (sortOrder === "price-desc") {
+        sortedItems.sort((a, b) => b.price - a.price);
+      } else if (sortOrder === "name-asc") {
+        sortedItems.sort((a, b) => a.title.localeCompare(b.title));
+      } else if (sortOrder === "name-desc") {
+        sortedItems.sort((a, b) => b.title.localeCompare(a.title));
+      }
+      setItems(sortedItems);
+    }
+    setSortOrder(value);
   };
 
   return (
@@ -66,6 +101,18 @@ const FilteredPage = () => {
           <MenuSlide onMenuSelect={handleMenuSelect} />
         </Col>
       </Row>
+      <div className="sort-container">
+        <Select
+          defaultValue="price-asc"
+          style={{ width: 200 }}
+          onChange={handleSortChange}
+        >
+          <Option value="price-asc">Sắp xếp theo giá (tăng dần)</Option>
+          <Option value="price-desc">Sắp xếp theo giá (giảm dần)</Option>
+          <Option value="name-asc">Sắp xếp theo tên (A-Z)</Option>
+          <Option value="name-desc">Sắp xếp theo tên (Z-A)</Option>
+        </Select>
+      </div>
       <div className="card_container">
         {loading && <p>Loading...</p>}
         {error && <p>Error: {error.message}</p>}

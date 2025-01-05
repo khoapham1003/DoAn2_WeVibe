@@ -153,8 +153,6 @@ export class OrderService {
       where: [{ status: 'PENDING' }, { status: 'COMPLETED' }],
     });
 
-
-
     // Trả về dữ liệu định dạng phù hợp
     return orders.map((order) => ({
       id: order.id,
@@ -167,6 +165,7 @@ export class OrderService {
         name: order.lastName + ' ' + order.middleName + ' ' + order.firstName,
         phone: order.phoneNumber,
       },
+      createAt: order.createdAt,
       status: order.status,
       subTotal: order.subTotal,
       totalDiscount: order.totalDiscount,
@@ -196,6 +195,7 @@ export class OrderService {
         name: order.lastName + ' ' + order.middleName + ' ' + order.firstName,
         phone: order.phoneNumber,
       },
+      createAt: order.createdAt,
       status: order.status,
       subTotal: order.subTotal,
       totalDiscount: order.totalDiscount,
@@ -254,6 +254,7 @@ export class OrderService {
         })),
     }));
   }
+
   async orderStatistics(): Promise<any> {
     const queryBuilder = this.orderRepository.createQueryBuilder('order');
 
