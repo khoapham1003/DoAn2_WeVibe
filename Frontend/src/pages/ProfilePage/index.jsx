@@ -259,11 +259,17 @@ function ProfilePage() {
         const data = await response.json();
         console.log(response);
         const orderdata = data.data;
-        const pendingOrders = orderdata.filter(
+        let pendingOrders = orderdata.filter(
           (order) => order.status === "PENDING"
         );
-        const completeOrders = orderdata.filter(
+        let completeOrders = orderdata.filter(
           (order) => order.status === "COMPLETED"
+        );
+        pendingOrders = pendingOrders.sort(
+          (a, b) => new Date(b.createAt) - new Date(a.createAt)
+        );
+        completeOrders = completeOrders.sort(
+          (a, b) => new Date(b.createAt) - new Date(a.createAt)
         );
         console.log(pendingOrders, completeOrders);
 
@@ -532,7 +538,7 @@ function ProfilePage() {
                         {item.address.phone}
                       </Descriptions.Item>
                       <Descriptions.Item label="Địa chỉ nhận hàng">
-                      {item.address.line1 +
+                        {item.address.line1 +
                           ", " +
                           (item.address.line2
                             ? item.address.line2 + ", "

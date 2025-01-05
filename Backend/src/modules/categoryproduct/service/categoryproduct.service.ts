@@ -19,7 +19,12 @@ export class CategoryProductService {
         productId,
       },
     });
-    return existingCategoryProduct !== undefined;
+
+    if(existingCategoryProduct) {
+      return true;
+    } else {
+      return false;
+    };
   }
 
   async create(createCategoryProductDto: CreateCategoryProductDto): Promise<CategoryProduct> {

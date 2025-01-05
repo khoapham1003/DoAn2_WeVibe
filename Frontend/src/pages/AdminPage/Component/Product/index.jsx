@@ -105,13 +105,13 @@ function ProductAdmin() {
       );
 
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        setVariants([]);
       }
       const data = await response.json();
       console.log(data);
       setVariants(data);
-      fetchVariantData();
     } catch (error) {
+      message.error("Không tìm thấy mẫu sản phẩm của sản phẩm này!");
       console.error("Error fetching product data:", error);
       throw error; // Propagate the error to handle it in the calling code
     }
@@ -250,12 +250,12 @@ function ProductAdmin() {
           },
         }
       );
-
+      console.log(response);
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
+      fetchVariantData(currentItemId);
 
-      await fetchVariantData(currentItemId);
       message.success("Xóa mẫu sản phẩm thành công!");
     } catch (error) {
       message.error("Xóa mẫu sản phẩm thất bại!");
@@ -646,8 +646,9 @@ function ProductAdmin() {
                 <span className="cop_item_price">
                   {item?.categoryProducts?.length
                     ? item.categoryProducts
+                        .filter((cp) => cp.categoryId !== null)
                         .map((cp) => cp.category?.title)
-                        .join(", ")
+                        .join(", ") || "No categories"
                     : "No categories"}
                 </span>
               </Col>
@@ -702,7 +703,7 @@ function ProductAdmin() {
                               {variant.size.size})
                             </span>
                             <span>
-                              <b>Số lượng:</b> {variant.quantity} 
+                              <b>Số lượng:</b> {variant.quantity}
                             </span>
                             <span>
                               <Button
