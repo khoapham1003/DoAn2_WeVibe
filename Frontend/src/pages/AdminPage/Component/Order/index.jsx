@@ -32,7 +32,6 @@ function OrderAdmin() {
   const [endDate, setEndDate] = useState(null);
   const [chartType, setChartType] = useState("daily");
   const [dataType, setDataType] = useState("totalPrice");
-  const navigate = useNavigate();
 
   const getCookie = (cookieName) => {
     const cookies = document.cookie.split("; ");
