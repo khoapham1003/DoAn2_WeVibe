@@ -24,6 +24,7 @@ const { Option } = Select;
 const { TabPane } = Tabs;
 
 function OrderAdmin() {
+  const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [orders, setOrders] = useState({ pending: [], complete: [] });
   const [chartData, setChartData] = useState({});
@@ -535,7 +536,14 @@ function OrderAdmin() {
                       {item.address.phone}
                     </Descriptions.Item>
                     <Descriptions.Item label="Địa chỉ nhận hàng">
-                      {item.address.city}
+                      {item.address.line1 +
+                        ", " +
+                        (item.address.line2 ? item.address.line2 + ", " : "") +
+                        item.address.city +
+                        ", " +
+                        item.address.province +
+                        ", " +
+                        item.address.country}
                     </Descriptions.Item>
                     <Descriptions.Item label="Tổng đơn hàng">
                       {new Intl.NumberFormat("vi-VN").format(item.grandTotal)} đ
@@ -566,7 +574,14 @@ function OrderAdmin() {
                       {item.address.phone}
                     </Descriptions.Item>
                     <Descriptions.Item label="Địa chỉ nhận hàng">
-                      {item.address.city}
+                      {item.address.line1 +
+                        ", " +
+                        (item.address.line2 ? item.address.line2 + ", " : "") +
+                        item.address.city +
+                        ", " +
+                        item.address.province +
+                        ", " +
+                        item.address.country}
                     </Descriptions.Item>
                     <Descriptions.Item label="Tổng đơn hàng">
                       {new Intl.NumberFormat("vi-VN").format(item.grandTotal)} đ

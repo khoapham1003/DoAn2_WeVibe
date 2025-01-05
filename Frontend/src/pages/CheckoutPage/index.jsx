@@ -19,16 +19,16 @@ function CheckoutPage() {
 
   const [items, setItems] = useState([]);
   const [order, setOrder] = useState({
-    lastName: "L",
-    middleName: "L",
-    firstName: "L",
+    lastName: "Lương Lê",
+    middleName: "Duy",
+    firstName: "Tiến",
     phoneNumber: "0123456789",
-    email: "t@gmail.com", //
-    line1: "1",
-    line2: "1",
-    city: "1",
-    province: "1",
-    country: "1",
+    email: "tien1214@gmail.com", //
+    line1: "1015",
+    line2: "",
+    city: "TP Ho Chi Minh",
+    province: "TP Ho Chi Minh",
+    country: "Viet Nam",
   });
   const [promotionalCode, setPromotionalCode] = useState("");
   const [voucherDiscount, setVoucherDiscount] = useState(0);
@@ -103,9 +103,9 @@ function CheckoutPage() {
           const balance = await contract.balanceOf(
             "0xD6D44D446C93542B604e7C189747c70B3a0Ff217"
           );
-          setBalance(ethers.formatUnits(balance, 18)); // Hiển thị số dư token
+          setBalance(ethers.formatUnits(balance, 18));
           console.log("Số dư token:", ethers.formatUnits(balance, 18));
-          // Lấy số dư token
+      
         }
       } else {
         message.error("Vui lòng cài đặt MetaMask!");

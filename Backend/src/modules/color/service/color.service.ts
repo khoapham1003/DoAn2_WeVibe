@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateColorDto } from '../dto/create-color.dto';
@@ -12,11 +12,30 @@ export class ColorService {
     private readonly colorRepository: Repository<Color>,
   ) {}
 
+  async checkIfHexExists(hex: string): Promise<boolean> {
+    const existingColor = await this.colorRepository.findOne({
+      where: { hex },
+    });
+
+    if(existingColor)
+      return true;
+    else
+    return false;
+  }
   async create(createColorDto: CreateColorDto): Promise<Color> {
+    const { hex } = createColorDto;
+
+    const exists = await this.checkIfHexExists(hex);
+    if (exists) {
+      throw new HttpException(
+        `Color with hex code ${hex} already exists`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const newColor = this.colorRepository.create(createColorDto);
     return await this.colorRepository.save(newColor);
   }
-
   async findAll(): Promise<Color[]> {
     return await this.colorRepository.find();
   }

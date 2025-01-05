@@ -12,6 +12,23 @@ const SearchPage = () => {
   const [selectedMenu, setSelectedMenu] = useState(null);
 
   useEffect(() => {
+    const handleRefresh = (event) => {
+      if (event.key === 'F5') {
+        event.preventDefault();
+        window.location.href = '/';  // Điều hướng về trang chủ và reload
+      }
+    };
+
+    // Thêm sự kiện keydown
+    window.addEventListener('keydown', handleRefresh);
+    
+    // Cleanup khi component unmount
+    return () => {
+      window.removeEventListener('keydown', handleRefresh);
+    };
+  }, []); 
+  
+  useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);

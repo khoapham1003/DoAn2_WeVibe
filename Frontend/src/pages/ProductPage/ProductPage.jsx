@@ -26,6 +26,8 @@ function ProductPage() {
   const [productvariant, setProductVariant] = useState([]);
   const [selectedColor, setSelectedColor] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
+  const [availableSizes, setAvailableSizes] = useState([]);
+  const [availableColors, setAvailableColors] = useState([]);
   useEffect(() => {
     window.scrollTo(0, 0);
     const fetchreviewsdata = async () => {
@@ -87,12 +89,10 @@ function ProductPage() {
             tempSizes.push(item.size); // Thêm kích thước duy nhất
           }
         });
-
         setColor(tempColors);
+        setAvailableColors(tempColors);
         setSize(tempSizes);
-
-        console.log("clort", color, size);
-
+        setAvailableSizes(tempSizes);
         return data;
       } catch (error) {
         console.error("Error fetching product variant:", error);
@@ -127,7 +127,6 @@ function ProductPage() {
         price: item.price,
         discount: item.discount,
       };
-      console.log("34tyui", data);
       const response = await fetch(
         `http://localhost:3000/cartitem/create-cart-item`,
         {
@@ -147,7 +146,7 @@ function ProductPage() {
       } else {
         const error = await response.text();
         if (error) {
-          message.error("Vui lòng đăng nhập!");
+          message.error("Thêm vào giỏ hàng thất bại!");
         }
         console.error("Failed to add item to the cart in the database");
       }
@@ -166,12 +165,50 @@ function ProductPage() {
   }
 
   const handleColorSelect = (color) => {
-    setSelectedColor(color);
+    if (selectedColor?.id === color.id) {
+      // Nếu màu được chọn trùng với màu hiện tại => Bỏ chọn
+      setSelectedColor(null);
+    } else {
+      setSelectedColor(color);
+    }
   };
 
   const handleSizeSelect = (size) => {
-    setSelectedSize(size);
+    if (selectedSize?.id === size.id) {
+      // Nếu kích thước được chọn trùng với kích thước hiện tại => Bỏ chọn
+      setSelectedSize(null);
+    } else {
+      setSelectedSize(size);
+    }
   };
+
+  useEffect(() => {
+    if (!selectedColor && !selectedSize) {
+      // Không có lựa chọn, bật tất cả
+      setAvailableSizes(size.map((s) => s.id)); // Danh sách tất cả các kích thước
+      setAvailableColors(color.map((c) => c.id)); // Danh sách tất cả các màu sắc
+      return;
+    }
+    if (selectedColor) {
+      // Lọc kích thước hợp lệ theo màu sắc đã chọn
+      const validSizes = productvariant
+        .filter((variant) => variant.color.id === selectedColor.id)
+        .map((variant) => variant.size.id);
+      setAvailableSizes(validSizes);
+    } else {
+      setAvailableSizes(size.map((s) => s.id)); // Không có màu được chọn, bật tất cả kích thước
+    }
+
+    if (selectedSize) {
+      // Lọc màu sắc hợp lệ theo kích thước đã chọn
+      const validColors = productvariant
+        .filter((variant) => variant.size.id === selectedSize.id)
+        .map((variant) => variant.color.id);
+      setAvailableColors(validColors);
+    } else {
+      setAvailableColors(color.map((c) => c.id)); // Không có kích thước được chọn, bật tất cả màu sắc
+    }
+  }, [selectedColor, selectedSize, productvariant, color, size]);
 
   function ExhibitionContent({ content }) {
     return <div>{convertNewlinesToBreaks(content)}</div>;
@@ -231,15 +268,17 @@ function ProductPage() {
                                 ? "0 0 0 4px rgba(143, 143, 143, 0.5)"
                                 : "none",
                             cursor: "pointer",
+                          opacity: availableColors.includes(color.id) ? 1 : 0.5,
                           }}
-                          onClick={() => handleColorSelect(color)}
+                          onClick={() => 
+                          availableColors.includes(color.id) &&
+                            handleColorSelect(color)}
                         />
                       ))}
                     </div>
+
                   </div>
                 </List.Item>
-
-                {/* Kích thước */}
                 <List.Item>
                   <div
                     style={{
@@ -264,8 +303,9 @@ function ProductPage() {
                               selectedSize?.id === size.id
                                 ? "#f0f0f0"
                                 : "transparent",
+                                     opacity: availableSizes.includes(size.id) ? 1 : 0.5, // Làm mờ nếu không hợp lệ
                           }}
-                          onClick={() => handleSizeSelect(size)}
+                          onClick={() =>   availableSizes.includes(size.id) && handleSizeSelect(size)}
                         >
                           {size.name || `Size: ${size.size || "Không rõ"}`}
                         </span>

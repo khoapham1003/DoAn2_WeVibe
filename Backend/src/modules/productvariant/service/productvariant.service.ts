@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProductVariant } from '../entities/productvariant.entity';
@@ -12,15 +12,42 @@ export class ProductVariantService {
     private productVariantRepository: Repository<ProductVariant>,
   ) {}
 
+  async checkIfExists(productId: number, sizeId: number, colorId: number): Promise<boolean> {
+    const existingVariant = await this.productVariantRepository.findOne({
+      where: {
+        productId: productId,
+        sizeId: sizeId,
+        colorId: colorId,
+      },
+    });
+
+   if(
+    existingVariant) {
+      return true;
+    } else {
+      return false;
+    };
+  }
+
   async create(createProductVariantDto: CreateProductVariantDto): Promise<ProductVariant> {
-    const productVariant = this.productVariantRepository.create(createProductVariantDto);
-    return this.productVariantRepository.save(productVariant);
+    const { productId, sizeId, colorId } = createProductVariantDto;
+
+    // Kiểm tra nếu đã tồn tại ProductVariant với cùng productID, sizeID và color
+    const exists = await this.checkIfExists(productId, sizeId, colorId);
+    console.log(exists);
+
+    if (exists) {
+      throw new HttpException('Product variant with the same product, size, and color already exists', HttpStatus.BAD_REQUEST);
+    }
+
+    const newProductVariant = this.productVariantRepository.create(createProductVariantDto);
+    return await this.productVariantRepository.save(newProductVariant);
   }
 
   async getProductVariantsByProductId(productId: number): Promise<ProductVariant[]> {
     const productVariants = await this.productVariantRepository.find({
       where: { productId: productId },
-      select: ['id', 'size', 'color'],
+      select: ['id', 'size', 'color', 'quantity'],
     });
 
     if (!productVariants || productVariants.length === 0) {

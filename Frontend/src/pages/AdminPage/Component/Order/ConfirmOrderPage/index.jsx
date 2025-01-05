@@ -46,6 +46,7 @@ function ConfirmOrderPage() {
       }
       console.log(response);
       const data = await response.json();
+      console.log(data);
       setOrder(data.data[0]);
       console.log(order);
     } catch (error) {
