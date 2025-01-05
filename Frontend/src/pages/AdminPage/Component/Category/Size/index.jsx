@@ -1,4 +1,4 @@
-import { Button, Card, Col, Form, Modal, Row, Input } from "antd";
+import { Button, Card, Col, Form, Modal, Row, Input, message } from "antd";
 import React, { useState, useEffect } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { IoMdAdd } from "react-icons/io";
@@ -58,7 +58,7 @@ function SizeManagement() {
   const addSize = async (requestBody) => {
     try {
       if (requestBody.size) {
-        requestBody.size = parseInt(requestBody.size, 10); // Convert size to integer
+        requestBody.size = parseInt(requestBody.size, 10);
       }
       const response = await fetch("http://localhost:3000/sizes/create-size", {
         method: "POST",
@@ -71,8 +71,11 @@ function SizeManagement() {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      await fetchSizeData(); // Refresh categories list
+      await fetchSizeData(); // Refresh categories lis
+      setIsAddModalVisible(false);
+      message.success("Thêm danh mục kích thước thành công!");
     } catch (error) {
+      message.error("Thêm danh mục kích thước thất bại!");
       console.error("Error adding Size:", error);
     }
   };
@@ -80,7 +83,7 @@ function SizeManagement() {
   const editSize = async (itemId, requestBody) => {
     try {
       if (requestBody.size) {
-        requestBody.size = parseInt(requestBody.size, 10); // Convert size to integer
+        requestBody.size = parseInt(requestBody.size, 10);
       }
       const response = await fetch(
         `http://localhost:3000/sizes/update-size/${itemId}`,
@@ -99,7 +102,10 @@ function SizeManagement() {
       }
 
       await fetchSizeData();
+      setIsEditModalVisible(false);
+      message.success("Cập nhật danh mục kích thước thành công!");
     } catch (error) {
+      message.error("Cập nhật danh mục kích thước thất bại!");
       console.error("Error updating Size:", error);
     }
   };
@@ -110,6 +116,7 @@ function SizeManagement() {
       .then((values) => {
         addSize(values);
         setIsAddModalVisible(false);
+        addForm.resetFields();
       })
       .catch((info) => {
         console.log("Validation failed:", info);
@@ -122,6 +129,7 @@ function SizeManagement() {
       .then((values) => {
         editSize(currentItemId, values);
         setIsEditModalVisible(false);
+        form.resetFields();
       })
       .catch((info) => {
         console.log("Validation failed:", info);
@@ -179,7 +187,9 @@ function SizeManagement() {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       fetchSizeData(); // Refresh categories list
+      message.success("Xóa danh mục kích thước thành công!");
     } catch (error) {
+      message.error("Xóa danh mục kích thước thất bại!");
       console.error("Error deleting Size:", error);
     }
   };

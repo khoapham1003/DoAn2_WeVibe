@@ -1,4 +1,4 @@
-import { Button, Card, Col, Form, Modal, Row, Input } from "antd";
+import { Button, Card, Col, Form, Modal, Row, Input, message } from "antd";
 import React, { useState, useEffect } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { IoMdAdd } from "react-icons/io";
@@ -57,6 +57,7 @@ function CategoryManagement() {
 
   const addCategory = async (requestBody) => {
     try {
+      requestBody.slug = "";
       const response = await fetch(
         "http://localhost:3000/category/create-category",
         {
@@ -72,7 +73,10 @@ function CategoryManagement() {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       await fetchCategoryData(); // Refresh categories list
+      message.success("Thêm danh mục thành công!");
+      setIsAddModalVisible(false);
     } catch (error) {
+      message.error("Thêm danh mục thất bại!");
       console.error("Error adding category:", error);
     }
   };
@@ -96,7 +100,9 @@ function CategoryManagement() {
       }
 
       await fetchCategoryData();
+      message.success("Cập nhật danh mục thành công!");
     } catch (error) {
+      message.error("Cập nhật danh mục thất bại!");
       console.error("Error updating category:", error);
     }
   };
@@ -106,7 +112,7 @@ function CategoryManagement() {
       .validateFields()
       .then((values) => {
         addCategory(values);
-        setIsAddModalVisible(false);
+        addForm.resetFields();
       })
       .catch((info) => {
         console.log("Validation failed:", info);
@@ -119,6 +125,7 @@ function CategoryManagement() {
       .then((values) => {
         editCategory(currentItemId, values);
         setIsEditModalVisible(false);
+        form.resetFields();
       })
       .catch((info) => {
         console.log("Validation failed:", info);
@@ -177,7 +184,9 @@ function CategoryManagement() {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       fetchCategoryData(); // Refresh categories list
+      message.success("Xóa danh mục thành công!");
     } catch (error) {
+      message.error("Xóa danh mục thất bại!");
       console.error("Error deleting category:", error);
     }
   };
@@ -241,22 +250,14 @@ function CategoryManagement() {
           <Form.Item
             name="title"
             label="Title"
-            rules={[{ required: true, message: "Please input the title!" }]}
+            rules={[{ required: true, message: "Vui lòng nhập tên danh mục!" }]}
           >
             <Input />
           </Form.Item>
-          <Form.Item
-            name="content"
-            label="Content"
-            rules={[{ required: true, message: "Please input the content!" }]}
-          >
+          <Form.Item name="content" label="Content">
             <TextArea />
           </Form.Item>
-          <Form.Item
-            name="slug"
-            label="Slug"
-            rules={[{ required: true, message: "Please input the slug!" }]}
-          >
+          <Form.Item name="slug" label="Slug">
             <Input />
           </Form.Item>
         </Form>
@@ -273,22 +274,14 @@ function CategoryManagement() {
           <Form.Item
             name="title"
             label="Title"
-            rules={[{ required: true, message: "Please input the title!" }]}
+            rules={[{ required: true, message: "Vui lòng nhập tên danh mục" }]}
           >
             <Input />
           </Form.Item>
-          <Form.Item
-            name="content"
-            label="Content"
-            rules={[{ required: true, message: "Please input the content!" }]}
-          >
+          <Form.Item name="content" label="Content">
             <TextArea />
           </Form.Item>
-          <Form.Item
-            name="slug"
-            label="Slug"
-            rules={[{ required: true, message: "Please input the slug!" }]}
-          >
+          <Form.Item name="slug" label="Slug">
             <Input />
           </Form.Item>
         </Form>

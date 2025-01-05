@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateCategoryDto } from '../dto/create-category.dto';
@@ -12,7 +12,29 @@ export class CategoryService {
     private readonly categoryRepository: Repository<Category>,
   ) {}
 
+  async checkIfNameExists(title: string): Promise<boolean> {
+    const existingCategory = await this.categoryRepository.findOne({
+      where: { title },
+    });
+    if (existingCategory)
+      return true;
+    else
+    return false;
+  }
+
+  // Tạo danh mục mới
   async create(createCategoryDto: CreateCategoryDto): Promise<Category> {
+    const { title } = createCategoryDto;
+
+    // Kiểm tra nếu đã tồn tại danh mục với tên giống nhau
+    const exists = await this.checkIfNameExists(title);
+    if (exists) {
+      throw new HttpException(
+        `Category with the name ${title} already exists`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const newCategory = this.categoryRepository.create(createCategoryDto);
     return await this.categoryRepository.save(newCategory);
   }

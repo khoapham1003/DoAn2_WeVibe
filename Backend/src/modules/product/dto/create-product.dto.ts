@@ -7,12 +7,10 @@ export class CreateProductDto {
   title: string;
 
   @IsString()
-  @IsNotEmpty()
   @MaxLength(255)
   slug: string;
 
   @IsString()
-  @IsNotEmpty()
   content: string;
 
   @IsNumber()
@@ -32,10 +30,10 @@ export class CreateProductDto {
   discount?: number;
 
   @IsDateString()
-  startsAt: Date;
-
+  startsAt: Date = new Date(); 
+  
   @IsDateString()
-  endsAt: Date;
+  endsAt: Date = new Date()
 
   @IsString()
   @IsOptional()
