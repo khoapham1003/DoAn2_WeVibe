@@ -191,14 +191,14 @@ function ColorManegement() {
     <div>
       <Button
         onClick={() => setIsAddModalVisible(true)}
-        className="profilepage_button admin_button"
+        className="profilepage_button"
       >
         <IoMdAdd />
-        <strong>ADD COLOR</strong>
+        <strong>Thêm mới màu sắc</strong>
       </Button>
 
       <div className="cop_cartlist_header">
-        <Col md={3} offset={1}>
+        <Col md={4} offset={4}>
           <h3>Màu</h3>
         </Col>
         <Col md={3} offset={1}>
@@ -213,7 +213,7 @@ function ColorManegement() {
         {items.map((item) => (
           <Card className="cop_item_cart" key={item.id}>
             <Row align="middle">
-              <Col md={4} offset={1}>
+              <Col md={4} offset={4}>
                 <div
                   style={{
                     display: "inline-block",

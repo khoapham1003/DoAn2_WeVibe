@@ -105,7 +105,6 @@ function CheckoutPage() {
           );
           setBalance(ethers.formatUnits(balance, 18));
           console.log("Số dư token:", ethers.formatUnits(balance, 18));
-      
         }
       } else {
         message.error("Vui lòng cài đặt MetaMask!");
@@ -136,7 +135,7 @@ function CheckoutPage() {
       // Địa chỉ nhận thanh toán
       const recipientAddress = "0xe72b366514f3DA2B2C3379B0136770bbd92E7413";
 
-      const tokenToSend = "1";
+      const tokenToSend = (totalPrice / 1000).toString();
       const amountToSend = ethers.parseUnits(tokenToSend, 18);
 
       // Thực hiện giao dịch
@@ -177,7 +176,6 @@ function CheckoutPage() {
       } else {
         console.error("Lỗi khi lưu giao dịch:", await response.text());
       }
-
       await handlePayment();
       await setShowConfirmationPay(false);
       navigate(`/`);
@@ -365,121 +363,179 @@ function CheckoutPage() {
       </h3>
       <div className="cop_container">
         <div className="recipient_info">
-          <List>
-            <List.Item>
-              <h2>Thông tin người nhận</h2>
-            </List.Item>
-            <List.Item>
-              <div>
-                Họ:
-                <Input
+          <div style={{ padding: "20px" }}>
+            <h2>Thông tin người nhận</h2>
+            <div style={{ display: "flex", gap: "16px", marginBottom: "16px" }}>
+              <div style={{ flex: 1 }}>
+                <label>Họ:</label>
+                <input
+                  type="text"
                   name="lastName"
                   value={order.lastName}
                   onChange={handleInputChange}
+                  style={{
+                    width: "100%",
+                    padding: "8px",
+                    boxSizing: "border-box",
+                  }}
                 />
               </div>
-            </List.Item>
-            <List.Item>
-              <div>
-                Tên đệm:
-                <Input
+              <div style={{ flex: 1 }}>
+                <label>Tên đệm:</label>
+                <input
+                  type="text"
                   name="middleName"
                   value={order.middleName}
                   onChange={handleInputChange}
+                  style={{
+                    width: "100%",
+                    padding: "8px",
+                    boxSizing: "border-box",
+                  }}
                 />
               </div>
-            </List.Item>
-            <List.Item>
-              <div>
-                Tên:
-                <Input
+              <div style={{ flex: 1 }}>
+                <label>Tên:</label>
+                <input
+                  type="text"
                   name="firstName"
                   value={order.firstName}
                   onChange={handleInputChange}
+                  style={{
+                    width: "100%",
+                    padding: "8px",
+                    boxSizing: "border-box",
+                  }}
                 />
               </div>
-            </List.Item>
-            <List.Item>
-              <div>
-                Số điện thoại:
-                <Input
+            </div>
+
+            {/* Số điện thoại, Email */}
+            <div style={{ display: "flex", gap: "16px", marginBottom: "16px" }}>
+              <div style={{ flex: 1 }}>
+                <label>Số điện thoại:</label>
+                <input
+                  type="text"
                   name="phoneNumber"
                   value={order.phoneNumber}
                   onChange={handleInputChange}
+                  style={{
+                    width: "100%",
+                    padding: "8px",
+                    boxSizing: "border-box",
+                  }}
                 />
               </div>
-            </List.Item>
-            <List.Item>
-              <div>
-                Email:
-                <Input
+              <div style={{ flex: 1 }}>
+                <label>Email:</label>
+                <input
+                  type="email"
                   name="email"
                   value={order.email}
                   onChange={handleInputChange}
+                  style={{
+                    width: "100%",
+                    padding: "8px",
+                    boxSizing: "border-box",
+                  }}
                 />
               </div>
-            </List.Item>
-            <List.Item>
-              <div>
-                Địa chỉ 1:
-                <Input
+            </div>
+
+            {/* Địa chỉ 1, Địa chỉ 2 */}
+            <div style={{ display: "flex", gap: "16px", marginBottom: "16px" }}>
+              <div style={{ flex: 1 }}>
+                <label>Địa chỉ 1:</label>
+                <input
+                  type="text"
                   name="line1"
                   value={order.line1}
                   onChange={handleInputChange}
+                  style={{
+                    width: "100%",
+                    padding: "8px",
+                    boxSizing: "border-box",
+                  }}
                 />
               </div>
-            </List.Item>
-            <List.Item>
-              <div>
-                Địa chỉ 2 (tùy chọn):
-                <Input
+              <div style={{ flex: 1 }}>
+                <label>Địa chỉ 2 (tùy chọn):</label>
+                <input
+                  type="text"
                   name="line2"
                   value={order.line2}
                   onChange={handleInputChange}
+                  style={{
+                    width: "100%",
+                    padding: "8px",
+                    boxSizing: "border-box",
+                  }}
                 />
               </div>
-            </List.Item>
-            <List.Item>
-              <div>
-                Thành phố:
-                <Input
+            </div>
+
+            {/* Thành phố, Tỉnh, Quốc gia */}
+            <div style={{ display: "flex", gap: "16px", marginBottom: "16px" }}>
+              <div style={{ flex: 1 }}>
+                <label>Thành phố:</label>
+                <input
+                  type="text"
                   name="city"
                   value={order.city}
                   onChange={handleInputChange}
+                  style={{
+                    width: "100%",
+                    padding: "8px",
+                    boxSizing: "border-box",
+                  }}
                 />
               </div>
-            </List.Item>
-            <List.Item>
-              <div>
-                Tỉnh:
-                <Input
+              <div style={{ flex: 1 }}>
+                <label>Tỉnh:</label>
+                <input
+                  type="text"
                   name="province"
                   value={order.province}
                   onChange={handleInputChange}
+                  style={{
+                    width: "100%",
+                    padding: "8px",
+                    boxSizing: "border-box",
+                  }}
                 />
               </div>
-            </List.Item>
-            <List.Item>
-              <div>
-                Quốc gia:
-                <Input
+              <div style={{ flex: 1 }}>
+                <label>Quốc gia:</label>
+                <input
+                  type="text"
                   name="country"
                   value={order.country}
                   onChange={handleInputChange}
+                  style={{
+                    width: "100%",
+                    padding: "8px",
+                    boxSizing: "border-box",
+                  }}
                 />
               </div>
-            </List.Item>
-          </List>
+            </div>
+          </div>
         </div>
         <div className="cop_cartlist_header">
-          <Col md={2} offset={1}>
+          <Col md={1} offset={2}></Col>
+          <Col md={3}>
             <h3>Sản phẩm</h3>
           </Col>
-          <Col md={8}></Col>
-          <Col md={3} offset={1}>
+          <Col md={2} offset={2}>
+            <h3>Kích Thước</h3>
+          </Col>
+          <Col md={2} offset={1}>
+            <h3>Color</h3>
+          </Col>
+          <Col md={3} offset={0}>
             <h3>Đơn giá</h3>
           </Col>
-          <Col md={3} offset={1}>
+          <Col md={2}>
             <h3>Số lượng</h3>
           </Col>
           <Col md={3} offset={1}>
@@ -490,7 +546,7 @@ function CheckoutPage() {
           {items.map((item) => (
             <Card className="cop_item_cart" key={item._id}>
               <Row align="middle">
-                <Col md={2} offset={1}>
+                <Col md={1} offset={2}>
                   <Image
                     style={{
                       height: 80,
@@ -500,24 +556,36 @@ function CheckoutPage() {
                     src={item.productVariant.product.picture}
                   />
                 </Col>
-                <Col md={8}>
+                <Col md={4}>
                   <span>{item.productVariant.product.title}</span>
                 </Col>
                 <Col md={3}>
                   <span>{item.productVariant.size.name} </span>
                 </Col>
-                <Col md={3} offset={1}>
+                <Col md={3}>
                   <span> {item.productVariant.color.name}</span>
                 </Col>
-                <Col md={3} offset={1}>
-                  <span>{item.productVariant.product.price}đ</span>
+                <Col md={3}>
+                  <span>
+                    <span>
+                      {new Intl.NumberFormat("vi-VN").format(
+                        item.productVariant.product.price
+                      )}
+                      đ
+                    </span>
+                  </span>
                 </Col>
-                <Col md={3} offset={1}>
+                <Col md={2}>
                   <span>{item.quantity}</span>
                 </Col>
-                <Col md={3} offset={1}>
+                <Col md={4}>
                   <span className="cop_item_price">
-                    {item.productVariant.product.price * item.quantity}đ
+                    <span>
+                      {new Intl.NumberFormat("vi-VN").format(
+                        item.productVariant.product.price * item.quantity
+                      )}
+                      đ
+                    </span>
                   </span>
                 </Col>
               </Row>
@@ -526,25 +594,43 @@ function CheckoutPage() {
         </div>
         <div className="cop_checkout_info">
           <List>
+            <h2>Thanh toán</h2>
             <List.Item>
-              <h2>Thanh toán</h2>
-            </List.Item>
-            <List.Item>
-              <span>Tổng tiền hàng: {totalPrice}đ</span>
-            </List.Item>
-            <List.Item>
-              <span>Phí vận chuyển: {shippingFee}đ</span>
-            </List.Item>
-            <List.Item>
-              <span>Tổng giảm giá: {calculateTotalDiscount()}đ</span>
-            </List.Item>
-            <List.Item>
-              <span style={{ fontWeight: "500", fontStyle: "italic" }}>
-                Tổng thanh toán: {calculateTotalPayment()}đ
+              <span>
+                Tổng tiền hàng:{" "}
+                {new Intl.NumberFormat("vi-VN").format(totalPrice)}đ
               </span>
             </List.Item>
             <List.Item>
-              <h4>Phương thức thanh toán</h4>
+              <span>
+                Phí vận chuyển:{" "}
+                {new Intl.NumberFormat("vi-VN").format(shippingFee)}đ
+              </span>
+            </List.Item>
+            <List.Item>
+              <span>
+                Tổng giảm giá:{" "}
+                {new Intl.NumberFormat("vi-VN").format(
+                  calculateTotalDiscount()
+                )}
+                đ
+              </span>
+            </List.Item>
+            <List.Item>
+              <span style={{ fontWeight: "500", fontStyle: "italic" }}>
+                Tổng thanh toán:{" "}
+                {new Intl.NumberFormat("vi-VN").format(calculateTotalPayment())}
+                đ
+              </span>
+            </List.Item>
+            <List.Item
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+              }}
+            >
+              <h2>Phương thức thanh toán</h2>
               <List
                 dataSource={paymentMethods}
                 renderItem={(method) => (
@@ -570,7 +656,6 @@ function CheckoutPage() {
                     order.middleName &&
                     order.lastName &&
                     order.line1 &&
-                    order.line2 &&
                     order.email &&
                     order.phoneNumber &&
                     order.city &&

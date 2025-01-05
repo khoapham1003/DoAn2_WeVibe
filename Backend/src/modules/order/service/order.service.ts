@@ -254,6 +254,7 @@ export class OrderService {
         })),
     }));
   }
+
   async orderStatistics(): Promise<any> {
     const queryBuilder = this.orderRepository.createQueryBuilder('order');
 

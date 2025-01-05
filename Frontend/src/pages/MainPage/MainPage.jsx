@@ -103,11 +103,7 @@ function MainPage() {
       </h3>
       <Row className="title_bar">
         <Col>
-          <MenuSlide
-            size="large"
-            className="title_menu"
-            onMenuSelect={handleMenuSelect}
-          />
+          <MenuSlide size="large" onMenuSelect={handleMenuSelect} />
         </Col>
       </Row>
       <div className="sort-container">
@@ -140,10 +136,10 @@ function MainPage() {
           >
             <div className="flex_column">
               <div className="title_start_container">
-                <span className="book_title">{item.title}</span>
+                <span className="product_title">{item.title}</span>
               </div>
-              <span className="book_price">
-                {item.price}
+              <span className="product_price">
+                {new Intl.NumberFormat("vi-VN").format(item.price)}
                 <span
                   style={{
                     verticalAlign: "super",

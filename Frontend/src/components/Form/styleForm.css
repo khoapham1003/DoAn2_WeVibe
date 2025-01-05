@@ -4,7 +4,6 @@
   font-size: 1rem;
   color: #8c8c8c;
 }
-
 .no_margin {
   margin: 0px;
 }
@@ -24,25 +23,12 @@
   justify-content: right;
   padding-right: 15rem;
 }
-.functions {
-  display: flex;
-  justify-content: space-between;
-  flex-direction: row;
-}
-.title_container {
-}
 .button_container {
-  padding: 0.5rem 0rem;
+  margin: 1rem 0rem;
+  width: 100%;
 }
 .login_input_container {
-  height: max(fit-content, 30px);
-}
-.login_functions_container {
-}
-.divide_into_2cols {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  width: 100%;
 }
 .logup_form .label {
   padding: 0px;
@@ -57,57 +43,44 @@
   text-decoration: underline;
 }
 .login_form {
+  width: 90%;
+  max-width: 500px;
   min-width: 22rem;
-  height: 60%;
+  height: auto;
   background-color: rgba(255, 255, 255, 0.85);
   box-shadow: 0px 8px 32px 0 gray;
   border-radius: 0.5rem;
-  padding: 0px 1rem;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
+  align-items: center;
 }
 .logup_form {
+  height: 90%;
   min-width: 27rem;
-  height: 99%;
-  background-color: rgba(255, 255, 255, 0.9);
+  max-width: 500px;
+  height: auto;
+  background-color: rgba(255, 255, 255, 0.85);
   box-shadow: 0px 8px 32px 0 gray;
   border-radius: 0.5rem;
-  padding: 0px 1rem;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
+  align-items: center;
 }
 .forgotpassword_form {
-  width: 22rem;
-  height: 45%;
-  background-color: rgba(255, 255, 255, 0.9);
+  width: 90%;
+  max-width: 500px;
+  min-width: 22rem;
+  height: auto;
+  background-color: rgba(255, 255, 255, 0.85);
   box-shadow: 0px 8px 32px 0 gray;
   border-radius: 0.5rem;
-  padding: 0 1rem 0.5rem;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-}
-.confirmcode_form {
-  width: 22rem;
-  height: 45%;
-  background-color: rgba(255, 255, 255, 0.9);
-  box-shadow: 0px 8px 32px 0 gray;
-  border-radius: 0.5rem;
-  padding: 0 1rem 0.5rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-.changepassword_form {
-  width: 22rem;
-  height: 60%;
-  background-color: rgba(255, 255, 255, 0.9);
-  box-shadow: 0px 8px 32px 0 gray;
-  border-radius: 0.5rem;
-  padding: 0 1rem 0.5rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
+  align-items: center;
 }
