@@ -8,27 +8,24 @@ export class ProductVariant {
   @PrimaryGeneratedColumn('increment', { name: 'id' })
   id: number;
 
-  @Column({ name: 'product_id', type: 'int' })
+  @Column({ name: 'productId', type: 'int' })
   productId: number;
 
-  @Column({ name: 'size_id', type: 'int' })
+  @Column({ name: 'sizeId', type: 'int' })
   sizeId: number;
 
-  @Column({ name: 'color_id', type: 'int' })
+  @Column({ name: 'colorId', type: 'int' })
   colorId: number;
 
   @Column({ type: 'int' })
   quantity: number;
 
   @ManyToOne(() => Product, { eager: true })
-  @JoinColumn({ name: 'product_id' })
   product: Product;
 
   @ManyToOne(() => Size, { eager: true })
-  @JoinColumn({ name: 'size_id' })
   size: Size;
 
   @ManyToOne(() => Color, { eager: true })
-  @JoinColumn({ name: 'color_id' })
   color: Color;
 }
