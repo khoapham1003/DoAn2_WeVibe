@@ -553,3 +553,42 @@
 .chart-display {
   margin-top: 20px;
 }
+.dropdown-container {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  max-height: 300px; /* Giới hạn chiều cao dropdown */
+  overflow-y: auto; /* Thêm cuộn dọc nếu cần */
+}
+
+.variant-row {
+  display: flex;
+  align-items: center; /* Căn giữa theo chiều dọc */
+  justify-content: space-between; /* Các phần tử cách đều nhau */
+  padding: 8px 0; /* Khoảng cách giữa các hàng */
+  border-bottom: 1px solid #e0e0e0; /* Đường kẻ giữa các hàng */
+}
+
+.variant-row:last-child {
+  border-bottom: none; /* Không kẻ đường dưới cùng */
+}
+
+.variant-color,
+.variant-size,
+.variant-quantity {
+  margin-right: 15px; /* Khoảng cách giữa các cột */
+  flex-grow: 1; /* Đảm bảo các cột co giãn đồng đều */
+}
+
+.delete-button {
+  flex-shrink: 0; /* Ngăn nút bị thu nhỏ */
+  background-color: transparent;
+  border: none;
+  color: red;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  color: darkred;
+}
+

@@ -666,7 +666,7 @@ function ProductAdmin() {
                 </span>
               </Col>
               <br></br>
-              <Col md={4}>
+              <Col md={10} style={{ textAlign: "left" }}>
                 <Button onClick={() => toggleDropdown(item.id)}>
                   Danh sách mẫu SP
                 </Button>
@@ -675,9 +675,9 @@ function ProductAdmin() {
                     <ul>
                       {variants.length > 0 ? (
                         variants.map((variant) => (
-                          <div>
-                            <span>
-                              <b>Color:</b> {variant.color.name} (
+                          <div className="variant-row" key={variant.id}>
+                            <span className="variant-color">
+                              <b>Màu sắc:</b> {variant.color.name}
                               <span
                                 style={{
                                   display: "inline-block",
@@ -688,23 +688,20 @@ function ProductAdmin() {
                                   marginLeft: 5,
                                 }}
                               ></span>
-                              )
                             </span>
-                            <br />
-                            <span>
-                              <b>Size:</b> {variant.size.name} (
+                            <span className="variant-size">
+                              <b>Kích cỡ:</b> {variant.size.name} (
                               {variant.size.size})
                             </span>
-                            <span>
-                              <b>Số lượng:</b> {variant.quantity} 
+                            <span className="variant-quantity">
+                              <b>Số lượng:</b> {variant.quantity}
                             </span>
-                            <span>
-                              <Button
-                                onClick={() => showVariantConfirm(variant.id)}
-                              >
-                                <FaTrash />
-                              </Button>
-                            </span>
+                            <Button
+                              className="delete-button"
+                              onClick={() => showVariantConfirm(variant.id)}
+                            >
+                              <FaTrash />
+                            </Button>
                           </div>
                         ))
                       ) : (
