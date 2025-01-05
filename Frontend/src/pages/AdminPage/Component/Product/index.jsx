@@ -557,14 +557,14 @@ function ProductAdmin() {
       <Button onClick={showAddForm} className="profilepage_button">
         <IoMdAdd />
         <em />
-        <strong> ADD PRODUCT</strong>
+        <strong>Thêm mới sản phẩm</strong>
       </Button>
       <div className="cop_cartlist_header">
         <Col md={2} offset={1}></Col>
         <Col md={4} offset={1}>
           <h3>Sản phẩm</h3>
         </Col>
-        <Col md={2} offset={1}>
+        <Col md={2}>
           <h3>Đơn giá</h3>
         </Col>
         <Col md={2} offset={1}>
@@ -591,8 +591,10 @@ function ProductAdmin() {
               <Col md={4} offset={1}>
                 <span>{item.title}</span>
               </Col>
-              <Col md={2} offset={1}>
-                <span>{item.price}đ</span>
+              <Col md={2}>
+                <span>
+                  {new Intl.NumberFormat("vi-VN").format(item.price)}đ
+                </span>
               </Col>
               <Col md={2} offset={1}>
                 <span>{item.quantity}</span>

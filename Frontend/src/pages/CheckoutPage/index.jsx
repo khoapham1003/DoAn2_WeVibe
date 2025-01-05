@@ -471,14 +471,20 @@ function CheckoutPage() {
           </List>
         </div>
         <div className="cop_cartlist_header">
-          <Col md={2} offset={1}>
+          <Col md={1} offset={2}></Col>
+          <Col md={3}>
             <h3>Sản phẩm</h3>
           </Col>
-          <Col md={8}></Col>
-          <Col md={3} offset={1}>
+          <Col md={2} offset={2}>
+            <h3>Kích Thước</h3>
+          </Col>
+          <Col md={2} offset={1}>
+            <h3>Color</h3>
+          </Col>
+          <Col md={3} offset={0}>
             <h3>Đơn giá</h3>
           </Col>
-          <Col md={3} offset={1}>
+          <Col md={2}>
             <h3>Số lượng</h3>
           </Col>
           <Col md={3} offset={1}>
@@ -489,7 +495,7 @@ function CheckoutPage() {
           {items.map((item) => (
             <Card className="cop_item_cart" key={item._id}>
               <Row align="middle">
-                <Col md={2} offset={1}>
+                <Col md={1} offset={2}>
                   <Image
                     style={{
                       height: 80,
@@ -499,24 +505,36 @@ function CheckoutPage() {
                     src={item.productVariant.product.picture}
                   />
                 </Col>
-                <Col md={8}>
+                <Col md={4}>
                   <span>{item.productVariant.product.title}</span>
                 </Col>
                 <Col md={3}>
                   <span>{item.productVariant.size.name} </span>
                 </Col>
-                <Col md={3} offset={1}>
+                <Col md={3}>
                   <span> {item.productVariant.color.name}</span>
                 </Col>
-                <Col md={3} offset={1}>
-                  <span>{item.productVariant.product.price}đ</span>
+                <Col md={3}>
+                  <span>
+                    <span>
+                      {new Intl.NumberFormat("vi-VN").format(
+                        item.productVariant.product.price
+                      )}
+                      đ
+                    </span>
+                  </span>
                 </Col>
-                <Col md={3} offset={1}>
+                <Col md={2}>
                   <span>{item.quantity}</span>
                 </Col>
-                <Col md={3} offset={1}>
+                <Col md={4}>
                   <span className="cop_item_price">
-                    {item.productVariant.product.price * item.quantity}đ
+                    <span>
+                      {new Intl.NumberFormat("vi-VN").format(
+                        item.productVariant.product.price * item.quantity
+                      )}
+                      đ
+                    </span>
                   </span>
                 </Col>
               </Row>
@@ -529,17 +547,31 @@ function CheckoutPage() {
               <h2>Thanh toán</h2>
             </List.Item>
             <List.Item>
-              <span>Tổng tiền hàng: {totalPrice}đ</span>
+              <span>
+                Tổng tiền hàng:{" "}
+                {new Intl.NumberFormat("vi-VN").format(totalPrice)}đ
+              </span>
             </List.Item>
             <List.Item>
-              <span>Phí vận chuyển: {shippingFee}đ</span>
+              <span>
+                Phí vận chuyển:{" "}
+                {new Intl.NumberFormat("vi-VN").format(shippingFee)}đ
+              </span>
             </List.Item>
             <List.Item>
-              <span>Tổng giảm giá: {calculateTotalDiscount()}đ</span>
+              <span>
+                Tổng giảm giá:{" "}
+                {new Intl.NumberFormat("vi-VN").format(
+                  calculateTotalDiscount()
+                )}
+                đ
+              </span>
             </List.Item>
             <List.Item>
               <span style={{ fontWeight: "500", fontStyle: "italic" }}>
-                Tổng thanh toán: {calculateTotalPayment()}đ
+                Tổng thanh toán:{" "}
+                {new Intl.NumberFormat("vi-VN").format(calculateTotalPayment())}
+                đ
               </span>
             </List.Item>
             <List.Item>

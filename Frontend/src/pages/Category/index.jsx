@@ -90,7 +90,10 @@ const FilteredPage = () => {
                   <span className="product_title">{item.title}</span>
                 </div>
                 <span className="product_price">
-                  {item.price}
+                     {" "}
+                  <span>
+                    {new Intl.NumberFormat("vi-VN").format(item.price)}
+                  </span>
                   <span
                     style={{
                       verticalAlign: "super",

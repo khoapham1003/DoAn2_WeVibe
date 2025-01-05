@@ -28,8 +28,12 @@ function AdminPage() {
   };
 
   return (
-    <div>
-      <Tabs activeKey={activeTab} onChange={handleTabChange}>
+    <div className="card_container">
+      <Tabs
+        className="admin_tab_container"
+        activeKey={activeTab}
+        onChange={handleTabChange}
+      >
         <TabPane tab="Đơn hàng" key="order">
           <OrderStatistics />
         </TabPane>

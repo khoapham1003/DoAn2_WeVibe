@@ -190,7 +190,9 @@ function ProductPage() {
                   <h1>{item.title}</h1>
                 </List.Item>
                 <List.Item>
-                  <span className="price">{item.price}đ</span>
+                  <span className="price">
+                    {new Intl.NumberFormat("vi-VN").format(item.price)} đ
+                  </span>
                 </List.Item>
                 <List.Item className="pp_amount">
                   <span className="label">Số lượng:</span>

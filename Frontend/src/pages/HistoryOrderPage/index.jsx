@@ -177,13 +177,17 @@ function HistoryOrderPage() {
                   <span> {item.color}</span>
                 </Col>
                 <Col md={3} offset={1}>
-                  <span>{item.price}đ</span>
+                  <span>
+                    {new Intl.NumberFormat("vi-VN").format(item.price)}đ
+                  </span>
                 </Col>
                 <Col md={3} offset={1}>
                   <span>{item.quantity}</span>
                 </Col>
                 <Col md={3} offset={1}>
-                  <span className="cop_item_price">{item.totalPrice}đ</span>
+                  <span className="cop_item_price">
+                    {new Intl.NumberFormat("vi-VN").format(item.totalPrice)}đ
+                  </span>
                 </Col>
               </Row>
             </Card>
@@ -196,17 +200,27 @@ function HistoryOrderPage() {
               <h2>Thanh toán</h2>
             </List.Item>
             <List.Item>
-              <span>Tổng tiền hàng: {order.subTotal}đ</span>
+              <span>
+                Tổng tiền hàng:{" "}
+                {new Intl.NumberFormat("vi-VN").format(order.subTotal)}đ
+              </span>
             </List.Item>
             <List.Item>
-              <span>Phí vận chuyển: {order.shippingFee}đ</span>
+              <span>
+                Phí vận chuyển:{" "}
+                {new Intl.NumberFormat("vi-VN").format(order.shippingFee)}đ
+              </span>
             </List.Item>
             <List.Item>
-              <span>Tổng giảm giá: {order.totalDiscount}đ</span>
+              <span>
+                Tổng giảm giá:{" "}
+                {new Intl.NumberFormat("vi-VN").format(order.totalDiscount)}đ
+              </span>
             </List.Item>
             <List.Item>
               <span style={{ fontWeight: "500", fontStyle: "italic" }}>
-                Tổng thanh toán: {order.grandTotal}đ
+                Tổng thanh toán:{" "}
+                {new Intl.NumberFormat("vi-VN").format(order.grandTotal)}đ
               </span>
             </List.Item>
           </List>

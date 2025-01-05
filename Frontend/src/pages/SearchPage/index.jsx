@@ -98,7 +98,7 @@ const SearchPage = () => {
                 <span className="product_title">{item.title}</span>
               </div>
               <span className="product_price">
-                {item.price}
+                {new Intl.NumberFormat("vi-VN").format(item.price)}
                 <span
                   style={{
                     verticalAlign: "super",
