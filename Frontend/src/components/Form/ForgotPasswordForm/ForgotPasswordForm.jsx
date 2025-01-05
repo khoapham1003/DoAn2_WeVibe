@@ -207,6 +207,18 @@ function ForgotPassword() {
             </Button>
           </ConfigProvider>
         </Form.Item>
+        <Form.Item className="no_margin">
+          <span style={{ color: "#1f9d60", fontSize: "0.75rem" }}>
+            Quay về trang{" "}
+          </span>
+          <a
+            className="logup_nav"
+            href="/sign_in"
+            style={{ color: "#CF4330", fontSize: "0.75rem" }}
+          >
+            Đăng nhập
+          </a>
+        </Form.Item>
       </Form>
     </div>
   );
