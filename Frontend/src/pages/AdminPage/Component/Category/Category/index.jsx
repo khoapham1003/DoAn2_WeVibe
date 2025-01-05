@@ -195,20 +195,20 @@ function CategoryManagement() {
     <div>
       <Button
         onClick={() => setIsAddModalVisible(true)}
-        className="profilepage_button admin_button"
+        className="profilepage_button"
       >
         <IoMdAdd />
-        <strong>ADD CATEGORY</strong>
+        <strong>Thêm mới danh mục</strong>
       </Button>
 
       <div className="cop_cartlist_header">
-        <Col md={3} offset={1}>
+        <Col md={5} offset={1}>
           <h3>Thể Loại</h3>
         </Col>
-        <Col md={3} offset={1}>
+        <Col md={8}>
           <h3>Mô tả</h3>
         </Col>
-        <Col md={3} offset={1}>
+        <Col md={3}>
           <h3>Slug</h3>
         </Col>
       </div>
@@ -217,13 +217,13 @@ function CategoryManagement() {
         {items.map((item) => (
           <Card className="cop_item_cart" key={item.id}>
             <Row align="middle">
-              <Col md={4} offset={1}>
+              <Col md={5} offset={1}>
                 <span>{item.title}</span>
               </Col>
-              <Col md={3} offset={1}>
+              <Col md={8}>
                 <span>{item.content}</span>
               </Col>
-              <Col md={3} offset={1}>
+              <Col md={3}>
                 <span>{item.slug}</span>
               </Col>
               <Col md={3} offset={1}>

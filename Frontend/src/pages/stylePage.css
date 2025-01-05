@@ -1,5 +1,8 @@
 /* General */
-
+.admin_button {
+  justify-content: left;
+  width: 9.5rem;
+}
 /* Product Page */
 .pp_white_bg {
   background-color: white;
@@ -29,8 +32,9 @@
 }
 .detail_list h1 {
   margin: 0;
-  font-size: 25px;
+  font-size: 2rem;
   font-weight: 500;
+  font-style: italic;
 }
 .pp_rate {
   display: flex;
@@ -57,7 +61,8 @@
   justify-content: flex-start !important;
 }
 .amount_box {
-  margin-left: 30px;
+  margin-left: 2rem;
+  width: 4rem;
 }
 .addtocart_button {
   background-color: #d5ffea;
@@ -237,16 +242,59 @@
 }
 
 /* Profile Page */
-.detail_h2 {
-  width: 100vw;
-  border-radius: 0px;
-  padding: 10px 20px;
-  vertical-align: middle;
-  background-color: #4caf91;
-  color: white;
-  font-weight: 600;
-  margin-bottom: 0px;
+.detail-h2 {
+  font-size: 18px;
+  position: relative;
+  margin-top: 1vh;
+  margin-bottom: 2vh;
+  font-weight: 700;
+  text-align: center;
+  background-color: #e8f5e9; /* Nền xanh lá nhạt */
+  padding: 1rem 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
 }
+
+.detail-h2 .title-holder {
+  height: 3rem;
+  line-height: 3rem;
+  position: relative;
+  text-align: center;
+  z-index: 2;
+  color: #4caf91; /* Xanh lá đậm */
+  font-size: 1.5rem;
+  font-weight: bold;
+  background: linear-gradient(
+    90deg,
+    rgba(232, 245, 233, 0.1) 0%,
+    rgba(232, 245, 233, 0.5) 50%,
+    rgba(232, 245, 233, 0.1) 100%
+  );
+  display: inline-block;
+  padding: 0 1.5rem;
+  border-radius: 4px;
+}
+
+.detail-h2:before,
+.detail-h2:after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 30%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #4caf91, transparent);
+  z-index: 1;
+}
+
+.detail-h2:before {
+  left: 0;
+}
+
+.detail-h2:after {
+  right: 0;
+}
+
 .order_history_cart {
   padding: 0px;
 }
@@ -452,3 +500,95 @@
   border-width: 1.5px;
   border-radius: 2px !important;
 }
+
+/* Admin Page
+.admin_container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 1rem 5rem;
+  margin: 0vh 4rem 2rem;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 50%, #f0f0f0 100%);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+} */
+
+.admin_tab_container {
+  width: 100%;
+}
+.admin-info {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  max-width: 900px;
+  margin: auto;
+}
+.chart-container {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  max-width: 900px;
+  margin: auto;
+}
+
+.chart-title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: #333;
+}
+
+.filter-container h3 {
+  margin-right: 10px;
+  font-size: 16px;
+  color: #666;
+}
+
+.filter-container button {
+  margin: 5px;
+}
+
+.chart-display {
+  margin-top: 20px;
+}
+.dropdown-container {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  max-height: 300px; /* Giới hạn chiều cao dropdown */
+  overflow-y: auto; /* Thêm cuộn dọc nếu cần */
+}
+
+.variant-row {
+  display: flex;
+  align-items: center; /* Căn giữa theo chiều dọc */
+  justify-content: space-between; /* Các phần tử cách đều nhau */
+  padding: 8px 0; /* Khoảng cách giữa các hàng */
+  border-bottom: 1px solid #e0e0e0; /* Đường kẻ giữa các hàng */
+}
+
+.variant-row:last-child {
+  border-bottom: none; /* Không kẻ đường dưới cùng */
+}
+
+.variant-color,
+.variant-size,
+.variant-quantity {
+  margin-right: 15px; /* Khoảng cách giữa các cột */
+  flex-grow: 1; /* Đảm bảo các cột co giãn đồng đều */
+}
+
+.delete-button {
+  flex-shrink: 0; /* Ngăn nút bị thu nhỏ */
+  background-color: transparent;
+  border: none;
+  color: red;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  color: darkred;
+}
+

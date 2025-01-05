@@ -1,4 +1,14 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  BeforeInsert,
+  BeforeUpdate,
+} from 'typeorm';
 import { Cart } from 'src/modules/cart/entities/cart.entity';
 import { ProductVariant } from 'src/modules/productvariant/entities/productvariant.entity';
 
@@ -7,7 +17,7 @@ export class CartItem {
   @PrimaryGeneratedColumn('increment', { name: 'id' })
   id: number;
 
-  @Column({ name: 'product_vid', type: 'int' })
+  @Column({ name: 'productVariantId', type: 'int' })
   productVID: number;
 
   @Column({ name: 'cart_id', type: 'int' })
@@ -37,9 +47,8 @@ export class CartItem {
   })
   updatedAt: string;
 
- @ManyToOne(() => ProductVariant, { eager: true })
-productVariant: ProductVariant;
-
+  @ManyToOne(() => ProductVariant, { eager: true })
+  productVariant: ProductVariant;
 
   @ManyToOne(() => Cart, { eager: true })
   @JoinColumn({ name: 'cart_id' })

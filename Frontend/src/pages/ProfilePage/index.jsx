@@ -289,15 +289,21 @@ function ProfilePage() {
   };
 
   return (
-    <div>
+    <div className="admin_tab_container">
       <h3 class="title-comm">
         <span class="title-holder">TÀI KHOẢN CỦA TÔI</span>
       </h3>
-      <Row>
-        <h2 className="detail_h2">THÔNG TIN CÁ NHÂN</h2>
-      </Row>
-      <div className="cover">
-        <Col className="profilepage_container">
+      <div
+        className="card_container"
+        style={{
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <Row>
+          <h2 className="detail_h2">THÔNG TIN CÁ NHÂN</h2>
+        </Row>
+        <Col>
           {userData && (
             <Descriptions className="description" column={1}>
               {/* Full Name - First Name, Middle Name, Last Name */}
@@ -373,16 +379,16 @@ function ProfilePage() {
 
         <Row>
           <h2 className="detail_h2">ĐỔI MẬT KHẨU</h2>
-          <div className="profilepage_container">
-            <Button
-              size="large"
-              className="profilepage_button"
-              onClick={handleChangePasswordClick}
-            >
-              Đổi mật khẩu
-            </Button>
-          </div>
         </Row>
+        <div>
+          <Button
+            size="large"
+            className="profilepage_button"
+            onClick={handleChangePasswordClick}
+          >
+            Đổi mật khẩu
+          </Button>
+        </div>
         <Modal
           title="Change Password"
           visible={isChangePasswordModalVisible}
@@ -480,7 +486,7 @@ function ProfilePage() {
           style={{ display: "flex", flexDirection: "column-reverse" }}
         >
           <Tabs defaultActiveKey="1">
-            <TabPane tab="Pending Orders" key="1">
+            <TabPane tab="Đang chờ xử lý" key="1">
               {orders.pending.length > 0 ? (
                 orders.pending.map((item) => (
                   <Card
@@ -510,7 +516,8 @@ function ProfilePage() {
                           item.address.country}
                       </Descriptions.Item>
                       <Descriptions.Item label="Tổng đơn hàng">
-                        {item.grandTotal}
+                        {new Intl.NumberFormat("vi-VN").format(item.grandTotal)}{" "}
+                        đ
                       </Descriptions.Item>
                     </Descriptions>
                   </Card>
@@ -520,7 +527,7 @@ function ProfilePage() {
               )}
             </TabPane>
 
-            <TabPane tab="Complete Orders" key="2">
+            <TabPane tab="Đã hoàn thành" key="2">
               {orders.complete.length > 0 ? (
                 orders.complete.map((item) => (
                   <Card
@@ -550,7 +557,8 @@ function ProfilePage() {
                           item.address.country}
                       </Descriptions.Item>
                       <Descriptions.Item label="Tổng đơn hàng">
-                        {item.grandTotal}
+                        {new Intl.NumberFormat("vi-VN").format(item.grandTotal)}{" "}
+                        đ
                       </Descriptions.Item>
                     </Descriptions>
                   </Card>
