@@ -233,8 +233,8 @@ function ProductAdmin() {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      fetchVariantData(currentItemId);
-
+      await fetchVariantData(currentItemId);
+      await fetchProductCategoryData();
       message.success("Xóa mẫu sản phẩm thành công!");
     } catch (error) {
       message.error("Xóa mẫu sản phẩm thất bại!");
@@ -356,8 +356,9 @@ function ProductAdmin() {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      await addQuantityProduct(quantity);
+
       await fetchProductCategoryData();
+      await fetchVariantData(currentItemId);
       message.success("Thêm mẫu sản phẩm thành công!");
       formvariant.resetFields();
     } catch (error) {
@@ -694,16 +695,15 @@ function ProductAdmin() {
                               <b>Kích cỡ:</b> {variant.size.name} (
                               {variant.size.size})
                             </span>
-                            <span>
+                            <span className="variant-quantity">
                               <b>Số lượng:</b> {variant.quantity}
                             </span>
-                            <span>
-                              <Button
-                                onClick={() => showVariantConfirm(variant.id)}
-                              >
-                                <FaTrash />
-                              </Button>
-                            </span>
+                            <Button
+                              className="delete-button"
+                              onClick={() => showVariantConfirm(variant.id)}
+                            >
+                              <FaTrash />
+                            </Button>
                           </div>
                         ))
                       ) : (

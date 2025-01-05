@@ -138,6 +138,11 @@ function CheckoutPage() {
       const tokenToSend = (totalPrice / 1000).toString();
       const amountToSend = ethers.parseUnits(tokenToSend, 18);
 
+      if (parseFloat(balance) < parseFloat(tokenToSend)) {
+        message.error("Số dư không đủ để thực hiện giao dịch.");
+        return;
+      }
+
       // Thực hiện giao dịch
       const tx = await contract.transfer(recipientAddress, amountToSend);
       console.log("Giao dịch đã tạo:", tx);
@@ -177,7 +182,7 @@ function CheckoutPage() {
         console.error("Lỗi khi lưu giao dịch:", await response.text());
       }
       await handlePayment();
-      await setShowConfirmationPay(false);
+      setShowConfirmationPay(false);
       navigate(`/`);
     } catch (error) {
       console.error("Lỗi khi thực hiện thanh toán:", error.message);

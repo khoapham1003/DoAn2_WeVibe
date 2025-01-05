@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { Size } from '../entities/size.entity';
 import { CreateSizeDto } from '../dto/create-size.dto';
 import { UpdateSizeDto } from '../dto/update-size.dto';
@@ -55,8 +55,28 @@ export class SizeService {
 
   async update(id: number, updateSizeDto: UpdateSizeDto): Promise<Size> {
     const size = await this.findOne(id);
+    const { name } = updateSizeDto;
+
+    const exists = await this.checkIfNameExists1(name, id);
+    if (exists) {
+      throw new HttpException(
+        `Size with the name ${name} already exists`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     const updatedSize = Object.assign(size, updateSizeDto);
     return await this.sizeRepository.save(updatedSize);
+  }
+
+  async checkIfNameExists1(name: string, excludeId: number): Promise<boolean> {
+    const count = await this.sizeRepository.count({
+      where: {
+        name,
+        id: Not(excludeId),
+      },
+    });
+  
+    return count > 0;
   }
 
   async remove(id: number): Promise<void> {
