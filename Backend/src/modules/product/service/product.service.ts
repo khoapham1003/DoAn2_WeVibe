@@ -58,10 +58,36 @@ export class ProductService {
     id: number,
     updateProductDto: UpdateProductDto,
   ): Promise<Product> {
-    const product = await this.findOne(id);
-    const updatedProduct = Object.assign(product, updateProductDto);
+    const product = await this.productRepository.findOne({ where: { id } });
+  
+    if (!product) {
+      throw new NotFoundException(`Product with ID ${id} not found`);
+    }
+  
+    const updatedProduct = {
+      ...product,
+      ...updateProductDto,
+  };
+
+  console.log("LOI1",updatedProduct);
     return await this.productRepository.save(updatedProduct);
   }
+
+  async updatevariant(
+    id: number,
+    updateData: Partial<Product>,
+  ): Promise<Product> {
+    const product = await this.productRepository.findOne({ where: { id } });
+  
+    if (!product) {
+      throw new Error('Product not found');
+    }
+  
+    Object.assign(product, updateData);
+  
+    return await this.productRepository.save(product);
+  }
+  
 
   async remove(id: number): Promise<boolean> {
     const product = await this.findOne(id);

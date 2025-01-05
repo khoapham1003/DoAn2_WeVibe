@@ -7,7 +7,7 @@ export class OrderItem {
   @PrimaryGeneratedColumn('increment', { name: 'id' })
   id: number;
 
-  @Column({ name: 'product_vid', type: 'int' })
+  @Column({ name: 'productVariantId', type: 'int' })
   productVID: number;
 
   @Column({ name: 'order_id', type: 'int' })
