@@ -1,4 +1,4 @@
-import { Typography } from "antd";
+import { Typography, Row, Col } from "antd";
 import "../styleForm.css";
 import { Button, Form, Input, ConfigProvider, message } from "antd";
 import { useEffect, useState } from "react";
@@ -14,7 +14,6 @@ function Logup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
 
   useEffect(() => {}, []);
 
@@ -70,7 +69,7 @@ function Logup() {
 
       if (!response.ok) {
         message.error("Đăng ký tài khoản thất bại. Hãy thử lại sau!");
-        message.error(response.json)
+        message.error(response.json);
       } else {
         message.success(`Đăng ký tài khoản thành công!`);
         navigate(`/sign_in`);
@@ -89,60 +88,94 @@ function Logup() {
         onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
-        <Typography className="title_container">Đăng ký</Typography>
-
-        <Form.Item
-          label="Họ"
-          name="lastName"
-          rules={[{ required: true, message: "Xin vui lòng nhập Họ!" }]}
+        <Typography
+          className="title_container"
+          style={{ fontWeight: "bolder", fontSize: "1.5rem" }}
         >
-          <Input name="lastName" value={lastName} onChange={handleInputChange} />
-        </Form.Item>
+          Đăng ký
+        </Typography>
 
+        <Row gutter={16}>
+          <Col span={8}>
+            <Form.Item
+              className="no_margin login_input_container"
+              label="Họ"
+              name="lastName"
+            >
+              <Input
+                name="lastName"
+                value={lastName}
+                onChange={handleInputChange}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item
+              className="no_margin login_input_container"
+              label="Tên lót"
+              name="middleName"
+            >
+              <Input
+                name="middleName"
+                value={middleName}
+                onChange={handleInputChange}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item
+              className="no_margin login_input_container"
+              label="Tên"
+              name="firstName"
+              rules={[{ required: true, message: "Xin vui lòng nhập Tên!" }]}
+            >
+              <Input
+                name="firstName"
+                value={firstName}
+                onChange={handleInputChange}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
         <Form.Item
-          label="Tên lót"
-          name="middleName"
-          rules={[{ required: true, message: "Xin vui lòng nhập Tên lót!" }]}
-        >
-          <Input name="middleName" value={middleName} onChange={handleInputChange} />
-        </Form.Item>
-
-        <Form.Item
-          label="Tên"
-          name="firstName"
-          rules={[{ required: true, message: "Xin vui lòng nhập Tên!" }]}
-        >
-          <Input name="firstName" value={firstName} onChange={handleInputChange} />
-        </Form.Item>
-
-        <Form.Item
-          label="Số điện thoại"
-          name="phoneNumber"
-          rules={[{ required: true, message: "Xin vui lòng nhập Số điện thoại!" }]}
-        >
-          <Input name="phoneNumber" value={phoneNumber} onChange={handleInputChange} />
-        </Form.Item>
-
-        <Form.Item
+          className="no_margin login_input_container"
           label="Email"
           name="email"
           rules={[
-            { type: "email", message: "Đầu vào không phải là địa chỉ email hợp lệ!" },
+            {
+              type: "email",
+              message: "Đầu vào không phải là địa chỉ email hợp lệ!",
+            },
             { required: true, message: "Xin vui lòng nhập Email!" },
           ]}
         >
           <Input name="email" value={email} onChange={handleInputChange} />
         </Form.Item>
-
         <Form.Item
+          className="no_margin login_input_container"
+          label="Số điện thoại"
+          name="phoneNumber"
+        >
+          <Input
+            name="phoneNumber"
+            value={phoneNumber}
+            onChange={handleInputChange}
+          />
+        </Form.Item>
+        <Form.Item
+          className="no_margin login_input_container"
           label="Mật khẩu"
           name="password"
           rules={[{ required: true, message: "Xin vui lòng nhập Mật khẩu!" }]}
         >
-          <Input.Password name="password" value={password} onChange={handleInputChange} />
+          <Input.Password
+            name="password"
+            value={password}
+            onChange={handleInputChange}
+          />
         </Form.Item>
-
         <Form.Item
+          className="no_margin login_input_container"
           label="Xác nhận mật khẩu"
           name="confirmPassword"
           dependencies={["password"]}
@@ -168,9 +201,18 @@ function Logup() {
           />
         </Form.Item>
 
-        <Form.Item>
+        <Form.Item className="no_margin button_container">
           <ConfigProvider theme={{ token: { colorBorder: "none" } }}>
-            <Button block type="default" htmlType="submit">
+            <Button
+              className="button"
+              block
+              type="default"
+              htmlType="submit"
+              style={{
+                height: "2.5rem",
+                fontSize: "1rem",
+              }}
+            >
               Đăng ký
             </Button>
           </ConfigProvider>

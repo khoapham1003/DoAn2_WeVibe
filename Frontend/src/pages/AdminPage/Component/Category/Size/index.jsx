@@ -198,17 +198,17 @@ function SizeManagement() {
     <div>
       <Button
         onClick={() => setIsAddModalVisible(true)}
-        className="profilepage_button admin_button"
+        className="profilepage_button"
       >
         <IoMdAdd />
-        <strong>ADD SIZE</strong>
+        <strong>Thêm mới kích cỡ</strong>
       </Button>
 
       <div className="cop_cartlist_header">
-        <Col md={3} offset={1}>
+        <Col md={5} offset={5}>
           <h3>Tên Size</h3>
         </Col>
-        <Col md={3} offset={1}>
+        <Col md={5} offset={1}>
           <h3>Số Size</h3>
         </Col>
       </div>
@@ -217,10 +217,10 @@ function SizeManagement() {
         {items.map((item) => (
           <Card className="cop_item_cart" key={item.id}>
             <Row align="middle">
-              <Col md={3} offset={1}>
+              <Col md={5} offset={5}>
                 <span>{item.name}</span>
               </Col>
-              <Col md={3} offset={1}>
+              <Col md={5} offset={1}>
                 <span>{item.size}</span>
               </Col>
               <Col md={3} offset={1}>

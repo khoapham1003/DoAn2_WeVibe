@@ -11,7 +11,6 @@ const MenuSlide = ({ onMenuSelect }) => {
   const [menuData, setMenuData] = useState([]);
   const [menuVisible, setMenuVisible] = useState(false);
 
-  // Function to transform flat data to nested structure
   const transformMenuData = (data) => {
     const menuMap = {};
     const roots = [];
@@ -20,13 +19,10 @@ const MenuSlide = ({ onMenuSelect }) => {
       menuMap[item.id] = { ...item, children: [] };
     });
 
-    // Build the tree structure
     data.forEach((item) => {
       if (item.parentId) {
-        // If item has a parentId, push it into its parent's children
         menuMap[item.parentId]?.children.push(menuMap[item.id]);
       } else {
-        // If no parentId, it's a root item
         roots.push(menuMap[item.id]);
       }
     });
@@ -34,15 +30,17 @@ const MenuSlide = ({ onMenuSelect }) => {
     return roots;
   };
 
-  // Fetch menu data and transform it
   const fetchMenuData = async () => {
     try {
-      const response = await fetch("http://localhost:3000/category/get-all-categories", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        "http://localhost:3000/category/get-all-categories",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -62,7 +60,6 @@ const MenuSlide = ({ onMenuSelect }) => {
     setSelectedKeys(location.pathname);
   }, [location.pathname]);
 
-  // Render menu items recursively
   const renderMenuItems = (items) => {
     return items.map((item) => {
       if (item.children && item.children.length > 0) {
@@ -78,22 +75,42 @@ const MenuSlide = ({ onMenuSelect }) => {
   };
 
   return (
-    <div>
-      <button onClick={() => setMenuVisible(!menuVisible)}>
+    <div style={{ position: "relative" }}>
+      <button
+        onClick={() => setMenuVisible(!menuVisible)}
+        style={{
+          position: "absolute",
+          top: "10px",
+          left: "10px",
+          zIndex: 10,
+        }}
+      >
         <MenuOutlined />
       </button>
       {menuVisible && (
-        <Menu
-          selectedKeys={[selectedKeys]}
+        <div
           style={{
-            backgroundColor: "#fff",
-            borderRight: "none",
-            fontSize: "10px",
+            position: "absolute",
+            top: "50px",
+            left: "10px",
+            zIndex: 9,
+            width: "12rem",
+            background: "#fff",
+            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+            borderRadius: "8px",
+            overflow: "auto",
           }}
-          onClick={({ key }) => onMenuSelect(key)}
         >
-          {renderMenuItems(menuData)}
-        </Menu>
+          <Menu
+            selectedKeys={[selectedKeys]}
+            style={{
+              fontSize: "1rem",
+            }}
+            onClick={({ key }) => onMenuSelect(key)}
+          >
+            {renderMenuItems(menuData)}
+          </Menu>
+        </div>
       )}
     </div>
   );

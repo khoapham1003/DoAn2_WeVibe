@@ -32,6 +32,8 @@ function OrderAdmin() {
   const [endDate, setEndDate] = useState(null);
   const [chartType, setChartType] = useState("daily");
   const [dataType, setDataType] = useState("totalPrice");
+  const navigate = useNavigate();
+
   const getCookie = (cookieName) => {
     const cookies = document.cookie.split("; ");
     for (const cookie of cookies) {
@@ -321,14 +323,16 @@ function OrderAdmin() {
 
   return (
     <div>
-      {/* 3 tab thông tin */}
-      <Row>
-        <h2 className="detail_h2">Thông Số Bán Hàng</h2>
-      </Row>
+      <h2 className="detail-h2">
+        <span className="title-holder">Thông Số Bán Hàng</span>
+      </h2>
       <div className="admin-info">
         <div className="admin-info-totalSale">
-          <h3>Tổng giá trị bán ra:</h3>
-          <span>{items?.totalGrandTotal || 0}</span>
+          <h3>Tổng giá trị bán ra:</h3>   {" "}
+          <span>
+            {new Intl.NumberFormat("vi-VN").format(items?.totalGrandTotal || 0)}
+            đ
+          </span>
         </div>
         <div className="admin-info-totalOrder">
           <h3>Tổng đơn hàng:</h3>
@@ -339,10 +343,9 @@ function OrderAdmin() {
           <span>{items?.totalQuantity || 0}</span>
         </div>
       </div>
-
-      <Row>
-        <h2 className="detail_h2">Biểu Đồ Tổng Giá Trị Bán Ra</h2>
-      </Row>
+      <h2 className="detail-h2">
+        <span className="title-holder">Biểu Đồ Tổng Giá Trị Bán Ra</span>
+      </h2>
       <div className="chart-part">
         <div className="type-of-chart">
           <Space className="chart-by-day" size={12}>
@@ -506,16 +509,16 @@ function OrderAdmin() {
         )}
       </div>
 
-      <Row>
-        <h2 className="detail_h2">Giao Dịch Gần Đây</h2>
-      </Row>
+      <h2 className="detail-h2">
+        <span className="title-holder">Giao Dịch Gần Đây</span>
+      </h2>
 
       <div
         className="order-history"
         style={{ display: "flex", flexDirection: "column-reverse" }}
       >
         <Tabs defaultActiveKey="1">
-          <TabPane tab="Pending Orders" key="1">
+          <TabPane tab="Đang chờ xử lý" key="1">
             {orders.pending.length > 0 ? (
               orders.pending.map((item) => (
                 <Card
@@ -543,7 +546,7 @@ function OrderAdmin() {
                         item.address.country}
                     </Descriptions.Item>
                     <Descriptions.Item label="Tổng đơn hàng">
-                      {item.grandTotal}
+                      {new Intl.NumberFormat("vi-VN").format(item.grandTotal)} đ
                     </Descriptions.Item>
                   </Descriptions>
                 </Card>
@@ -553,7 +556,7 @@ function OrderAdmin() {
             )}
           </TabPane>
 
-          <TabPane tab="Complete Orders" key="2">
+          <TabPane tab="Đã hoàn thành" key="2">
             {orders.complete.length > 0 ? (
               orders.complete.map((item) => (
                 <Card
@@ -581,7 +584,7 @@ function OrderAdmin() {
                         item.address.country}
                     </Descriptions.Item>
                     <Descriptions.Item label="Tổng đơn hàng">
-                      {item.grandTotal}
+                      {new Intl.NumberFormat("vi-VN").format(item.grandTotal)} đ
                     </Descriptions.Item>
                   </Descriptions>
                 </Card>

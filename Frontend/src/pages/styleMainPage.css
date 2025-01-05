@@ -6,15 +6,52 @@
   margin-bottom: 2vh;
   font-weight: 700;
   text-align: center;
+  background-color: #e3f2fd; /* Nền xanh lam nhạt */
+  padding: 1rem 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
 }
+
 .title-comm .title-holder {
   height: 3rem;
   line-height: 3rem;
   position: relative;
   text-align: center;
   z-index: 2;
-  color: #ffb74d;
+  color: #1e88e5; /* Xanh đậm */
+  font-size: 1.5rem;
+  font-weight: bold;
+  background: linear-gradient(
+    90deg,
+    rgba(227, 242, 253, 0.1) 0%,
+    rgba(227, 242, 253, 0.5) 50%,
+    rgba(227, 242, 253, 0.1) 100%
+  );
+  display: inline-block;
+  padding: 0 1.5rem;
+  border-radius: 4px;
 }
+
+.title-comm:before,
+.title-comm:after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 30%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #1e88e5, transparent);
+  z-index: 1;
+}
+
+.title-comm:before {
+  left: 0;
+}
+
+.title-comm:after {
+  right: 0;
+}
+
 /* Main Page */
 .flex_column {
   display: flex;
@@ -37,49 +74,66 @@
 }
 .card_container {
   display: flex;
-  justify-content: space-around;
   flex-wrap: wrap;
-  background-color: white;
-  padding: 2vh 3vw;
-  margin: 0vh 10vw 2vh;
-  min-height: 100vh;
-  border-radius: 0.5vw;
+  justify-content: center;
+  gap: 20px;
+  padding: 2vh 5vw;
+  margin: 0vh 5vw 4vh;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 50%, #f0f0f0 100%);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
+
 .card_item {
-  border: 2px solid #ededed;
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
   align-items: center;
-  margin: 0px 0px 20px;
-  padding: 10px 2px;
-  border-radius: 0.5vw;
-  max-height: 310px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+  width: 200px;
+  height: 330px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
-.mp_product_item_image {
-  height: 190px;
-  width: 190px !important;
+
+.card_item img {
+  border-bottom: 1px solid #eee;
+  vertical-align: bottom;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  width: 100%;
+  height: 270;
+  object-fit: cover;
+  border-bottom: 1px solid #eee;
+}
+.card_item:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+.card_item:hover img {
+  transform: scale(1.05);
+  opacity: 0.9;
 }
 .title_start_container {
-  height: 60px;
+  height: 40px;
   margin: 0px;
 }
+
 .product_title {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  margin: 0.5rem 0;
+  height: 40px;
   overflow: hidden;
-  width: 140px;
-  font-size: 12px;
-}
-.product_star {
-  color: #4caf91;
-  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .product_price {
-  font-size: 15px !important;
+  font-size: 1rem;
   font-weight: 600;
-  color: #174e34 !important;
+  color: #ff6f61;
 }
-
-/* Search Page */
-
-/* Category Page */

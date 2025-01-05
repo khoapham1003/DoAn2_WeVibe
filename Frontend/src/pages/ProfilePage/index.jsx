@@ -474,7 +474,7 @@ function ProfilePage() {
           style={{ display: "flex", flexDirection: "column-reverse" }}
         >
           <Tabs defaultActiveKey="1">
-            <TabPane tab="Pending Orders" key="1">
+            <TabPane tab="Đang chờ xử lý" key="1">
               {orders.pending.length > 0 ? (
                 orders.pending.map((item) => (
                   <Card
@@ -504,7 +504,8 @@ function ProfilePage() {
                           item.address.country}
                       </Descriptions.Item>
                       <Descriptions.Item label="Tổng đơn hàng">
-                        {item.grandTotal}
+                        {new Intl.NumberFormat("vi-VN").format(item.grandTotal)}{" "}
+                        đ
                       </Descriptions.Item>
                     </Descriptions>
                   </Card>
@@ -514,7 +515,7 @@ function ProfilePage() {
               )}
             </TabPane>
 
-            <TabPane tab="Complete Orders" key="2">
+            <TabPane tab="Đã hoàn thành" key="2">
               {orders.complete.length > 0 ? (
                 orders.complete.map((item) => (
                   <Card
@@ -544,7 +545,8 @@ function ProfilePage() {
                           item.address.country}
                       </Descriptions.Item>
                       <Descriptions.Item label="Tổng đơn hàng">
-                        {item.grandTotal}
+                        {new Intl.NumberFormat("vi-VN").format(item.grandTotal)}{" "}
+                        đ
                       </Descriptions.Item>
                     </Descriptions>
                   </Card>

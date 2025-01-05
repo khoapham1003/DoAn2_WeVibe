@@ -14,13 +14,13 @@ function CategoriesAdmin() {
   return (
     <div>
       <Tabs activeKey={activeTab} onChange={handleTabChange}>
-        <TabPane tab="Category" key="category">
+        <TabPane tab="Danh mục sản phẩm" key="category">
           <CategoryManagement />
         </TabPane>
-        <TabPane tab="Size" key="size">
+        <TabPane tab="Kích cỡ" key="size">
           <SizeManagement />
         </TabPane>
-        <TabPane tab="Color" key="color">
+        <TabPane tab="Màu sắc" key="color">
           <ColorManegement />
         </TabPane>
       </Tabs>

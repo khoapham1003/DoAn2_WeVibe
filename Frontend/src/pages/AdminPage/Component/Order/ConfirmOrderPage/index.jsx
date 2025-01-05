@@ -6,7 +6,7 @@ import { Button, Row, Col, List, Card, Image, Input, message } from "antd";
 function ConfirmOrderPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [order, setOrder] = useState([]); // Changed from empty array to null
+  const [order, setOrder] = useState([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
 
   const getCookie = (cookieName) => {
@@ -45,7 +45,6 @@ function ConfirmOrderPage() {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       console.log(response);
-
       const data = await response.json();
       console.log(data);
       setOrder(data.data[0]);
@@ -82,11 +81,10 @@ function ConfirmOrderPage() {
       const result = await response.json();
       message.success("Xác nhận đơn hàng thành công!");
       await setShowConfirmation(true);
-
-      // navigate("/admin");
+      navigate("/admin");
     } catch (error) {
       console.error("Error confirming the order:", error);
-      message.error("Lỗi!!! Xác nhận đơn hành thành công!");
+      message.error("Có lỗi trong quá trình xác nhận đơn hàng.");
     }
   };
 
@@ -171,14 +169,20 @@ function ConfirmOrderPage() {
         </div>
 
         <div className="cop_cartlist_header">
-          <Col md={2} offset={1}>
+          <Col md={2}></Col>
+          <Col md={3} offset={1}>
             <h3>Sản phẩm</h3>
           </Col>
-          <Col md={8}></Col>
+          <Col md={2} offset={1}>
+            <h3>Kích Thước</h3>
+          </Col>
+          <Col md={2} offset={1}>
+            <h3>Color</h3>
+          </Col>
           <Col md={3} offset={1}>
             <h3>Đơn giá</h3>
           </Col>
-          <Col md={3} offset={1}>
+          <Col md={2}>
             <h3>Số lượng</h3>
           </Col>
           <Col md={3} offset={1}>
@@ -190,7 +194,7 @@ function ConfirmOrderPage() {
           {order.items?.map((item) => (
             <Card className="cop_item_cart" key={item.id}>
               <Row align="middle">
-                <Col md={2} offset={1}>
+                <Col md={2}>
                   <Image
                     style={{
                       height: 80,
@@ -200,23 +204,25 @@ function ConfirmOrderPage() {
                     src={item.picture}
                   />
                 </Col>
-                <Col md={8}>
+                <Col md={4}>
                   <span>{item.productName}</span>
                 </Col>
                 <Col md={3}>
                   <span>{item.size} </span>
                 </Col>
-                <Col md={3} offset={1}>
+                <Col md={3}>
                   <span> {item.color}</span>
                 </Col>
-                <Col md={3} offset={1}>
-                  <span>{item.price}đ</span>
+                <Col md={4}>
+                  {new Intl.NumberFormat("vi-VN").format(item.price)}đ
                 </Col>
-                <Col md={3} offset={1}>
+                <Col md={2}>
                   <span>{item.quantity}</span>
                 </Col>
-                <Col md={3} offset={1}>
-                  <span className="cop_item_price">{item.totalPrice}đ</span>
+                <Col md={4}>
+                  <span className="cop_item_price">
+                    {new Intl.NumberFormat("vi-VN").format(item.totalPrice)}đ
+                  </span>
                 </Col>
               </Row>
             </Card>
@@ -229,23 +235,32 @@ function ConfirmOrderPage() {
               <h2>Thanh toán</h2>
             </List.Item>
             <List.Item>
-              <span>Tổng tiền hàng: {order.subTotal}đ</span>
+                 {" "}
+              <span>
+                {new Intl.NumberFormat("vi-VN").format(order.subTotal)} đ
+              </span>
             </List.Item>
             <List.Item>
-              <span>Phí vận chuyển: {order.shippingFee}đ</span>
+                 {" "}
+              <span>
+                {new Intl.NumberFormat("vi-VN").format(order.shippingFee)} đ
+              </span>
             </List.Item>
             <List.Item>
-              <span>Tổng giảm giá: {order.totalDiscount}đ</span>
+                 {" "}
+              <span>
+                {new Intl.NumberFormat("vi-VN").format(order.totalDiscount)} đ
+              </span>
             </List.Item>
             <List.Item>
               <span style={{ fontWeight: "500", fontStyle: "italic" }}>
-                Tổng thanh toán: {order.grandTotal}đ
+                Tổng thanh toán:
+                {new Intl.NumberFormat("vi-VN").format(order.grandTotal)} đ
               </span>
             </List.Item>
             <List.Item>
               <Button
-                className="cop_button1"
-                style={{ width: "150px" }}
+                className="profilepage_button"
                 onClick={() => {
                   handleConfirmOrder();
                 }}

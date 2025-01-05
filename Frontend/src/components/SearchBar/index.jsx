@@ -30,7 +30,7 @@ const SearchBar = ({ onSearchResult, ...props }) => {
         onChange={(e) => setSearchValue(e.target.value)}
         onPressEnter={onSearch}
         value={searchValue}
-        placeholder="Search items..."
+        placeholder="Tìm kiếm sản phẩm"
         allowClear
         size="large"
         style={{
