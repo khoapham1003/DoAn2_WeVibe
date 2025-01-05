@@ -268,15 +268,17 @@ function ProductPage() {
                                 ? "0 0 0 4px rgba(143, 143, 143, 0.5)"
                                 : "none",
                             cursor: "pointer",
-                          opacity: availableColors.includes(color.id) ? 1 : 0.5,
+                            opacity: availableColors.includes(color.id)
+                              ? 1
+                              : 0.2,
                           }}
-                          onClick={() => 
-                          availableColors.includes(color.id) &&
-                            handleColorSelect(color)}
+                          onClick={() =>
+                            availableColors.includes(color.id) &&
+                            handleColorSelect(color)
+                          }
                         />
                       ))}
                     </div>
-
                   </div>
                 </List.Item>
                 <List.Item>
@@ -303,9 +305,12 @@ function ProductPage() {
                               selectedSize?.id === size.id
                                 ? "#f0f0f0"
                                 : "transparent",
-                                     opacity: availableSizes.includes(size.id) ? 1 : 0.5, // Làm mờ nếu không hợp lệ
+                            opacity: availableSizes.includes(size.id) ? 1 : 0.4,
                           }}
-                          onClick={() =>   availableSizes.includes(size.id) && handleSizeSelect(size)}
+                          onClick={() =>
+                            availableSizes.includes(size.id) &&
+                            handleSizeSelect(size)
+                          }
                         >
                           {size.name || `Size: ${size.size || "Không rõ"}`}
                         </span>
