@@ -24,6 +24,5 @@ export class UserBehavior {
   user: User;
 
   @ManyToOne(() => Product, { eager: true })
-  @JoinColumn({ name: 'product_id' })
   product: Product;
 }

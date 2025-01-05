@@ -35,7 +35,6 @@ export class OrderItem {
   updatedAt: string;
 
   @ManyToOne(() => ProductVariant, { eager: true })
-  @JoinColumn({ name: 'product_vid' })
   productVariant: ProductVariant;
 
   @ManyToOne(() => Order, { eager: true })

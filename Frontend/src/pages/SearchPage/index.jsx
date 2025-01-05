@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Card, Col, Rate, Row } from "antd";
+import { Card, Col, Rate, Row, Select } from "antd";
 import { useNavigate } from "react-router-dom";
 import MenuSlide from "../../components/MenuSlide";
 import background_log from "../../assets/images/background_log.png";
+
+const { Option } = Select;
 
 const SearchPage = () => {
   const [items, setItems] = useState([]);
@@ -10,24 +12,41 @@ const SearchPage = () => {
   const navigate = useNavigate();
   const searchValue = localStorage.getItem("datasearch");
   const [selectedMenu, setSelectedMenu] = useState(null);
+  const [sortOrder, setSortOrder] = useState(null);
 
   useEffect(() => {
     const handleRefresh = (event) => {
-      if (event.key === 'F5') {
+      if (event.key === "F5") {
         event.preventDefault();
-        window.location.href = '/';  // Điều hướng về trang chủ và reload
+        window.location.href = "/"; // Điều hướng về trang chủ và reload
       }
     };
 
     // Thêm sự kiện keydown
-    window.addEventListener('keydown', handleRefresh);
-    
+    window.addEventListener("keydown", handleRefresh);
+
     // Cleanup khi component unmount
     return () => {
-      window.removeEventListener('keydown', handleRefresh);
+      window.removeEventListener("keydown", handleRefresh);
     };
-  }, []); 
-  
+  }, []);
+
+  useEffect(() => {
+    if (sortOrder) {
+      const sortedItems = [...items];
+      if (sortOrder === "price-asc") {
+        sortedItems.sort((a, b) => a.price - b.price);
+      } else if (sortOrder === "price-desc") {
+        sortedItems.sort((a, b) => b.price - a.price);
+      } else if (sortOrder === "name-asc") {
+        sortedItems.sort((a, b) => a.title.localeCompare(b.title));
+      } else if (sortOrder === "name-desc") {
+        sortedItems.sort((a, b) => b.title.localeCompare(a.title));
+      }
+      setItems(sortedItems); // Cập nhật lại mảng items đã sắp xếp
+    }
+  }, [sortOrder, items]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -74,6 +93,23 @@ const SearchPage = () => {
     navigate(`/product-detail/${item.id}`, { state: { item } });
   };
 
+  const handleSortChange = (value) => {
+    if (sortOrder) {
+      const sortedItems = [...items];
+      if (sortOrder === "price-asc") {
+        sortedItems.sort((a, b) => a.price - b.price);
+      } else if (sortOrder === "price-desc") {
+        sortedItems.sort((a, b) => b.price - a.price);
+      } else if (sortOrder === "name-asc") {
+        sortedItems.sort((a, b) => a.title.localeCompare(b.title));
+      } else if (sortOrder === "name-desc") {
+        sortedItems.sort((a, b) => b.title.localeCompare(a.title));
+      }
+      setItems(sortedItems);
+    }
+    setSortOrder(value);
+  };
+
   return (
     <div>
       <div
@@ -94,6 +130,18 @@ const SearchPage = () => {
           <MenuSlide size="large" onMenuSelect={handleMenuSelect} />
         </Col>
       </Row>
+      <div className="sort-container">
+        <Select
+          defaultValue="price-asc"
+          style={{ width: 200 }}
+          onChange={handleSortChange}
+        >
+          <Option value="price-asc">Sắp xếp theo giá (tăng dần)</Option>
+          <Option value="price-desc">Sắp xếp theo giá (giảm dần)</Option>
+          <Option value="name-asc">Sắp xếp theo tên (A-Z)</Option>
+          <Option value="name-desc">Sắp xếp theo tên (Z-A)</Option>
+        </Select>
+      </div>
       <div className="card_container">
         {items.map((item) => (
           <Card
