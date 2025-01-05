@@ -703,14 +703,7 @@ function ProductAdmin() {
                               >
                                 <FaTrash />
                               </Button>
-
                             </span>
-                            <Button
-                              className="delete-button"
-                              onClick={() => showVariantConfirm(variant.id)}
-                            >
-                              <FaTrash />
-                            </Button>
                           </div>
                         ))
                       ) : (
