@@ -1,5 +1,8 @@
 /* General */
-
+.admin_button {
+  justify-content: left;
+  width: 9.5rem;
+}
 /* Product Page */
 .pp_white_bg {
   background-color: white;

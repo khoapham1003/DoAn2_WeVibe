@@ -20,7 +20,7 @@ export class RegisterDto {
   middleName?: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @Length(1, 50)
   lastName: string;
 
@@ -33,12 +33,12 @@ export class RegisterDto {
 
   @IsString()
   @IsNotEmpty()
-  @Length(8, 255) 
+  @Length(8, 255)
   password: string;
 
   @IsString()
   @IsNotEmpty()
-  @Length(8, 255) 
+  @Length(8, 255)
   confirmPassword: string;
 
   @IsBoolean()

@@ -85,7 +85,7 @@ const Login = () => {
       >
         <Typography
           className="title_container"
-          style={{ fontWeight: "bolder", fontSize: "3vh" }}
+          style={{ fontWeight: "bolder", fontSize: "1.5rem" }}
         >
           Đăng nhập
         </Typography>
@@ -100,7 +100,7 @@ const Login = () => {
         >
           <Input
             placeholder="Tên đăng nhập"
-            style={{ height: "6vh", fontSize: "2vh" }}
+            style={{ height: "3rem", fontSize: "1rem" }}
           />
         </Form.Item>
 
@@ -113,8 +113,8 @@ const Login = () => {
           <Input.Password
             placeholder="Mật khẩu"
             style={{
-              height: "6vh",
-              fontSize: "2vh",
+              height: "3rem",
+              fontSize: "1rem",
             }}
           />
         </Form.Item>
@@ -134,8 +134,8 @@ const Login = () => {
               htmlType="submit"
               onClick={handleLogIn}
               style={{
-                height: "5vh",
-                fontSize: "2vh",
+                height: "2.5rem",
+                fontSize: "1rem",
               }}
             >
               Đăng nhập
@@ -143,25 +143,25 @@ const Login = () => {
           </ConfigProvider>
         </Form.Item>
 
-        <div className="functions login_function_container ">
+        <div>
           <Form.Item className="no_margin">
             <a
               className="forgotpassword_nav"
               href="/forgot_password"
-              style={{ color: "#1f9d60", fontSize: "1.5vh" }}
+              style={{ color: "#1f9d60", fontSize: "0.75rem" }}
             >
               Quên mật khẩu
             </a>
           </Form.Item>
 
           <Form.Item className="no_margin">
-            <span style={{ color: "#1f9d60", fontSize: "1.5vh" }}>
+            <span style={{ color: "#1f9d60", fontSize: "0.75rem" }}>
               Bạn chưa có tài khoản?{" "}
             </span>
             <a
               className="logup_nav"
               href="/sign_up"
-              style={{ color: "#CF4330", fontSize: "1.5vh" }}
+              style={{ color: "#CF4330", fontSize: "0.75rem" }}
             >
               Đăng ký tại đây
             </a>
