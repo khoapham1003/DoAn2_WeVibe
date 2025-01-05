@@ -24,8 +24,8 @@ function ProductPage() {
   const [color, setColor] = useState([]);
   const [size, setSize] = useState([]);
   const [productvariant, setProductVariant] = useState([]);
-  const [selectedColor, setSelectedColor] = useState(null); 
-  const [selectedSize, setSelectedSize] = useState(null); 
+  const [selectedColor, setSelectedColor] = useState(null);
+  const [selectedSize, setSelectedSize] = useState(null);
   useEffect(() => {
     window.scrollTo(0, 0);
     const fetchreviewsdata = async () => {
@@ -70,24 +70,28 @@ function ProductPage() {
         const data = await response.json();
         setProductVariant(data);
 
-          const tempColors = [];
-          const tempSizes = [];
-  
-          data.forEach((item) => {
-            if (item.color && !tempColors.some((color) => color.id === item.color.id)) {
-              tempColors.push(item.color); // Thêm màu sắc duy nhất
-            }
-            if (item.size && !tempSizes.some((size) => size.size === item.size.size)) {
-              tempSizes.push(item.size); // Thêm kích thước duy nhất
-            }
-          });
-  
-          setColor(tempColors);
-          setSize(tempSizes);
-        
-          console.log("clort",color,size);
+        const tempColors = [];
+        const tempSizes = [];
 
+        data.forEach((item) => {
+          if (
+            item.color &&
+            !tempColors.some((color) => color.id === item.color.id)
+          ) {
+            tempColors.push(item.color); // Thêm màu sắc duy nhất
+          }
+          if (
+            item.size &&
+            !tempSizes.some((size) => size.size === item.size.size)
+          ) {
+            tempSizes.push(item.size); // Thêm kích thước duy nhất
+          }
+        });
 
+        setColor(tempColors);
+        setSize(tempSizes);
+
+        console.log("clort", color, size);
 
         return data;
       } catch (error) {
@@ -186,10 +190,12 @@ function ProductPage() {
                   <h1>{item.title}</h1>
                 </List.Item>
                 <List.Item>
-                  <span className="price">{item.price}đ</span>
+                  <span className="price">
+                    {new Intl.NumberFormat("vi-VN").format(item.price)} đ
+                  </span>
                 </List.Item>
                 <List.Item className="pp_amount">
-                  <span>Số lượng:</span>
+                  <span className="label">Số lượng:</span>
                   <InputNumber
                     className="amount_box"
                     min={1}
@@ -198,46 +204,73 @@ function ProductPage() {
                   />
                 </List.Item>
                 <List.Item>
-                  <span className="label">Màu sắc:</span>
-                  <div style={{ display: 'inline-block', marginLeft: '8px' }}>
-                    {color.map((color) => (
-                      <div
-                        key={color.id}
-                        style={{
-                          display: 'inline-block',
-                          width: '20px',
-                          height: '20px',
-                          backgroundColor: color.hex,
-                          borderRadius: '50%',
-                        border: selectedColor?.id === color.id ? '2px solid #000' : '1px solid #ddd',
-                          margin: '0 5px',
-                          cursor: 'pointer',
-                        }}
-                        onClick={() => handleColorSelect(color)}
-                      />
-                    ))}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <span className="label">Màu sắc:</span>
+                    <div
+                      style={{
+                        display: "flex",
+                        marginLeft: "2.5rem",
+                        gap: "8px",
+                      }}
+                    >
+                      {color.map((color) => (
+                        <div
+                          key={color.id}
+                          style={{
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: color.hex,
+                            borderRadius: "50%",
+                            boxShadow:
+                              selectedColor?.id === color.id
+                                ? "0 0 0 4px rgba(143, 143, 143, 0.5)"
+                                : "none",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => handleColorSelect(color)}
+                        />
+                      ))}
+                    </div>
                   </div>
                 </List.Item>
 
                 {/* Kích thước */}
                 <List.Item>
-                  <span className="label">Kích thước:</span>
-                  <div style={{ marginLeft: '8px' }}>
-                    {size.map((size) => (
-                      <span
-                        key={size.id}
-                        style={{
-                          padding: '5px 10px',
-                          border: selectedSize?.id === size.id ? '2px solid #000' : '1px solid #ddd',
-                          margin: '0 5px',
-                          cursor: 'pointer',
-                          backgroundColor: selectedSize?.id === size.id ? '#f0f0f0' : 'transparent',
-                        }}
-                        onClick={() => handleSizeSelect(size)}
-                      >
-                        {size.name || `Size: ${size.size || 'Không rõ'}`}
-                      </span>
-                    ))}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <span className="label">Kích thước:</span>
+                    <div style={{ marginLeft: "1rem" }}>
+                      {size.map((size) => (
+                        <span
+                          key={size.id}
+                          style={{
+                            padding: "5px 10px",
+                            border:
+                              selectedSize?.id === size.id
+                                ? "2px solid #000"
+                                : "1px solid #ddd",
+                            margin: "0 5px",
+                            cursor: "pointer",
+                            backgroundColor:
+                              selectedSize?.id === size.id
+                                ? "#f0f0f0"
+                                : "transparent",
+                          }}
+                          onClick={() => handleSizeSelect(size)}
+                        >
+                          {size.name || `Size: ${size.size || "Không rõ"}`}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </List.Item>
                 <List.Item>
@@ -259,9 +292,9 @@ function ProductPage() {
                 <List.Item>
                   <h2>Mô tả sản phẩm</h2>
                 </List.Item>
-                {/* <List.Item style={{ fontSize: "16px", color: "#8c8c8c" }}>
-                  <ExhibitionContent content={item.description} />
-                </List.Item> */}
+                <List.Item style={{ fontSize: "16px", color: "#8c8c8c" }}>
+                  <ExhibitionContent content={item.content} />
+                </List.Item>
               </List>
             </Col>
           </Row>

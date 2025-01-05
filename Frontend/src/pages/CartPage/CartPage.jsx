@@ -276,23 +276,23 @@ function CartPage() {
             onChange={handleCheckAllChange}
           />
         </Col>
-        <Col md={2}>
+        <Col md={2}></Col>
+        <Col md={3} offset={1}>
           <h3>Sản phẩm</h3>
         </Col>
-        <Col md={8}></Col>
-        <Col md={3} offset={1}>
+        <Col md={2} offset={1}>
           <h3>Kích Thước</h3>
         </Col>
-        <Col md={3} offset={1}>
+        <Col md={2} offset={1}>
           <h3>Color</h3>
         </Col>
         <Col md={3} offset={1}>
           <h3>Đơn giá</h3>
         </Col>
-        <Col md={3}>
+        <Col md={2}>
           <h3>Số lượng</h3>
         </Col>
-        <Col md={3}>
+        <Col md={3} offset={1}>
           <h3>Thành tiền</h3>
         </Col>
         <Col md={1}></Col>
@@ -319,19 +319,22 @@ function CartPage() {
                   alt={item.title}
                 />
               </Col>
-              <Col md={8}>
+              <Col md={4}>
                 <span>{item.productVariant.product.title} </span>
               </Col>
               <Col md={3}>
                 <span>{item.productVariant.size.name} </span>
               </Col>
-              <Col md={3} offset={1}>
+              <Col md={3}>
                 <span> {item.productVariant.color.name}</span>
               </Col>
-              <Col md={3} offset={1}>
-                <span> {item.productVariant.product.price}đ</span>
+              <Col md={4}>
+                {new Intl.NumberFormat("vi-VN").format(
+                  item.productVariant.product.price
+                )}
+                đ
               </Col>
-              <Col md={3}>
+              <Col md={2}>
                 <div className="amount_part">
                   <Button
                     className="amount_change_button"
@@ -341,9 +344,7 @@ function CartPage() {
                   >
                     +
                   </Button>
-
                   <span style={{ margin: "0px 10px" }}>{item.quantity}</span>
-
                   <Button
                     className="amount_change_button"
                     onClick={() =>
@@ -355,9 +356,14 @@ function CartPage() {
                   </Button>
                 </div>
               </Col>
-              <Col md={3}>
+              <Col md={4}>
                 <span className="cp_item_price">
-                  {item.productVariant.product.price * item.quantity}đ
+                  <span>
+                    {new Intl.NumberFormat("vi-VN").format(
+                      item.productVariant.product.price * item.quantity
+                    )}
+                    đ
+                  </span>
                 </span>
               </Col>
               <Col md={1}>
@@ -381,7 +387,10 @@ function CartPage() {
             <span>Tổng số lượng: {totalQuantity}</span>
           </List.Item>
           <List.Item>
-            <span>Tổng thanh toán: {totalAmount}đ</span>
+            <span>
+              Tổng thanh toán:
+              {new Intl.NumberFormat("vi-VN").format(totalAmount)} đ
+            </span>
           </List.Item>
 
           <List.Item>

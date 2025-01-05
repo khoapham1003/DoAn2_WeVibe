@@ -92,31 +92,29 @@ function ForgotPassword() {
         autoComplete="off"
       >
         <div>
-          <Typography style={{ fontWeight: "bolder", fontSize: "3vh" }}>
+          <Typography style={{ fontWeight: "bolder", fontSize: "1.5rem" }}>
             Quên mật khẩu
           </Typography>
-          <Typography style={{ fontSize: "1.4vh", color: "#bebebe" }}>
+          <Typography style={{ fontSize: "1rem", color: "#bebebe" }}>
             Có vẻ như có chuyện gì đó xảy ra với tài khoản của bạn. Hãy điền
             Email mà bạn đã tạo tài khoản để tiến hành khôi phục tài khoản!
           </Typography>
         </div>
 
-        {/* Email Input */}
         <Form.Item
-          className="no_margin"
-          label={
-            <span className="label">
-              <span style={{ color: "red" }}>* </span>Email
-            </span>
-          }
+          className="no_margin login_input_container"
+          label={<span className="label">Email</span>}
           name="email"
           rules={[
-            { type: "email", message: "Đầu vào không phải là địa chỉ email hợp lệ!" },
+            {
+              type: "email",
+              message: "Đầu vào không phải là địa chỉ email hợp lệ!",
+            },
             { required: true, message: "Xin vui lòng nhập Email!" },
           ]}
         >
           <Input
-            style={{ height: "6vh", fontSize: "2vh" }}
+            style={{ height: "3rem", fontSize: "1rem" }}
             placeholder="Email"
             name="email"
             value={email}
@@ -126,12 +124,8 @@ function ForgotPassword() {
 
         {/* Password Input */}
         <Form.Item
-          className="no_margin"
-          label={
-            <span className="label">
-              <span style={{ color: "red" }}>* </span>Mật khẩu
-            </span>
-          }
+          className="no_margin login_input_container"
+          label={<span className="label">Mật khẩu</span>}
           name="password"
           rules={[
             { required: true, message: "Xin vui lòng nhập Mật khẩu!" },
@@ -144,7 +138,10 @@ function ForgotPassword() {
               pattern: /[a-z]/,
               message: "Mật khẩu phải chứa tối thiểu 1 ký tự thường!",
             },
-            { pattern: /\d/, message: "Mật khẩu phải chứa tối thiểu 1 ký tự số!" },
+            {
+              pattern: /\d/,
+              message: "Mật khẩu phải chứa tối thiểu 1 ký tự số!",
+            },
             {
               pattern: /[!@#$%^&*(),.?":{}|<>]/,
               message: "Mật khẩu phải chứa tối thiểu 1 ký tự đặc biệt!",
@@ -152,7 +149,7 @@ function ForgotPassword() {
           ]}
         >
           <Input.Password
-            style={{ height: "6vh", fontSize: "2vh" }}
+            style={{ height: "3rem", fontSize: "1rem" }}
             placeholder="Mật khẩu"
             name="password"
             value={password}
@@ -160,14 +157,9 @@ function ForgotPassword() {
           />
         </Form.Item>
 
-        {/* Confirm Password Input */}
         <Form.Item
-          className="no_margin"
-          label={
-            <span className="label">
-              <span style={{ color: "red" }}>* </span>Xác nhận mật khẩu
-            </span>
-          }
+          className="no_margin login_input_container"
+          label={<span className="label">Xác nhận mật khẩu</span>}
           name="confirmpassword"
           dependencies={["password"]}
           hasFeedback
@@ -187,7 +179,7 @@ function ForgotPassword() {
           ]}
         >
           <Input.Password
-            style={{ height: "6vh", fontSize: "2vh" }}
+            style={{ height: "3rem", fontSize: "1rem" }}
             placeholder="Xác nhận mật khẩu"
             name="confirmpassword"
             value={confirmpassword}
@@ -195,8 +187,7 @@ function ForgotPassword() {
           />
         </Form.Item>
 
-        {/* Submit Button */}
-        <Form.Item className="no_margin">
+        <Form.Item className="no_margin login_input_container button_container">
           <ConfigProvider
             theme={{
               token: { colorBorder: "none" },
@@ -208,8 +199,8 @@ function ForgotPassword() {
               type="default"
               htmlType="submit"
               style={{
-                height: "5vh",
-                fontSize: "2vh",
+                height: "2.5rem",
+                fontSize: "1rem",
               }}
             >
               Đổi mật khẩu

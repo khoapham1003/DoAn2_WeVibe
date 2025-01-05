@@ -15,10 +15,13 @@ import {
   DatePicker,
 } from "antd";
 import React, { useState, useEffect } from "react";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaBoxOpen, FaEdit, FaListUl, FaTags, FaTrash } from "react-icons/fa";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { IoMdAdd } from "react-icons/io";
 import "./../../../stylePage.css";
+import { FiGrid } from "react-icons/fi";
+import { RiProductHuntLine } from "react-icons/ri";
+import { BiGridAlt } from "react-icons/bi";
 
 const { Option } = Select;
 
@@ -66,30 +69,6 @@ function ProductAdmin() {
     fetchProductCategoryData();
   }, []);
 
-  // const fetchProductData = async () => {
-  //   try {
-  //     const response = await fetch(
-  //       "http://localhost:3000/product/get-all-products",
-  //       {
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //       }
-  //     );
-
-  //     if (!response.ok) {
-  //       throw new Error(`HTTP error! Status: ${response.status}`);
-  //     }
-  //     const data = await response.json();
-  //     // console.log(data);
-
-  //     // setItems(data.data);
-  //   } catch (error) {
-  //     console.error("Error fetching product data:", error);
-  //     throw error; // Propagate the error to handle it in the calling code
-  //   }
-  // };
-
   const fetchVariantData = async (productId) => {
     try {
       const response = await fetch(
@@ -111,7 +90,7 @@ function ProductAdmin() {
       fetchVariantData();
     } catch (error) {
       console.error("Error fetching product data:", error);
-      throw error; // Propagate the error to handle it in the calling code
+      throw error;
     }
   };
 
@@ -234,7 +213,7 @@ function ProductAdmin() {
     }
   };
 
-  const  handleRemoveVariantItem = async (ItemId) => {
+  const handleRemoveVariantItem = async (ItemId) => {
     try {
       const response = await fetch(
         `http://localhost:3000/product-variants/delete-productvariant/${ItemId}`,
@@ -575,23 +554,23 @@ function ProductAdmin() {
 
   return (
     <div>
-      <Button onClick={showAddForm} className="profilepage_button admin_button">
+      <Button onClick={showAddForm} className="profilepage_button">
         <IoMdAdd />
         <em />
-        <strong> ADD PRODUCT</strong>
+        <strong>Thêm mới sản phẩm</strong>
       </Button>
       <div className="cop_cartlist_header">
-        <Col md={3} offset={1}>
+        <Col md={2} offset={1}></Col>
+        <Col md={4} offset={1}>
           <h3>Sản phẩm</h3>
         </Col>
-        <Col md={4}></Col>
-        <Col md={3} offset={1}>
+        <Col md={2}>
           <h3>Đơn giá</h3>
         </Col>
-        <Col md={3} offset={1}>
+        <Col md={2} offset={1}>
           <h3>Số lượng</h3>
         </Col>
-        <Col md={3} offset={1}>
+        <Col md={4} offset={1}>
           <h3>Loại</h3>
         </Col>
       </div>
@@ -612,13 +591,15 @@ function ProductAdmin() {
               <Col md={4} offset={1}>
                 <span>{item.title}</span>
               </Col>
-              <Col md={3} offset={1}>
-                <span>{item.price}đ</span>
+              <Col md={2}>
+                <span>
+                  {new Intl.NumberFormat("vi-VN").format(item.price)}đ
+                </span>
               </Col>
-              <Col md={3} offset={1}>
+              <Col md={2} offset={1}>
                 <span>{item.quantity}</span>
               </Col>
-              <Col md={3} offset={1}>
+              <Col md={4} offset={1}>
                 <span className="cop_item_price">
                   {item?.categoryProducts?.length
                     ? item.categoryProducts
@@ -632,25 +613,38 @@ function ProductAdmin() {
                 <span>
                   <Col md={3} offset={1}>
                     <span>
-                      <Button onClick={() => showConfirm(item.id)}>
-                        <FaTrash />
+                      <Button
+                        className="admin_button"
+                        onClick={() => showConfirm(item.id)}
+                      >
+                        <FaTrash /> Xóa sản phẩm
                       </Button>
-                      <Button onClick={() => showEditForm(item.id)}>
-                        <FaEdit />
+                      <Button
+                        className="admin_button"
+                        onClick={() => showEditForm(item.id)}
+                      >
+                        <FaEdit /> Chỉnh sửa
                       </Button>
-                      <Button onClick={() => showUpdateCategoryForm(item.id)}>
-                        <FaEdit />
+                      <Button
+                        className="admin_button"
+                        onClick={() => showUpdateCategoryForm(item.id)}
+                      >
+                        <FaTags /> Chọn danh mục
                       </Button>
-                      <Button onClick={() => showUpdateVariantForm(item.id)}>
-                        <FaEdit />
+                      <Button
+                        className="admin_button"
+                        onClick={() => showUpdateVariantForm(item.id)}
+                      >
+                        <BiGridAlt /> Thêm mẫu SP
                       </Button>
                     </span>
                   </Col>
                 </span>
               </Col>
-              <Col md={3}>
+              <br></br>
+              <Col md={4}>
                 <Button onClick={() => toggleDropdown(item.id)}>
-                  Product Variants
+                  Danh sách mẫu SP
                 </Button>
                 {openDropdown === item.id && (
                   <div className="dropdown-container">
@@ -687,7 +681,7 @@ function ProductAdmin() {
                           </div>
                         ))
                       ) : (
-                        <li>No product variants available</li>
+                        <li>Không có mẫu có sẵn!</li>
                       )}
                     </ul>
                   </div>

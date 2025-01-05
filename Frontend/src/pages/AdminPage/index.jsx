@@ -21,26 +21,30 @@ import CategoriesAdmin from "./Component/Category";
 const { TabPane } = Tabs;
 
 function AdminPage() {
-  const [activeTab, setActiveTab] = useState("product");
+  const [activeTab, setActiveTab] = useState("order");
 
   const handleTabChange = (key) => {
     setActiveTab(key);
   };
 
   return (
-    <div>
-      <Tabs activeKey={activeTab} onChange={handleTabChange}>
-        <TabPane tab="Products" key="product">
+    <div className="card_container">
+      <Tabs
+        className="admin_tab_container"
+        activeKey={activeTab}
+        onChange={handleTabChange}
+      >
+        <TabPane tab="Đơn hàng" key="order">
+          <OrderStatistics />
+        </TabPane>
+        <TabPane tab="Sản phẩm" key="product">
           <ProductAdmin />
         </TabPane>
-        <TabPane tab="Categories" key="categories">
+        <TabPane tab="Danh mục" key="categories">
           <CategoriesAdmin />
         </TabPane>
-        <TabPane tab="Users" key="user">
+        <TabPane tab="Người dùng" key="user">
           <UserAdmin />
-        </TabPane>
-        <TabPane tab="Orders" key="order">
-          <OrderStatistics />
         </TabPane>
       </Tabs>
     </div>

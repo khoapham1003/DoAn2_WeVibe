@@ -45,15 +45,12 @@ function UserAdmin() {
 
   const fetchProductData = async () => {
     try {
-      const response = await fetch(
-        "http://localhost:3000/user/get-all-users",
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${jwtToken}`,
-          },
-        }
-      );
+      const response = await fetch("http://localhost:3000/user/get-all-users", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${jwtToken}`,
+        },
+      });
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -71,14 +68,13 @@ function UserAdmin() {
   return (
     <div>
       <div className="cop_cartlist_header">
-        <Col md={2} offset={1}>
+        <Col md={6} offset={2}>
           <h3>Tên</h3>
         </Col>
-        <Col md={2}></Col>
-        <Col md={3} offset={1}>
+        <Col md={2} offset={1}>
           <h3>Số Điện Thoại</h3>
         </Col>
-        <Col md={3} offset={1}>
+        <Col md={5} offset={2}>
           <h3>Email</h3>
         </Col>
         <Col md={3} offset={1}>
@@ -89,18 +85,20 @@ function UserAdmin() {
         {items.map((item) => (
           <Card className="cop_item_cart" key={item.UserId}>
             <Row align="middle">
-              <Col md={5} offset={1}>
-                <span>{item.firstName + ' ' + item.middleName + ' ' + item.lastName}</span>
+              <Col md={6} offset={2}>
+                <span>
+                  {item.firstName + " " + item.middleName + " " + item.lastName}
+                </span>
               </Col>
-              <Col md={3}>
+              <Col md={2} offset={1}>
                 <span>{item.phoneNumber}</span>
               </Col>
-              <Col md={3} offset={1}>
+              <Col md={5} offset={2}>
                 <span className="cop_item_price">{item.email}</span>
               </Col>
               <Col md={3} offset={1}>
                 <span className="cop_item_price">
-                  {item.admin ? "Admin" : "User" }
+                  {item.admin ? "Admin" : "User"}
                 </span>
               </Col>
             </Row>

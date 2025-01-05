@@ -16,8 +16,8 @@ const SearchPage = () => {
       try {
         setLoading(true);
         const datareq = {
-          "keyword" : searchValue
-        }
+          keyword: searchValue,
+        };
         const response = await fetch(
           `http://localhost:3000/product/search-product/`,
           {
@@ -28,7 +28,7 @@ const SearchPage = () => {
             body: JSON.stringify(datareq),
           }
         );
-        console.log(response)
+        console.log(response);
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -74,11 +74,7 @@ const SearchPage = () => {
       </h3>
       <Row className="title_bar">
         <Col>
-          <MenuSlide
-            size="large"
-            className="title_menu"
-            onMenuSelect={handleMenuSelect}
-          />
+          <MenuSlide size="large" onMenuSelect={handleMenuSelect} />
         </Col>
       </Row>
       <div className="card_container">
@@ -99,10 +95,10 @@ const SearchPage = () => {
           >
             <div className="flex_column">
               <div className="title_start_container">
-                <span className="book_title">{item.title}</span>
+                <span className="product_title">{item.title}</span>
               </div>
-              <span className="book_price">
-                {item.price}
+              <span className="product_price">
+                {new Intl.NumberFormat("vi-VN").format(item.price)}
                 <span
                   style={{
                     verticalAlign: "super",
@@ -120,5 +116,5 @@ const SearchPage = () => {
       </div>
     </div>
   );
-}
+};
 export default SearchPage;
