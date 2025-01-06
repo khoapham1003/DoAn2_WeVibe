@@ -355,62 +355,67 @@ function OrderAdmin() {
       <div className="chart-part">
         <div className="type-of-chart">
           <Space className="chart-by-day" size={12}>
-            <h2>Lọc theo ngày</h2>
-            <Button
-              className="chart-button"
-              onClick={() => handleChartTypeChange("daily")}
-            >
-              Theo Ngày
-            </Button>
-            <Space className="chart-datepicker">
-              <DatePicker
-                placeholder="Chọn ngày bắt đầu"
-                onChange={handleStartDateChange}
-                format="YYYY-MM-DD"
-              />
-              <DatePicker
-                placeholder="Chọn ngày kết thúc"
-                onChange={handleEndDateChange}
-                format="YYYY-MM-DD"
-              />
-            </Space>
-            <h2>Chọn giá trị để lọc theo ngày</h2>
-            <Space className="chart-by-value">
-              <Button
-                className="chart-button"
-                onClick={() => handleDataTypeChange("totalPrice")}
-              >
-                Tổng Giá Trị
-              </Button>
-              <Button
-                className="chart-button"
-                onClick={() => handleDataTypeChange("orderCount")}
-              >
-                Số Lượng Đơn Hàng
-              </Button>
-              <Button
-                className="chart-button"
-                onClick={() => handleDataTypeChange("productCount")}
-              >
-                Số Lượng Sản Phẩm
-              </Button>
-            </Space>
-          </Space>
+            <Row>
+              <Space className="chart-datepicker">
+                <h2>Từ</h2>
+                <DatePicker
+                  placeholder="Ngày bắt đầu"
+                  onChange={handleStartDateChange}
+                  format="YYYY-MM-DD"
+                />
+                <h2>Đến </h2>
+                <DatePicker
+                  placeholder="Ngày kết thúc"
+                  onChange={handleEndDateChange}
+                  format="YYYY-MM-DD"
+                />
+              </Space>
 
-          <Space className="chart-by-monthyear">
-            <h2>Hoặc lựa chọn lọc theo Tháng/Năm</h2>
-            <Button
-              className="chart-button"
-              onClick={() => handleChartTypeChange("monthly")}
-            >
-              Theo Tháng
-            </Button>
-            <Button
-              className="chart-button"
-              onClick={() => handleChartTypeChange("yearly")}
-            >
-              Theo Năm
-            </Button>
+              <Space className="chart-by-monthyear">
+                <h2>Chọn khoảng thời gian lọc </h2>
+                <Button
+                  className="chart-button"
+                  onClick={() => handleChartTypeChange("daily")}
+                >
+                  Theo Ngày
+                </Button>
+                <Button
+                  className="chart-button"
+                  onClick={() => handleChartTypeChange("monthly")}
+                >
+                  Theo Tháng
+                </Button>
+                <Button
+                  className="chart-button"
+                  onClick={() => handleChartTypeChange("yearly")}
+                >
+                  Theo Năm
+                </Button>
+              </Space>
+            </Row>
+            <Row>
+              <h2>Chọn giá trị để lọc</h2>
+              <Space className="chart-by-value">
+                <Button
+                  className="chart-button"
+                  onClick={() => handleDataTypeChange("totalPrice")}
+                >
+                  Tổng Giá Trị
+                </Button>
+                <Button
+                  className="chart-button"
+                  onClick={() => handleDataTypeChange("orderCount")}
+                >
+                  Số Lượng Đơn Hàng
+                </Button>
+                <Button
+                  className="chart-button"
+                  onClick={() => handleDataTypeChange("productCount")}
+                >
+                  Số Lượng Sản Phẩm
+                </Button>
+              </Space>
+            </Row>
           </Space>
         </div>
 
@@ -454,32 +459,33 @@ function OrderAdmin() {
               data={{
                 labels: chartData.monthly.labels,
                 datasets: [
-                  {
+                  dataType === "totalPrice" && {
                     label: "Tổng Giá Trị Bán Ra (Theo Tháng)",
                     data: chartData.monthly.datasets[0].data,
                     backgroundColor: "rgba(255, 159, 64, 0.6)",
                     borderColor: "rgba(255, 159, 64, 1)",
                     borderWidth: 1,
                   },
-                  {
+                  dataType === "orderCount" && {
                     label: "Số Lượng Đơn Hàng Bán Ra (Theo Tháng)",
                     data: chartData.monthly.datasets[1].data,
                     backgroundColor: "rgba(54, 162, 235, 0.6)",
                     borderColor: "rgba(54, 162, 235, 1)",
                     borderWidth: 1,
                   },
-                  {
+                  dataType === "productCount" && {
                     label: "Số Lượng Sản Phẩm Bán Ra (Theo Tháng)",
                     data: chartData.monthly.datasets[2].data,
                     backgroundColor: "rgba(153, 102, 255, 0.6)",
                     borderColor: "rgba(153, 102, 255, 1)",
                     borderWidth: 1,
                   },
-                ],
+                ].filter(Boolean),
               }}
             />
           </div>
         )}
+
         {chartType === "yearly" && chartData.yearly && (
           <div className="chart-container">
             <h2>Theo Năm</h2>
@@ -487,28 +493,28 @@ function OrderAdmin() {
               data={{
                 labels: chartData.yearly.labels,
                 datasets: [
-                  {
+                  dataType === "totalPrice" && {
                     label: "Tổng Giá Trị Bán Ra (Theo Năm)",
                     data: chartData.yearly.datasets[0].data,
                     backgroundColor: "rgba(54, 162, 235, 0.6)",
                     borderColor: "rgba(54, 162, 235, 1)",
                     borderWidth: 1,
                   },
-                  {
+                  dataType === "orderCount" && {
                     label: "Số Lượng Đơn Hàng Bán Ra (Theo Năm)",
                     data: chartData.yearly.datasets[1].data,
                     backgroundColor: "rgba(255, 206, 86, 0.6)",
                     borderColor: "rgba(255, 206, 86, 1)",
                     borderWidth: 1,
                   },
-                  {
+                  dataType === "productCount" && {
                     label: "Số Lượng Sản Phẩm Bán Ra (Theo Năm)",
                     data: chartData.yearly.datasets[2].data,
                     backgroundColor: "rgba(75, 192, 192, 0.6)",
                     borderColor: "rgba(75, 192, 192, 1)",
                     borderWidth: 1,
                   },
-                ],
+                ].filter(Boolean),
               }}
             />
           </div>

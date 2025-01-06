@@ -7,7 +7,7 @@ export class OrderItem {
   @PrimaryGeneratedColumn('increment', { name: 'id' })
   id: number;
 
-  @Column({ name: 'productVariantId', type: 'int' })
+  @Column({ name: 'productVariantId', type: 'int',nullable: true })
   productVID: number;
 
   @Column({ name: 'order_id', type: 'int' })
@@ -34,7 +34,11 @@ export class OrderItem {
   })
   updatedAt: string;
 
-  @ManyToOne(() => ProductVariant, { eager: true })
+  @ManyToOne(() => ProductVariant , {
+    eager: true,
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
   productVariant: ProductVariant;
 
   @ManyToOne(() => Order, { eager: true })
