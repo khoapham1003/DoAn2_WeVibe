@@ -265,8 +265,8 @@ function ProductPage() {
                             borderRadius: "50%",
                             boxShadow:
                               selectedColor?.id === color.id
-                                ? "0 0 0 4px rgba(143, 143, 143, 0.5)"
-                                : "none",
+                                ? "0 0 0 4px black"
+                                : "0 0 0 2px rgba(143, 143, 143, 0.5)",
                             cursor: "pointer",
                             opacity: availableColors.includes(color.id)
                               ? 1
