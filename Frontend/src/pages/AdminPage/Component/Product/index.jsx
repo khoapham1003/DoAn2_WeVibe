@@ -679,21 +679,21 @@ function ProductAdmin() {
                         variants.map((variant) => (
                           <div className="variant-row" key={variant.id}>
                             <span className="variant-color">
-                              <b>Màu sắc:</b> {variant.color.name}
+                              <b>Màu sắc:</b> {variant.color?.name ?? ""}
                               <span
                                 style={{
                                   display: "inline-block",
                                   width: 16,
                                   height: 16,
-                                  backgroundColor: variant.color.hex,
+                                  backgroundColor: variant.color?.hex ?? "",
                                   borderRadius: "50%",
                                   marginLeft: 5,
                                 }}
                               ></span>
                             </span>
                             <span className="variant-size">
-                              <b>Kích cỡ:</b> {variant.size.name} (
-                              {variant.size.size})
+                              <b>Kích cỡ:</b> {variant.size?.name ?? ""} (
+                              {variant.size?.size ?? ""})
                             </span>
                             <span className="variant-quantity">
                               <b>Số lượng:</b> {variant.quantity}

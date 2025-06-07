@@ -1,3 +1,4 @@
+import { CartItemFactory } from './../factory/cartitem.factory';
 import { ProductVariantService } from './../../productvariant/service/productvariant.service';
 import {
   Injectable,
@@ -34,11 +35,10 @@ export class CartItemService {
       sizeId,
       colorId,
     );
-    const productVID = productVariant.id;
 
     if (!productVariant) {
       throw new NotFoundException(
-        `ProductVariant with ID ${productVID} not found.`,
+        `ProductVariant not found.`,
       );
     }
 
@@ -54,40 +54,27 @@ export class CartItemService {
       throw new NotFoundException(`Cart with ID ${cartID} not found.`);
     }
 
-    // Update the cart status if it is 'empty'
     if (cart.status === 'empty') {
       cart.status = 'active';
-      await this.cartRepository.save(cart); // Save the updated cart status
+      await this.cartRepository.save(cart);
     }
 
-    const discount = productVariant.product.discount || 0;
-    const finalPrice = price;
+    const productVID = productVariant.id;
 
     const existingCartItem = await this.cartItemRepository.findOne({
       where: { cartID, productVID, active: true },
     });
 
     if (existingCartItem) {
-      existingCartItem.quantity += quantity; // Increment the quantity
-      existingCartItem.price += finalPrice; // Update the price if necessary
-
-      // Save the updated CartItem
+      existingCartItem.quantity += quantity;
+      existingCartItem.price += price;
       return await this.cartItemRepository.save(existingCartItem);
     } else {
-      // If it does not exist, create a new CartItem
-      const cartItem = this.cartItemRepository.create({
-        cartID,
-        productVID,
-        price: finalPrice,
-        discount: discount,
-        quantity: quantity,
-        active: true,
-      });
-
-      // Save the new CartItem
+      const cartItem = CartItemFactory.createFromVariant(cartID, productVariant, quantity);
       return await this.cartItemRepository.save(cartItem);
     }
   }
+
   async findAll(): Promise<CartItem[]> {
     return await this.cartItemRepository.find();
   }

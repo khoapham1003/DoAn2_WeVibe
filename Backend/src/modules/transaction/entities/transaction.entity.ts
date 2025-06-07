@@ -17,7 +17,7 @@ import {
     id: number;
   
     @Column({ name: 'order_id', type: 'int' })
-    orderId: number;
+    orderID: number;
   
     @Column({ name: 'amount', type: 'float' })
     amount: number;

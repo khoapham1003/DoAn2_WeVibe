@@ -301,7 +301,7 @@ function ProfilePage() {
         }}
       >
         <Row>
-          <h2 className="detail_h2">THÔNG TIN CÁ NHÂN</h2>
+          <h1 className="detail_h2">THÔNG TIN CÁ NHÂN</h1>
         </Row>
         <Col>
           {userData && (

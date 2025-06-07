@@ -7,6 +7,7 @@ import { OrderitemModule } from '../orderitem/orderitem.module';
 import { CartitemModule } from '../cartitem/cartitem.module';
 import { ProductModule } from '../product/product.module';
 import { ProductvariantModule } from '../productvariant/productvariant.module';
+import { TransactionModule } from '../transaction/transaction.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ProductvariantModule } from '../productvariant/productvariant.module';
     OrderitemModule,
     ProductModule,
     ProductvariantModule,
+    TransactionModule,
   ],
   controllers: [OrderController],
   providers: [OrderService],

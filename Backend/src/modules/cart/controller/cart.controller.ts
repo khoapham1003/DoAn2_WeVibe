@@ -7,11 +7,13 @@ import {
   Param,
   Delete,
   NotFoundException,
+  UseGuards,
 } from '@nestjs/common';
 import { CartService } from '../service/cart.service';
 import { CreateCartDto } from '../dto/create-cart.dto';
 import { UpdateCartDto } from '../dto/update-cart.dto';
 import { Cart } from '../entities/cart.entity'; // Import entity nếu cần thiết
+import { AuthGuard } from 'src/modules/auth/guards/gruards';
 
 @Controller('cart')
 export class CartController {

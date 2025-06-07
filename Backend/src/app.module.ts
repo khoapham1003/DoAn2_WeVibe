@@ -79,9 +79,9 @@ export class AppModule implements NestModule {
     consumer
       .apply(AuthMiddleware)
       .forRoutes(
-        { path: 'color/create-color', method: RequestMethod.POST }, // Chỉ admin mới được tạo
-        { path: 'color/update-corlor/:id', method: RequestMethod.PATCH }, // Chỉ admin được cập nhật
-        { path: 'color/delete-color/:id', method: RequestMethod.DELETE },
+        {path: 'color/create-color', method: RequestMethod.POST },
+        {path: 'color/update-corlor/:id', method: RequestMethod.PATCH },
+        {path: 'color/delete-color/:id', method: RequestMethod.DELETE },
         {path: '/sizes/create-size', method: RequestMethod.POST},
         {path: '/sizes/update-size/:id', method: RequestMethod.PATCH},
         {path: '/sizes/delete-size/:id', method: RequestMethod.DELETE},
@@ -98,8 +98,8 @@ export class AppModule implements NestModule {
         {path: '/product/create-product', method: RequestMethod.POST},
         {path: '/product/update-product/:id', method: RequestMethod.PATCH},
         {path: '/product/delete-product/:id', method: RequestMethod.DELETE},
-        CartController, 
-        OrderController, 
+        CartController,
+        OrderController,
         CartitemController,
         OrderItemController,
         UserController,

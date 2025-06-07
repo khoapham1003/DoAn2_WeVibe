@@ -7,7 +7,7 @@ import { message } from "antd";
 import { ethers } from "ethers";
 import contractABI from "../../components/Contracts/contractABI.json"; // Đảm bảo bạn lưu ABI vào file JSON
 
-const rawContractAddress = "0x2514F58f641d199E2F14d641d77100E053996497";
+const rawContractAddress = "0xf00C04623AEBf0D00957B68eE0F940A1e44C6143";
 function CheckoutPage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -76,7 +76,7 @@ function CheckoutPage() {
     try {
       // Kết nối với mạng BuildBear qua JsonRpcProvider
       const provider = new ethers.JsonRpcProvider(
-        "https://rpc.buildbear.io/cooperative-omegared-0720832f"
+        "https://rpc.buildbear.io/sad-doctorstrange-ea8ef310"
       );
 
       // Lấy số khối mới nhất
@@ -100,9 +100,7 @@ function CheckoutPage() {
             provider
           );
           console.log("Hợp đồng:", address);
-          const balance = await contract.balanceOf(
-            "0xD6D44D446C93542B604e7C189747c70B3a0Ff217"
-          );
+          const balance = await contract.balanceOf(address);
           setBalance(ethers.formatUnits(balance, 18));
           console.log("Số dư token:", ethers.formatUnits(balance, 18));
         }
@@ -133,15 +131,10 @@ function CheckoutPage() {
       );
 
       // Địa chỉ nhận thanh toán
-      const recipientAddress = "0xe72b366514f3DA2B2C3379B0136770bbd92E7413";
+      const recipientAddress = "0x332FeddEcEDa98662d48f71b315Aa362F4a29b0a";
 
-      const tokenToSend = (totalPrice / 1000).toString();
+      const tokenToSend = (totalPrice / 100000).toString();
       const amountToSend = ethers.parseUnits(tokenToSend, 18);
-
-      if (parseFloat(balance) < parseFloat(tokenToSend)) {
-        message.error("Số dư không đủ để thực hiện giao dịch.");
-        return;
-      }
 
       // Thực hiện giao dịch
       const tx = await contract.transfer(recipientAddress, amountToSend);

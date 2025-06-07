@@ -14,6 +14,7 @@ import { CartItem } from 'src/modules/cartitem/entities/cartitem.entity';
 import { CartItemService } from 'src/modules/cartitem/service/cartitem.service';
 import { Product } from 'src/modules/product/entities/product.entity';
 import { ProductVariant } from 'src/modules/productvariant/entities/productvariant.entity';
+import { Transaction } from 'src/modules/transaction/entities/transaction.entity';
 
 @Injectable()
 export class OrderService {
@@ -27,6 +28,8 @@ export class OrderService {
     private readonly productVariantRepository: Repository<ProductVariant>,
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
+    @InjectRepository(Transaction)
+    private readonly transactionRepository: Repository<Transaction>,
   ) {}
 
   async createOrder(
@@ -214,7 +217,14 @@ export class OrderService {
     const orderItems = await this.orderItemRepository.find({
       where: { orderID: orderId },
     });
-    console.log(orderId);
+
+    const orderBlockchain = await this.transactionRepository.find({
+      where: {
+        orderID: orderId,
+      } as any,
+    });
+
+    console.log('23123',orderBlockchain);
 
     if (!orderItems.length) {
       throw new NotFoundException(
@@ -252,6 +262,7 @@ export class OrderService {
           size: item.productVariant.size.name,
           color: item.productVariant.color.name,
         })),
+      orderBlockchain: orderBlockchain,
     }));
   }
 

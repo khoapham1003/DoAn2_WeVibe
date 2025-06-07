@@ -10,38 +10,36 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '../guards/gruards';
-import { AuthService } from '../Service/auth.service';
 import { LoginDto } from '../dtos/login.dto';
 import { RegisterDto } from '../dtos/register.dto';
+import { AuthProxyService } from '../Service/auth.proxy';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService
-    
-  ) {}
+  constructor(private readonly authProxyService: AuthProxyService) {}
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
   signIn(@Body() loginDto: LoginDto) {
-    return this.authService.signIn(loginDto.Email, loginDto.Password);
+    return this.authProxyService.signIn(loginDto.Email, loginDto.Password);
   }
 
   @HttpCode(HttpStatus.OK)
   @Post('forgotPassword')
   ForgotPassword(@Body() ForgotPasswordDto: ForgotPasswordDto) {
-    return this.authService.forgotPassword(ForgotPasswordDto);
+    return this.authProxyService.forgotPassword(ForgotPasswordDto);
   }
 
   // @HttpCode(HttpStatus.OK)
   // @Post('login-admin')
   // signInAdmin(@Body() loginDto: LoginDto) {
-  //   return this.authService.signInAdmin(loginDto.Email, loginDto.Password);
+  //   return this.authProxyService.signInAdmin(loginDto.Email, loginDto.Password);
   // }
 
   @HttpCode(HttpStatus.CREATED)
   @Post('register')
   async register(@Body() registerDto: RegisterDto) {
-    return this.authService.register(registerDto);
+    return this.authProxyService.register(registerDto);
   }
   @UseGuards(AuthGuard)
   @Get('profile')

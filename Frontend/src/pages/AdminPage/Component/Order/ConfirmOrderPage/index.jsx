@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { Button, Row, Col, List, Card, Image, Input, message } from "antd";
+import { Button, Row, Col, List, Card, Image, Input, message, Descriptions, Tag } from "antd";
 
 function ConfirmOrderPage() {
   const navigate = useNavigate();
@@ -87,6 +87,15 @@ function ConfirmOrderPage() {
       message.error("Có lỗi trong quá trình xác nhận đơn hàng.");
     }
   };
+
+  const transaction = order?.orderBlockchain?.[0];
+
+   let payment = null;
+
+  if (transaction) {
+    payment = JSON.parse(transaction.paymentDetails); 
+  }
+
 
   return (
     <div>
@@ -323,19 +332,19 @@ function ConfirmOrderPage() {
               <h2>Thanh toán</h2>
             </List.Item>
             <List.Item>
-                 {" "}
+               Tổng tiền sản phẩm:  {" "}
               <span>
                 {new Intl.NumberFormat("vi-VN").format(order.subTotal)} đ
               </span>
             </List.Item>
             <List.Item>
-                 {" "}
+              Phí Shipping:{" "}
               <span>
                 {new Intl.NumberFormat("vi-VN").format(order.shippingFee)} đ
               </span>
             </List.Item>
             <List.Item>
-                 {" "}
+              Tổng tiền giảm giá: {" "}
               <span>
                 {new Intl.NumberFormat("vi-VN").format(order.totalDiscount)} đ
               </span>
@@ -359,6 +368,33 @@ function ConfirmOrderPage() {
             </List.Item>
           </List>
         </div>
+        {transaction && (
+          <Card
+            title={`Giao dịch Blockchain - Đơn hàng #${transaction.orderID}`}
+            bordered={false}
+          >
+            <Descriptions bordered column={1} size="middle">
+              <Descriptions.Item label="Mã giao dịch">{transaction.id}</Descriptions.Item>
+              <Descriptions.Item label="Số tiền">{transaction.amount} TOKEN</Descriptions.Item>
+              <Descriptions.Item label="Trạng thái">
+                <Tag color={transaction.status === 'SUCCESS' ? 'green' : 'red'}>
+                  {transaction.status}
+                </Tag>
+              </Descriptions.Item>
+              <Descriptions.Item label="Phương thức thanh toán">
+                {transaction.paymentMethodType}
+              </Descriptions.Item>
+              <Descriptions.Item label="Từ ví">{payment.from}</Descriptions.Item>
+              <Descriptions.Item label="Đến ví">{payment.to}</Descriptions.Item>
+              <Descriptions.Item label="Tx Hash">{payment.hash}</Descriptions.Item>
+              <Descriptions.Item label="Gas Limit">{payment.gasLimit}</Descriptions.Item>
+              <Descriptions.Item label="Gas Price">{payment.gasPrice}</Descriptions.Item>
+              <Descriptions.Item label="Ngày tạo">
+                {new Date(transaction.createdAt).toLocaleString()}
+              </Descriptions.Item>
+            </Descriptions>
+          </Card>
+        )}
       </div>
     </div>
   );

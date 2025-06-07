@@ -40,21 +40,6 @@ export class AuthService {
     };
   }
   
-  // async signInAdmin(
-  //   username: string,
-  //   pass: string,
-  // ): Promise<{ access_token: string }> {
-  //   const user = await this.adminsService.findOne(username);
-  //   const isPasswordValid =
-  //     user && (await bcrypt.compare(pass, user.mPassword));
-  //   if (!isPasswordValid) {
-  //     throw new UnauthorizedException('Invalid username or password');
-  //   }
-  //   const payload = { sub: user.mAdminId, username: user.mName, role: 'Admin' };
-  //   return {
-  //     access_token: await this.jwtService.signAsync(payload),
-  //   };
-  // }
   async register(registerDto: RegisterDto) {
     if (registerDto.password !== registerDto.confirmPassword) {
       throw new UnauthorizedException('Passwords do not match');

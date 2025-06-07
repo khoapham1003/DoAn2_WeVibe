@@ -8,6 +8,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { jwtConstants } from 'src/shared/constants/constants';
 import { CartModule } from '../cart/cart.module';
+import { AuthProxyService } from './Service/auth.proxy';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { CartModule } from '../cart/cart.module';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
-  exports: [AuthService],
+  providers: [AuthService, AuthProxyService, LocalStrategy, JwtStrategy],
+  exports: [AuthService, AuthProxyService],
 })
 export class AuthModule {}

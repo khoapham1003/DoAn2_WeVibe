@@ -267,7 +267,6 @@ function OrderAdmin() {
       },
     });
   };
-
   const getDatesBetween = (startDate, endDate) => {
     const dates = {};
     let currentDate = new Date(startDate);
@@ -413,7 +412,6 @@ function OrderAdmin() {
             </Button>
           </Space>
         </div>
-
         {chartType === "daily" && chartData.daily && (
           <div className="chart-container">
             <h2>Theo Ngày</h2>
@@ -435,6 +433,7 @@ function OrderAdmin() {
                     borderColor: "rgba(255, 99, 132, 1)",
                     borderWidth: 1,
                   },
+
                   dataType === "productCount" && {
                     label: "Số Lượng Sản Phẩm Bán Ra (Theo Ngày)",
                     data: chartData.daily.datasets[2].data,
@@ -454,32 +453,33 @@ function OrderAdmin() {
               data={{
                 labels: chartData.monthly.labels,
                 datasets: [
-                  {
+                  dataType === "totalPrice" && {
                     label: "Tổng Giá Trị Bán Ra (Theo Tháng)",
                     data: chartData.monthly.datasets[0].data,
                     backgroundColor: "rgba(255, 159, 64, 0.6)",
                     borderColor: "rgba(255, 159, 64, 1)",
                     borderWidth: 1,
                   },
-                  {
+                  dataType === "orderCount" &&  {
                     label: "Số Lượng Đơn Hàng Bán Ra (Theo Tháng)",
                     data: chartData.monthly.datasets[1].data,
                     backgroundColor: "rgba(54, 162, 235, 0.6)",
                     borderColor: "rgba(54, 162, 235, 1)",
                     borderWidth: 1,
                   },
-                  {
+                  dataType === "productCount" && {
                     label: "Số Lượng Sản Phẩm Bán Ra (Theo Tháng)",
                     data: chartData.monthly.datasets[2].data,
                     backgroundColor: "rgba(153, 102, 255, 0.6)",
                     borderColor: "rgba(153, 102, 255, 1)",
                     borderWidth: 1,
                   },
-                ],
+                ].filter(Boolean),
               }}
             />
           </div>
         )}
+
         {chartType === "yearly" && chartData.yearly && (
           <div className="chart-container">
             <h2>Theo Năm</h2>
@@ -487,28 +487,28 @@ function OrderAdmin() {
               data={{
                 labels: chartData.yearly.labels,
                 datasets: [
-                  {
+                  dataType === "totalPrice" &&   {
                     label: "Tổng Giá Trị Bán Ra (Theo Năm)",
                     data: chartData.yearly.datasets[0].data,
                     backgroundColor: "rgba(54, 162, 235, 0.6)",
                     borderColor: "rgba(54, 162, 235, 1)",
                     borderWidth: 1,
                   },
-                  {
+                  dataType === "orderCount" &&   {
                     label: "Số Lượng Đơn Hàng Bán Ra (Theo Năm)",
                     data: chartData.yearly.datasets[1].data,
                     backgroundColor: "rgba(255, 206, 86, 0.6)",
                     borderColor: "rgba(255, 206, 86, 1)",
                     borderWidth: 1,
                   },
-                  {
+                  dataType === "productCount" &&   {
                     label: "Số Lượng Sản Phẩm Bán Ra (Theo Năm)",
                     data: chartData.yearly.datasets[2].data,
                     backgroundColor: "rgba(75, 192, 192, 0.6)",
                     borderColor: "rgba(75, 192, 192, 1)",
                     borderWidth: 1,
                   },
-                ],
+                ].filter(Boolean),
               }}
             />
           </div>

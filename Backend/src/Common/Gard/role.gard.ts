@@ -8,17 +8,17 @@ export class RolesGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const requiredRoles = this.reflector.get<string[]>('roles', context.getHandler());
     if (!requiredRoles) {
-      return true; // Không yêu cầu vai trò, cho phép truy cập
+      return true;
     }
 
     const request = context.switchToHttp().getRequest();
-    const user = request.user; // Middleware JWT đã gắn `user` vào `request`
+    const user = request.user;
     console.log(user);
     if (!user || !requiredRoles.includes(user.role)) {
       throw new ForbiddenException('You do not have permission to access this resource.');
     }
 
-    return true; // Vai trò hợp lệ, cho phép truy cập
+    return true;
   }
 
   

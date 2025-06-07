@@ -15,7 +15,7 @@ export class TransactionService {
     const transaction = new Transaction();
 
     // Map thông tin từ DTO
-    transaction.orderId = dto.orderId;
+    transaction.orderID = dto.orderId;
     transaction.amount = dto.amount;
     transaction.paymentMethodType = dto.paymentMethodType;
     transaction.status = dto.status;
@@ -36,8 +36,8 @@ export class TransactionService {
     return `This action returns all transaction`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} transaction`;
+  async findOne(id: number): Promise<any> {
+    return await this.transactionRepository.findOne({ where: { id } });
   }
 
   update(id: number, updateTransactionDto: UpdateTransactionDto) {
